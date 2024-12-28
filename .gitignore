@@ -1,0 +1,55 @@
+## ASP.NET Core ##
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]ist/
+bin/
+obj/
+
+# User-specific files
+.vs/
+.vscode/
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# User-specific files
+.vs2019/
+.vs2017/
+.idea/
+
+# User-specific files
+.vscode/
+
+# .NET Core generated files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Mac files
+.DS_Store
