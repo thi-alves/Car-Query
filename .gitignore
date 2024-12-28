@@ -6,6 +6,8 @@
 bin/
 obj/
 
+appsettings.json
+
 # User-specific files
 .vs/
 .vscode/
