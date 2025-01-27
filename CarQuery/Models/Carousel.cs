@@ -1,18 +1,29 @@
-﻿namespace CarQuery.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CarQuery.Models
 {
     public class Carousel
     {
+        [Key]
         public int CarouselId { get; set; }
-        public string Title { get; set; }
-        public List<Car> Cars { get; set; }
-        public List<Image> Images { get; set; }
 
-        public Carousel(string title, List<Car> cars, List<Image> images)
+        [Required(ErrorMessage = "Este campo deve ser preenchido")]
+        [MaxLength(100, ErrorMessage = "Este campo deve ter no máximo 100 caracteres")]
+        public string Title { get; set; }
+        public List<CarouselSlide> CarouselSlides { get; set; }
+        public short Position { get; set; }
+        public bool IsVisible { get; set; }
+   
+        public Carousel()
+        {
+
+        }
+        public Carousel(string title, List<CarouselSlide> carouselSlides, short position, bool isVisible)
         {
             Title = title;
-            Cars = cars;
-            Images = images;
-
+            CarouselSlides = carouselSlides;
+            Position = position;
+            IsVisible = isVisible;
         }
     }
 }

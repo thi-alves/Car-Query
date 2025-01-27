@@ -1,0 +1,113 @@
+﻿@using CarQuery.ViewModels
+@model CarViewModel
+
+@{
+    
+}
+
+<div class="container mt-5">
+
+    <h1 class="display-5">Adicionar carro</h1>
+
+    <form asp-action="Add" class="form-group" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-4">
+                <label asp-for="Brand">Marca do carro:</label>
+                <input class="form-control" asp-for="Brand"/>
+                <span class="text-danger" asp-validation-for="Brand"></span>
+            </div>     
+
+            <div class="col-4">
+                <label asp-for="Model">Modelo:</label>
+                <input class="form-control" asp-for="Model"/>
+                <span class="text-danger" asp-validation-for="Model"></span>
+            </div>
+
+            <div class="col-4">
+                <label asp-for="Year">Ano:</label>
+                <input class="form-control" asp-for="Year"/>
+                <span class="text-danger"  asp-validation-for="Year"></span>
+            </div>
+
+        </div>
+
+        
+        <div class="row mt-4">
+            <div class="col-3">
+                <label asp-for="Power">Potência (CV):</label>
+                <input class="form-control" asp-for="Power"/>
+                <span class="text-danger" asp-validation-for="Power"></span>
+            </div>
+        
+            <div class="col-4">
+                <label asp-for="Drivetrain">Tração:</label>
+                <input class="form-control" asp-for="Drivetrain"/>
+                <span class="text-danger" asp-validation-for="Drivetrain"></span>
+            </div>
+            <div class="col-5">
+                <label asp-for="Engine">Motor:</label>
+                <input class="form-control" asp-for="Engine"/>
+                <span class="text-danger" asp-validation-for="Engine"></span>
+            </div>
+
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-3">
+                <label asp-for="EnginePosition">Posição do motor:</label>
+                <input class="form-control" asp-for="EnginePosition"/>
+                <span class="text-danger" asp-validation-for="EnginePosition"></span>
+            </div>
+            <div class="col-4">
+                <label asp-for="TransmissionType">Transmissão:</label>
+                <input class="form-control" asp-for="TransmissionType"/>
+                <span class="text-danger" asp-validation-for="TransmissionType"></span>
+            </div>
+
+            <div class="col-3">
+                <label asp-for="TopSpeed">Velocidade máxima:</label>
+                <input class="form-control" asp-for="TopSpeed"/>
+                <span class="text-danger" asp-validation-for="TopSpeed"></span>
+            </div>
+        
+            <div class="col-2">
+                <label asp-for="Doors">Portas:</label>
+                <input class="form-control" asp-for="Doors"/>
+                <span class="text-danger" asp-validation-for="Doors"></span>
+            </div>
+        </div>
+        <div class="">
+            <label asp-for="Price">Preço (R$):</label>
+            <input class="form-control" asp-for="Price"/>
+            <span class="text-danger" asp-validation-for="Price"></span>
+        </div>
+        <div class="">
+            <label asp-for="ShortDescription">Descrição curta:</label>
+            <input class="form-control" asp-for="ShortDescription"/>
+            <span class="text-danger" asp-validation-for="ShortDescription"></span>
+        </div>
+        
+        <div class="">
+            <label asp-for="FullDescription">Descrição completa:</label>
+            <input class="form-control" asp-for="FullDescription"/>
+            <span class="text-danger" asp-validation-for="FullDescription"></span>
+        </div>
+        <div class="">
+            <label asp-for="Images">Imagens:</label>
+            <input type="file" class="form-control" asp-for="Images" multiple/>
+            <span class="text-danger" asp-validation-for="Images"></span>
+        </div>
+
+        <div class="">
+            <label asp-for="VideoLink">Video link:</label>
+            <input class="form-control" asp-for="VideoLink"/>
+            <span class="text-danger" asp-validation-for="VideoLink"></span>
+        </div>
+        <div class="form-group mt-4">
+            <input type="submit" class="btn btn-success"/>
+        </div>
+        
+        
+
+    </form>
+</div>

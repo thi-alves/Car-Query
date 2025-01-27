@@ -1,30 +1,27 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CarQuery.Models
+namespace CarQuery.ViewModels
 {
-    public class Car
+    public class CarViewModel
     {
-        [Key]
-        public int CarId { get; set; }
-
         [Required]
-        [MinLength(1, ErrorMessage = "A marca do carro deve ter no mínimo {1} caracteres")]
-        [MaxLength(30, ErrorMessage = "A marca do carro deve deve ter no máximo {1} caracteres")]
+        [MinLength(2, ErrorMessage = "A marca do carro deve ter no mínimo {1} caracteres")]
+        [MaxLength(30, ErrorMessage = "A marca do carro deve ter no máximo {1} caracteres")]
         [Display(Name = "Brand")]
         public string Brand { get; set; }
 
         [Required]
-        [MinLength(2, ErrorMessage = "O nome do modelo deve ter no mínimo {1} caracteres")]
-        [MaxLength(100, ErrorMessage = "O nome do modelo deve ter no máximo {1} caracteres")]
+        [MinLength(11, ErrorMessage = "O nome modelo deve ter no mínimo {1} caracteres")]
+        [MaxLength(100, ErrorMessage = "O nome modelo deve ter no máximo {1} caracteres")]
         [Display(Name = "Model")]
         public string Model { get; set; }
-        
+
         [Required(ErrorMessage = "Informe o ano do veículo")]
         [MaxLength(9, ErrorMessage = "Este campo deve ter no máximo 9 caracteres")]
-        [Display(Name = "Year")]
+        [Display(Name ="Year")]
         public string Year { get; set; }
-        
+
         [Required(ErrorMessage = "Informe a potência do veículo")]
         [Display(Name = "Power")]
         public short Power { get; set; }
@@ -39,10 +36,10 @@ namespace CarQuery.Models
         [Display(Name = "Engine")]
         public string Engine { get; set; }
 
-        [Required(ErrorMessage = "Informme a posição do motor")]
+        [Required(ErrorMessage = "Informe a posição do motor")]
         [MaxLength(8, ErrorMessage = "A posição do motor deve ter no máximo {1} caracteres")]
         [Display(Name = "Engine position")]
-        public string EnginePosition {  get; set; }
+        public string EnginePosition { get; set; }
 
         [Required(ErrorMessage = "Informe o tipo de transmissão")]
         [MaxLength(20, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
@@ -54,7 +51,7 @@ namespace CarQuery.Models
         public short TopSpeed { get; set; }
 
         [Required(ErrorMessage = "Informe a quantidade de portas")]
-        [Display(Name = "Doors")]
+        [Display(Name= "Doors")]
         public short Doors { get; set; }
 
         [Required(ErrorMessage = "Informe o preço")]
@@ -74,36 +71,7 @@ namespace CarQuery.Models
         [Display(Name = "Full description")]
         public string FullDescription { get; set; }
 
-        public List<Image> Images { get; set; }
+        public List<IFormFile> Images { get; set; }
         public string VideoLink { get; set; }
-
-
-        public Car()
-        {
-
-        }
-        public Car(string brand, string model, string year, short power, string drivetrain, string engine, 
-            string enginePosition, string transmissionType, short topspeed, short doors, double price, 
-            string shortDescription, string fullDescription, List<Image> images, string videoLink
-            )
-        {
-            Brand  = brand;
-            Model = model;
-            Year = year;
-            Power = power;
-            Drivetrain = drivetrain;
-            Engine = engine;
-            EnginePosition = enginePosition;
-            TransmissionType = transmissionType;
-            TopSpeed = topspeed;
-            Doors = doors;
-            Price = price;
-            ShortDescription = shortDescription;
-            FullDescription = fullDescription;
-            Images = images;
-            VideoLink = videoLink;
-        }
-        
-
     }
 }

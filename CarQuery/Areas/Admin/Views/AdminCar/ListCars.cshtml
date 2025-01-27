@@ -1,0 +1,51 @@
+﻿@model ReflectionIT.Mvc.Paging.PagingList<CarQuery.Models.Car>
+
+
+@section Styles{
+    <style>
+        .car-card {
+            border: 1px solid;
+            border-radius: 10px;
+            background-color: rgb(247, 247, 247);
+        }
+
+        .car-card p {
+            font: 20px;
+        }
+    </style>
+}
+<div class="container">
+
+    <form method="get" class="form-inline">
+        <input name="filter" class="form-control" placeholder="filtro"
+               value="@Model.RouteValue["Filter"]" />
+        <button type="submit" class="btn btn-info">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Procurar
+        </button>
+    </form>
+
+    <h3>Carros</h3>
+    <hr />
+
+    @foreach(var car in Model)
+    {
+        <div class="row car-card mt-3">
+            <div class="d-flex align-items-center">
+                <div class="col-4 col-lg-2 my-2">
+                    <img class="img-fluid" src="@car.Images[0].ImgPath">
+                </div>
+                <div class="col-4 ms-lg-5 ms-3">
+                    <p>@car.Brand @car.Model</p>
+                    <div class="d-inline">
+                        <a href="">Detalhes</a>
+                        ||
+                        <a href="">Editar</a>
+                        ||
+                        <a href="">Deletar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    
+</div>
