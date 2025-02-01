@@ -6,6 +6,8 @@ using CarQuery.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
 using ReflectionIT.Mvc.Paging;
+using System.Numerics;
+using System.IO;
 
 namespace CarQuery.Areas.Admin.Controllers
 {
@@ -125,5 +127,94 @@ namespace CarQuery.Areas.Admin.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            var car = _context.Car.Include(c => c.Images).FirstOrDefault(c => c.CarId == id);
+            return View(car);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("CarId, Brand, Model, Year, Power, Drivetrain, Engine, " +
+            "EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
+            "Images, VideoLink")] Car car, string imgIndexDelete)
+        {
+            if(id != car.CarId)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    int[] imgPosDelete = imgIndexDelete.Split(',')
+                        .Select(int.Parse)
+                        .ToArray();
+
+                    //ordenando em ordem crescente
+                    Array.Sort(imgPosDelete);
+
+                    int total = car.Images.Count;
+
+                    int adjust = 0;
+
+                    for(int i = 0; i < imgPosDelete.Length; i++)
+                    {
+
+                        if (imgPosDelete[i] < total)
+                        {
+                            /*Subtrai adjust porque quando removemos um item da lista, o índice os outros items são alterados.
+                             Como o array imgPosDelete foi ordenado de forma crescente, sempre que removermos um item, 
+                            os próximos itens a serem removidos terão o índice decrementado*/
+                            Console.WriteLine("Iteração: " + i);
+                            Console.WriteLine("imgPostDelet value: " + imgPosDelete[i]);
+                            Console.WriteLine("Valor do adjust: " + adjust);
+                            Console.WriteLine("imgPath: " + car.Images[0].ImgPath);
+                            string normalizedPath = Path.GetFullPath(car.Images[imgPosDelete[i]-adjust].ImgPath);
+                            string imgPath = ServerPath + normalizedPath;
+
+                            if (System.IO.File.Exists(imgPath))
+                            {
+                                Console.WriteLine("Caminho da imagem deletada: " + imgPath);
+                                System.IO.File.Delete(imgPath);
+
+                                car.Images.RemoveAt(imgPosDelete[i]-adjust);
+                            }
+                            
+                            adjust++;
+                        }
+                        else
+                        {
+                            Console.WriteLine("É maior que o total");
+                        }
+                    
+                    }
+
+                    _context.Update(car);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CarExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                
+            }
+            return RedirectToAction("Success");
+        }
+
+        
+        public bool CarExists(int id)
+        {
+            return _context.Car.Any(c => c.CarId == id);
+
+        }
     }
 }
