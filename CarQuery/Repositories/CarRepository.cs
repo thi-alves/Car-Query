@@ -1,6 +1,7 @@
 ﻿using CarQuery.Data;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarQuery.Repositories
 {
@@ -13,28 +14,32 @@ namespace CarQuery.Repositories
         {
             _context = context;
         }
-        public IEnumerable<Car> Car { get; set; }
-
 
         public Car GetCarById(int carId)
         {
-            throw new NotImplementedException();
+            return _context.Car
+                .Include(c => c.Images)
+                .FirstOrDefault(c => c.CarId == carId);
         }
 
-        public IEnumerable<Car> GetCars()
+        public async void UpdateCar(Car car)
         {
-            throw new NotImplementedException();
-
+            _context.Update(car);
+            await _context.SaveChangesAsync();
         }
 
-        public void Edit()
+        public async void DeleteCar(int carId)
         {
-            
-        }
+            Car car = _context.Car
+                .Include(c => c.Images)
+                .FirstOrDefault(c => c.CarId == carId);
 
-        public void Delete(int CarId)
-        {
+            if (car != null)
+            {
+                _context.Car.Remove(car);
 
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

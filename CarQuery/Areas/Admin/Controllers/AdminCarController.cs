@@ -8,6 +8,8 @@ using System.Net.WebSockets;
 using ReflectionIT.Mvc.Paging;
 using System.Numerics;
 using System.IO;
+using CarQuery.Repositories;
+using CarQuery.Repositories.Interface;
 
 namespace CarQuery.Areas.Admin.Controllers
 {
@@ -17,12 +19,15 @@ namespace CarQuery.Areas.Admin.Controllers
     {
         private string ServerPath { get; set; }
         private readonly AppDbContext _context;
+        private readonly ICarRepository _carRepository;
+        private readonly IImageRepository _imageRepository;
 
-        public AdminCarController(IWebHostEnvironment system, AppDbContext context)
+        public AdminCarController(IWebHostEnvironment system, AppDbContext context, ICarRepository carRepository, IImageRepository imageRepository)
         {
             ServerPath = system.WebRootPath;
             _context = context;
-            
+            _carRepository = carRepository;
+            _imageRepository = imageRepository;
         }
 
         public IActionResult Index()
@@ -30,7 +35,7 @@ namespace CarQuery.Areas.Admin.Controllers
             return View();
         }
 
-        public async Task <IActionResult> ListCars(string filter, int pageIndex = 1, string sort = "Model")
+        public async Task<IActionResult> ListCars(string filter, int pageIndex = 1, string sort = "Model")
         {
             var result = _context.Car.Include(i => i.Images).AsQueryable();
 
@@ -44,7 +49,15 @@ namespace CarQuery.Areas.Admin.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
         public IActionResult Success()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ErrorPage()
         {
             return View();
         }
@@ -61,7 +74,9 @@ namespace CarQuery.Areas.Admin.Controllers
             "EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
             "Images, VideoLink")] CarViewModel carViewModel)
         {
-            if (ModelState.IsValid){
+
+            if (ModelState.IsValid)
+            {
 
                 Car car = new Car
                 {
@@ -89,23 +104,27 @@ namespace CarQuery.Areas.Admin.Controllers
 
                 await _context.Car.AddAsync(car);
                 await _context.SaveChangesAsync();
+
+                return RedirectToAction("Success");
             }
-            return RedirectToAction("Success");
+            return View(carViewModel);
+
+
         }
 
         public async Task UploadFiles(List<IFormFile> files, Car car)
         {
             string folder = "\\ImgCar\\";
             string uploadImagePath = ServerPath + folder;
-            
-            if(files.Count > 0)
+
+            if (files.Count > 0)
             {
                 if (!Directory.Exists(uploadImagePath))
                 {
                     Directory.CreateDirectory(uploadImagePath);
                 }
 
-                for(int i = 0; i < files.Count; i++)
+                for (int i = 0; i < files.Count; i++)
                 {
                     var newImageName = Guid.NewGuid().ToString() + files[i].FileName;
 
@@ -115,7 +134,7 @@ namespace CarQuery.Areas.Admin.Controllers
                     var imgPath = folder + newImageName;
                     imgPath = imgPath.Replace("\\", "/");
 
-                    car.Images.Add(new Image { ImgPath = imgPath, Car = car});
+                    car.Images.Add(new Image { ImgPath = imgPath, Car = car });
 
                     using (var stream = System.IO.File.Create(uploadImagePath + newImageName))
                     {
@@ -138,61 +157,88 @@ namespace CarQuery.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CarId, Brand, Model, Year, Power, Drivetrain, Engine, " +
             "EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
-            "Images, VideoLink")] Car car, string imgIndexDelete)
+            "Images, VideoLink")] Car editedCar, List<IFormFile> newImages, string imgIdsDelete = "0")
         {
-            if(id != car.CarId)
+            if (id != editedCar.CarId)
             {
                 return NotFound();
             }
+
+            //como não fizemos Bind no Images, a model editedCar vem sem elas, então é necessário reatribui-las para o caso termos que retornar para o edit e imprimir as imagens (em caso de erro)
+            var images = await _imageRepository.GetImagesByCarId(editedCar.CarId);
+
+            editedCar.Images = images;
+
             if (ModelState.IsValid)
             {
+                Console.WriteLine("Model state é válida");
                 try
                 {
-                    int[] imgPosDelete = imgIndexDelete.Split(',')
+                    int[] imgIdDelete = imgIdsDelete.Split(',')
                         .Select(int.Parse)
                         .ToArray();
 
-                    //ordenando em ordem crescente
-                    Array.Sort(imgPosDelete);
-
-                    int total = car.Images.Count;
-
-                    int adjust = 0;
-
-                    for(int i = 0; i < imgPosDelete.Length; i++)
+                    //if true existe imagens a serem deletadas
+                    if (imgIdDelete[0] != 0)
                     {
+                        int totalCarImg = editedCar.Images.Count;
+                        int totalImgDelete = imgIdDelete.Count();
 
-                        if (imgPosDelete[i] < total)
+                        //para garantir que reste pelo menos uma imagem associada ao carro
+                        if (totalImgDelete < totalCarImg || newImages.Count >= 1)
                         {
-                            /*Subtrai adjust porque quando removemos um item da lista, o índice os outros items são alterados.
-                             Como o array imgPosDelete foi ordenado de forma crescente, sempre que removermos um item, 
-                            os próximos itens a serem removidos terão o índice decrementado*/
-                            Console.WriteLine("Iteração: " + i);
-                            Console.WriteLine("imgPostDelet value: " + imgPosDelete[i]);
-                            Console.WriteLine("Valor do adjust: " + adjust);
-                            Console.WriteLine("imgPath: " + car.Images[0].ImgPath);
-                            string normalizedPath = Path.GetFullPath(car.Images[imgPosDelete[i]-adjust].ImgPath);
-                            string imgPath = ServerPath + normalizedPath;
+                            //ordenando em ordem crescente
+                            Array.Sort(imgIdDelete);
 
-                            if (System.IO.File.Exists(imgPath))
+                            for (int i = 0; i < imgIdDelete.Length; i++)
                             {
-                                Console.WriteLine("Caminho da imagem deletada: " + imgPath);
-                                System.IO.File.Delete(imgPath);
+                                Console.WriteLine("Iteração: " + i);
 
-                                car.Images.RemoveAt(imgPosDelete[i]-adjust);
+                                Image img = images.FirstOrDefault(c => c.ImageId == imgIdDelete[i]);
+
+                                if (img != null)
+                                {
+
+                                    Console.WriteLine("imgPath: " + img.ImgPath);
+                                    string normalizedPath = (img.ImgPath).Replace("/", "\\");
+                                    string imgPath = ServerPath + normalizedPath;
+
+                                    Console.WriteLine("Complete Image Path: " + imgPath);
+
+                                    if (System.IO.File.Exists(imgPath))
+                                    {
+                                        Console.WriteLine("File Exists");
+                                        Console.WriteLine("Caminho da imagem deletada: " + imgPath);
+
+                                        //deletando a imagem do servidor
+                                        System.IO.File.Delete(imgPath);
+
+                                        //deletando no banco de dados
+                                        await _imageRepository.DeleteImageById(imgIdDelete[i]);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("File doesn't exists!!");
+
+                                    }
+                                } 
                             }
-                            
-                            adjust++;
                         }
                         else
                         {
-                            Console.WriteLine("É maior que o total");
+                            TempData["ErrorMessage"] = "Não é possível deletar todas as imagens. O carro deve possuir pelo menos uma imagem";
+                            return RedirectToAction("ErrorPage");
                         }
-                    
+
+                        _context.Entry(editedCar).Reload();
                     }
 
-                    _context.Update(car);
+                    UploadFiles(newImages, editedCar);
+
+                    _context.Update(editedCar);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction("Success");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -205,12 +251,23 @@ namespace CarQuery.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                
+                catch (FormatException)
+                {
+                    TempData["ErrorMessage"] = "Erro. Não é permitido caracteres e/ou espaços na entrada para deletar imagens";
+                    return RedirectToAction("ErrorPage");
+                }
+                catch (Exception)
+                {
+                    TempData["ErrorMessage"] = "Algum erro ocorreu";
+                    return RedirectToAction("ErrorPage");
+                }
+
             }
-            return RedirectToAction("Success");
+            Console.WriteLine("Model state is invalid!!");
+
+            return View(editedCar);
         }
 
-        
         public bool CarExists(int id)
         {
             return _context.Car.Any(c => c.CarId == id);

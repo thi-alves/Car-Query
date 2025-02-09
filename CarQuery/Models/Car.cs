@@ -8,20 +8,20 @@ namespace CarQuery.Models
         [Key]
         public int CarId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Informe a marca do veículo")]
         [MinLength(1, ErrorMessage = "A marca do carro deve ter no mínimo {1} caracteres")]
         [MaxLength(30, ErrorMessage = "A marca do carro deve deve ter no máximo {1} caracteres")]
         [Display(Name = "Brand")]
         public string Brand { get; set; }
 
-        [Required]
-        [MinLength(2, ErrorMessage = "O nome do modelo deve ter no mínimo {1} caracteres")]
+        [Required(ErrorMessage ="informe o modelo do veículo")]
+        [MinLength(1, ErrorMessage = "O nome do modelo deve ter no mínimo {1} caracteres")]
         [MaxLength(100, ErrorMessage = "O nome do modelo deve ter no máximo {1} caracteres")]
         [Display(Name = "Model")]
         public string Model { get; set; }
         
         [Required(ErrorMessage = "Informe o ano do veículo")]
-        [MaxLength(9, ErrorMessage = "Este campo deve ter no máximo 9 caracteres")]
+        [MaxLength(9, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
         [Display(Name = "Year")]
         public string Year { get; set; }
         
@@ -45,7 +45,7 @@ namespace CarQuery.Models
         public string EnginePosition {  get; set; }
 
         [Required(ErrorMessage = "Informe o tipo de transmissão")]
-        [MaxLength(20, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
+        [MaxLength(30, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
         [Display(Name = "Transmission type")]
         public string TransmissionType { get; set; }
 
@@ -64,7 +64,7 @@ namespace CarQuery.Models
 
         [Required(ErrorMessage = "Escreva uma descrição curta")]
         [MinLength(20, ErrorMessage = "A descrição curta precisa ter no mínimo {1} caracteres")]
-        [MaxLength(200, ErrorMessage = "A descrição curta deve ter no máximo {1} caracteres")]
+        [MaxLength(300, ErrorMessage = "A descrição curta deve ter no máximo {1} caracteres")]
         [Display(Name = "Short description")]
         public string ShortDescription { get; set; }
 

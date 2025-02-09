@@ -1,4 +1,6 @@
 using CarQuery.Data;
+using CarQuery.Repositories;
+using CarQuery.Repositories.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 
     .AddEntityFrameworkStores <AppDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
