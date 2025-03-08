@@ -268,6 +268,36 @@ namespace CarQuery.Areas.Admin.Controllers
             return View(editedCar);
         }
 
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Remove(int id)
+        {
+            Console.WriteLine("ID RECEBIDO: " + id);
+            bool result = await _carRepository.DeleteCar(id);
+
+            if (result == true) return RedirectToAction("Success");
+            return RedirectToAction("ErrorPage");
+
+        }
+        [HttpGet]
+        public async Task<IActionResult> SearchByModel([FromQuery] string model)
+        {
+            Console.WriteLine("Model recebida: " + model);
+            if (!string.IsNullOrEmpty(model))
+            {
+                IEnumerable<Car> cars = await _carRepository.SearchByModel(model);
+                foreach(Car car in cars)
+                {
+                    Console.WriteLine(car.Model);
+                }
+                return Ok(cars);
+            }
+            Console.WriteLine("Lista vazia");
+            IEnumerable<Car> emptyList = Enumerable.Empty<Car>();
+            return Ok(emptyList);
+        }
         public bool CarExists(int id)
         {
             return _context.Car.Any(c => c.CarId == id);

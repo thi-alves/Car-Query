@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CarQuery.Models
 {
@@ -8,6 +9,8 @@ namespace CarQuery.Models
         public int ImageId { get; set; }
         public string ImgPath { get; set; }
         public int CarId { get; set; }
+        
+        [JsonIgnore]
         public Car Car { get; set; }
 
         public Image()

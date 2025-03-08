@@ -10,7 +10,7 @@ namespace CarQuery.Models
         [Required(ErrorMessage = "Este campo deve ser preenchido")]
         [MaxLength(100, ErrorMessage = "Este campo deve ter no máximo 100 caracteres")]
         public string Title { get; set; }
-        public List<CarouselSlide> CarouselSlides { get; set; }
+        public List<CarouselSlide> CarouselSlides { get; set; } = new List<CarouselSlide>();
         public short Position { get; set; }
         public bool IsVisible { get; set; }
    

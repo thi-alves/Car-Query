@@ -22,6 +22,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<ICarouselRepository, CarouselRepository>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {

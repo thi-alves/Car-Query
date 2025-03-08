@@ -1,6 +1,140 @@
-﻿
-@{
-    @model Car;
+﻿@model Car;
+
+@section Styles {
+	<style>
+		/*<link rel="stylesheet" href=""/>*/
+		.car-details {
+			background-color: #fafafa;
+			border-radius: 15px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+			color: #545454;
+			line-height: 30px;
+		}
+	</style>
 }
 
+<div class="container">
+	<h1 class="display-4">@Model.Brand @Model.Model</h1>
 
+	<div id="carouselExampleCaptions" class="carousel slide">
+		@{
+			int slide = 0;
+		}
+
+		<div class="carousel-indicators">
+			@foreach (var img in Model.Images)
+			{
+				<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="@slide"
+						class="@(slide == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(slide + 1)">
+				</button>
+				slide++;
+			}
+		</div>
+
+		<div class="carousel-inner">
+			@{
+				slide = 0;
+			}
+			@foreach (var img in Model.Images)
+			{
+				<div class="carousel-item @(slide == 0 ? "active" : "")">
+					<img src="@img.ImgPath" class="d-block w-100" alt="...">
+				</div>
+				slide++;
+			}
+		</div>
+
+		<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Next</span>
+		</button>
+
+	</div>
+
+	<div class="row my-3 py-3 car-details">
+		<h4>Especificações</h4>
+
+		<div class="px-4 mb-3">
+			<div class="col-12">
+				<strong>Motor: </strong>@Model.Engine
+			</div>
+			<div class="col-12">
+				<strong>Potência: </strong>@Model.Power cv
+			</div>
+			<div class="col-12">
+				<strong>Posição do motor: </strong>@Model.EnginePosition
+			</div>
+			<div class="col-12">
+				<strong>Tração: </strong>@Model.Drivetrain
+			</div>
+			<div class="col-12">
+				<strong>Velocidade máxima: </strong>@Model.TopSpeed km/h
+			</div>
+			<div class="col-12">
+				<strong>Portas: </strong>@Model.Doors
+			</div>
+			<div class="col-12">
+				<strong>Preço: </strong>R$@Model.Price
+			</div>
+		</div>
+
+		<hr />
+		<h4>Sobre o carro</h4>
+		<div class="px-4">
+
+
+			<p>@Model.FullDescription</p>]
+
+			<p>
+				Benefícios
+				✅ Evita problemas de cache – O navegador baixa o novo arquivo quando há alterações.
+				✅ Melhora a performance – Arquivos inalterados continuam sendo carregados do cache.
+				✅ Garante que mudanças no CSS/JS sejam aplicadas sem precisar forçar um "Ctrl + F5" no navegador.
+
+				Conclusão: É boa prática sempre usar asp-append-version="true" para arquivos CSS e JS, especialmente quando você faz atualizações frequentes no sistema.
+			</p>
+			<p>
+				Benefícios
+				✅ Evita problemas de cache – O navegador baixa o novo arquivo quando há alterações.
+				✅ Melhora a performance – Arquivos inalterados continuam sendo carregados do cache.
+				✅ Garante que mudanças no CSS/JS sejam aplicadas sem precisar forçar um "Ctrl + F5" no navegador.
+
+				Conclusão: É boa prática sempre usar asp-append-version="true" para arquivos CSS e JS, especialmente quando você faz atualizações frequentes no sistema.
+			</p>
+			<p>
+				Benefícios
+				✅ Evita problemas de cache – O navegador baixa o novo arquivo quando há alterações.
+				✅ Melhora a performance – Arquivos inalterados continuam sendo carregados do cache.
+				✅ Garante que mudanças no CSS/JS sejam aplicadas sem precisar forçar um "Ctrl + F5" no navegador.
+
+				Conclusão: É boa prática sempre usar asp-append-version="true" para arquivos CSS e JS, especialmente quando você faz atualizações frequentes no sistema.
+			</p>
+			<p>
+				Benefícios
+				✅ Evita problemas de cache – O navegador baixa o novo arquivo quando há alterações.
+				✅ Melhora a performance – Arquivos inalterados continuam sendo carregados do cache.
+				✅ Garante que mudanças no CSS/JS sejam aplicadas sem precisar forçar um "Ctrl + F5" no navegador.
+
+				Conclusão: É boa prática sempre usar asp-append-version="true" para arquivos CSS e JS, especialmente quando você faz atualizações frequentes no sistema.
+			</p>
+			<p>
+				Benefícios
+				✅ Evita problemas de cache – O navegador baixa o novo arquivo quando há alterações.
+				✅ Melhora a performance – Arquivos inalterados continuam sendo carregados do cache.
+				✅ Garante que mudanças no CSS/JS sejam aplicadas sem precisar forçar um "Ctrl + F5" no navegador.
+
+				Conclusão: É boa prática sempre usar asp-append-version="true" para arquivos CSS e JS, especialmente quando você faz atualizações frequentes no sistema.
+			</p>
+		</div>
+
+		<hr />
+
+		<h4>Vídeo do carro</h4>
+		
+		<iframe width="100%" height="500" src="@Model.VideoLink" frameborder="0" allowfullscreen></iframe>
+	</div>
+</div>

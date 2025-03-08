@@ -1,51 +1,124 @@
 ﻿@model ReflectionIT.Mvc.Paging.PagingList<CarQuery.Models.Car>
 
 
-@section Styles{
-    <style>
-        .car-card {
-            border: 1px solid;
-            border-radius: 10px;
-            background-color: rgb(247, 247, 247);
-        }
+@section Styles {
+	<style>
+		.car-card {
+			border: 1px solid;
+			border-radius: 10px;
+			background-color: rgb(247, 247, 247);
+		}
 
-        .car-card p {
-            font: 20px;
-        }
-    </style>
+		.car-card p {
+			font: 20px;
+		}
+
+		.modal-overlay {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			justify-content: center;
+			align-items: center;
+		}
+
+		.modal-content {
+			background: black;
+			color: white;
+			padding: 20px;
+			border-radius: 10px;
+			text-align: center;
+			width: 320px;
+			box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+		}
+
+		.modal-buttons {
+			margin-top: 15px;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.btn {
+			padding: 8px 15px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+
+		.btn-danger {
+			background-color: #dc3545;
+			color: white;
+		}
+
+		.btn-secondary {
+			background-color: #6c757d;
+			color: white;
+		}
+	</style>
 }
 <div class="container">
 
-    <form method="get" class="form-inline">
-        <input name="filter" class="form-control" placeholder="filtro"
-               value="@Model.RouteValue["Filter"]" />
-        <button type="submit" class="btn btn-info">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Procurar
-        </button>
-    </form>
+	<form method="get" class="form-inline">
+		<input name="filter" class="form-control" placeholder="filtro"
+			   value="@Model.RouteValue["Filter"]" />
+		<button type="submit" class="btn btn-info">
+			<span class="glyphicon glyphicon-search" aria-hidden="true"></span> Procurar
+		</button>
+	</form>
 
-    <h3>Carros</h3>
-    <hr />
+	<h3>Carros</h3>
+	<hr />
 
-    @foreach(var car in Model)
-    {
-        <div class="row car-card mt-3">
-            <div class="d-flex align-items-center">
-                <div class="col-4 col-lg-2 my-2">
-                    <img class="img-fluid" src="@car.Images[0].ImgPath">
-                </div>
-                <div class="col-4 ms-lg-5 ms-3">
-                    <p>@car.Brand @car.Model</p>
-                    <div class="d-inline">
-                        <a href="">Detalhes</a>
-                        ||
-                        <a asp-controller="AdminCar" asp-action="Edit" asp-route-id="@car.CarId">Editar</a>
-                        ||
-                        <a href="">Deletar</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-    
+	@foreach (var car in Model)
+	{
+		<div class="row car-card mt-3">
+			<div class="d-flex align-items-center">
+				<div class="col-4 col-lg-2 my-2">
+					<img class="img-fluid" src="@car.Images[0].ImgPath">
+				</div>
+				<div class="col-4 ms-lg-5 ms-3">
+					<p>@car.Brand @car.Model</p>
+					<div class="d-inline">
+						<a asp-area="" asp-controller="Car" asp-action="CarDetailsPage" asp-route-id="@car.CarId">Detalhes</a>
+						||
+						<a asp-controller="AdminCar" asp-action="Edit" asp-route-id="@car.CarId">Editar</a>
+						||
+						<a href="#" class="text-danger" onclick="openConfirmBox('@car.CarId')">Deletar</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+
+	<div id="customConfirmBox" class="modal-overlay">
+		<div class="modal-content">
+			<form asp-controller="AdminCar" asp-action="Remove" method="post">
+				<h2>Confirmar Exclusão</h2>
+				<p>Tem certeza que deseja deletar este item? Essa ação não pode ser desfeita.</p>
+				<input type="hidden" name="id" id="deleteId" />
+				<div class="modal-buttons">
+					<button type="button" onclick="closeConfirmBox()" class="btn btn-secondary">Cancelar</button>
+					<button type="submit" class="btn btn-danger">Sim, Deletar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		let carIdToDelete = null;
+
+		function openConfirmBox(carId) {
+			carIdToDelete = carId;
+			document.getElementById("deleteId").value = carId;
+			document.getElementById("customConfirmBox").style.display = "flex";
+		}
+
+		function closeConfirmBox() {
+			document.getElementById("customConfirmBox").style.display = "none";
+		}
+	</script>
+
 </div>

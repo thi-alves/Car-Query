@@ -1,0 +1,391 @@
+﻿@model Carousel;
+
+@section Styles {
+	<style>
+		.model-overlay {
+			display: none;
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			max-height: 70vh;
+			margin: auto;
+			overflow-y: auto;
+			color: #efefef;
+		}
+
+		.slide-form {
+			width: 100%;
+			margin: auto;
+			border-radius: 10px;
+			background-color: black;
+			padding: 30px 20px;
+		}
+
+		.search-box {
+			width: 25vw;
+			max-height: 200px;
+			display: inline-block;
+			overflow-y: auto;
+		}
+
+		.search-input {
+			margin: 0;
+			width: 100%;
+			border-radius: 0;
+		}
+
+		.suggestions {
+		}
+
+		.suggestion {
+			border: 1px solid #a8a6a6;
+			border-top: none;
+			padding: 2px;
+			color: #f1f6f6 ;
+			margin: 0;
+		}
+
+		.suggestion:hover {
+			background-color: #b0b0b0;
+		}
+
+		.search-btn{
+			margin-left: 20px;
+			height: 5vh;
+			min-height: 25px;	
+		}
+
+		.images-area{
+			display: flex;
+			width: 100%;
+			margin: 20px auto;
+			gap: 10px;
+			flex-wrap: wrap;
+			align-content: center;
+		}
+
+		.images-area img{
+			height: 20vh;
+			width: auto;
+			max-width: 100%;
+			object-fit: contain;
+		}
+
+		.slides-area{
+			display: flex;
+			flex-wrap: wrap;
+		}
+
+		.slide{
+			border: 1px solid;
+			border-radius: 8px;
+			margin: 10px;
+			display: flex;
+			background-color: black;
+			height: 20vh;
+			padding: 10px;
+		}
+
+		.slide img {
+			border-radius: 8px;
+			height: 100%;
+			margin-right: 10px;
+		}
+
+		#slidesDataInput{
+			display: none;
+		}
+	</style>
+}
+
+<div class="container">
+	<br />
+	<h1>Criar Carousel</h1>
+	<br />
+	<form class="form-group" asp-controller="AdminCarousel" asp-action="Create" method="post">
+		<div class="row align-items-center justify-items-center">
+			<div class="col-5">
+				<label asp-for="Title">Título</label>
+				<input class="form-control" asp-for="Title" id="carouselTitle" />
+				<span class="text-danger" asp-validation-for="Title"></span>
+			</div>
+			<div class="col-4">
+				<label asp-for="Position">Posição</label>
+				<br />
+				<select id="carouselPosition" class="form-select" asp-for="Position">
+					@{
+						if(TempData["TotalCarousels"] != null){
+							int positions = (int)TempData["TotalCarousels"];
+							positions++;
+
+							for(int i = 1; i <= positions; i++){
+								<option value="@i">@i</option>
+							}
+						}
+					}
+				</select>
+			</div>
+			<div class="col-3">
+				<input class="form-check-input" id="carouselIsVisible" type="checkbox" asp-for="IsVisible" />
+				<label asp-for="IsVisible">É visível</label>
+			</div>
+
+		</div>
+
+		<br />
+
+		<a class="btn btn-outline-primary" onclick="openSlideForm()">Adicionar slides</a>
+		<br />
+		<br />
+
+		<h4>Slides</h4>
+		<div class="row">
+			<div id="slidesArea" class="slides-area">
+				<textarea id="slidesDataInput" name="jsonSlides"></textarea>
+			</div>
+		</div>
+		<br />
+
+		<button id="createCarouselButton" type="submit" class="btn btn-success" disabled>Criar</button>
+	</form>
+
+	<div class="col-11 col-lg-8 model-overlay" id="modelOverlay">
+		<div id="slideForm" class="slide-form">
+			<h4>Adicionar slide</h4>
+
+			<form class="form-group">
+				<p>Informe o modelo do carro</p>
+				<div class="row">
+					<div class="d-flex">
+						<div class="col-4 search-box ">
+							<input id="carModel" name="carModel" class="form-control search-input" />
+							<div id="suggestions" class="suggestions">
+
+							</div>
+						</div>
+
+						<button type="button" class="search-btn" onclick="search()">Search</button>
+					</div>
+				</div>		
+				<br />
+	
+				<div id="imagesBox" class="row">
+					<div id="imagesArea" class="images-area ">
+						
+					</div>
+				</div>
+				
+				<button type="button" class="btn btn-primary" onclick="closeSlideForm()">Voltar</button>
+				<button type="button" class="btn btn-success" onclick="addSlide()">Adicionar</button>
+
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	let slidesCounter = 0;
+	let slidesData = [];
+	
+	let carsData;
+	let selectedCar;
+	let selectedImage;
+
+	var carouselTitle = document.getElementById("carouselTitle");
+	var slidesDataInput = document.getElementById("slidesDataInput");
+	var carModelInput = document.getElementById("carModel");
+	var suggestionsArea = document.getElementById("suggestions");
+	var createCarouselButton = document.getElementById("createCarouselButton");
+
+	function checkForm(){
+		console.log("CheckForm foi chamado!!!!");
+		if(carouselTitle.value && slidesData.length > 0){
+			console.log("Dados completos");
+			createCarouselButton.disabled = false;
+		}
+		else{
+			console.log("Dados incompletos");
+			createCarouselButton.disabled = true;
+		}
+	}
+
+	document.addEventListener("DOMContentLoaded", function(){
+		carouselTitle.addEventListener("input", checkForm);
+
+		checkForm();
+	});
+
+	function openSlideForm(){
+		document.getElementById("modelOverlay").style.display = "flex";
+	}
+
+	function closeSlideForm(){
+		document.getElementById("modelOverlay").style.display = "none";
+	}
+
+	function search(){
+		var model = carModelInput.value;
+
+		if(model.trim() !== ""){
+			fetch(`/Admin/AdminCar/SearchByModel?model=${encodeURIComponent(model)}`)
+				.then(response => {
+					console.log("Status: " + response.status);
+
+					if(!response.ok){
+						throw new Error("Erro");
+					}
+					
+					return response.json();
+				})
+				.then(data => {
+					carsData = data;
+
+					data.forEach(car =>{
+					console.log("modelo: " + car.model);
+					});
+
+					showSuggestions();
+				})
+				.catch(error => {
+					console.error("Erro na requisição: " + error);
+				});	
+		}
+	}
+
+	function showSuggestions(){	
+		suggestionsArea.innerHTML = '';
+
+		carsData.forEach(model =>{
+			var newSuggestion = document.createElement("p");
+			newSuggestion.id = model.carId;
+			newSuggestion.textContent = model.model;
+
+			newSuggestion.addEventListener("click", function(){
+				selectModel(this.id, this.textContent);
+			});
+
+			newSuggestion.className = "suggestion";
+
+			suggestionsArea.appendChild(newSuggestion);
+		})	
+	}
+
+	function selectModel(id, text){
+		selectedCar = carsData.find(car => car.carId == id);
+
+		carModelInput.value = text;
+
+		showModelImages();
+	}
+
+	function showModelImages(){
+		var imagesBox = document.getElementById("imagesBox");
+		imagesBox.innerHTML = '';
+
+		var title = document.createElement("h5");
+		title.textContent = "Selecione uma imagem";
+
+		imagesBox.appendChild(title);
+
+		//Criando a div imagesArea onde será exibido as imagens
+		var imagesArea = document.createElement("div");
+		imagesArea.className = "images-area";
+		imagesArea.id = "imagesArea";
+
+		imagesBox.appendChild(imagesArea);
+
+		//Configurando e imprimindo as imagens na imagesArea
+		selectedCar.images.forEach(image => {
+			var img = document.createElement("img");
+			img.id = image.imageId;
+			img.src = image.imgPath;
+			img.width = 100;
+			img.addEventListener("click", function(){
+				selectedImage = image;
+			})
+
+			imagesArea.appendChild(img);
+		});
+	}
+
+	function addSlide(){
+
+		if(selectedCar?.carId && selectedImage?.imageId){
+			var slidesArea = document.getElementById("slidesArea");
+			
+			var slide = document.createElement("div");
+			slide.className = "slide";
+
+			var slideId = "slide-" + slidesCounter;
+			slide.id = slideId;
+
+			var img = document.createElement("img");
+			img.src = selectedImage.imgPath;
+
+			var removeBtn = document.createElement("button");
+			removeBtn.type = "button";
+			removeBtn.textContent = "Remover";
+			removeBtn.className = "btn btn-danger";
+			removeBtn.addEventListener("click", function(){
+				removeSlide(slide.id);
+			})
+			
+			slide.appendChild(img);
+			slide.appendChild(removeBtn);
+
+			slidesArea.appendChild(slide);
+		
+			slidesCounter++;
+
+			var newSlide = {CarId: selectedCar.carId, ImageId: selectedImage.imageId};
+			slidesData.push(newSlide);
+
+			slidesDataInput.value = JSON.stringify(slidesData);
+
+			carModelInput.value = "";
+			document.getElementById("imagesBox").innerHTML = "";
+
+			checkForm();
+			closeSlideForm();
+		}	
+	}
+
+	function removeSlide(slideId){
+		let slideElement = document.getElementById(slideId);
+
+		if(slideElement){
+			let slideIndex = Number(slideId.substring(6));
+			slidesData.splice(slideIndex, 1);
+			//Removendo o slide da tela
+			slideElement.remove();
+
+			if(slidesData.length === 0){
+				slidesCounter = 0;
+				slidesDataInput.value = "";
+			}
+			else{
+
+				let index = Number(slideIndex) + 1;
+				let newSlideIndex = slideIndex;
+
+				//Atualizando o id dos slides após a remoção de um slide
+				for(index; index < slidesCounter; index++){
+					var nextSlideId = "slide-" + index;
+
+					var slide = document.getElementById(nextSlideId);
+					slide.id = "slide-" + newSlideIndex;
+
+					newSlideIndex++;
+				}
+
+				slidesCounter = slidesCounter - 1;
+				slidesDataInput.value = JSON.stringify(slidesData);
+			}
+			checkForm();
+		}
+		else{
+			console.log("O slideId não foi identificado");
+		}	
+	}
+</script>

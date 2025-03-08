@@ -6,8 +6,10 @@ namespace CarQuery.Repositories.Interface
     {
         Car GetCarById(int carId);
 
-        void UpdateCar(Car car);
+        Task UpdateCar(Car car);
 
-        void DeleteCar(int carId);
+        Task<bool> DeleteCar(int carId);
+
+        Task<IEnumerable<Car>> SearchByModel(string model);
     }
 }
