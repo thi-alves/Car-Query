@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarQuery.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarQuery.Areas.Admin.Controllers
 {
@@ -9,6 +10,11 @@ namespace CarQuery.Areas.Admin.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public IActionResult OperationResultView(OperationResult operationResult)
+        {
+            return View(operationResult);
         }
     }
 }

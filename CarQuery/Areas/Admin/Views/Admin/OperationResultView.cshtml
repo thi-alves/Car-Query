@@ -1,0 +1,40 @@
+﻿@model OperationResult
+
+@section Styles{
+	<style>
+		.box {
+			display: flex;
+			height: 100vh;
+			width: 100%;
+			padding: 10vh;	
+		}
+
+		.operation-status-box{
+			background-color: #e8e9f6;
+			border-radius: 10px;
+			padding: 4vw;
+			min-width: 40vw;
+			margin: auto;
+		}
+	</style>	
+}
+
+<div class="container">		
+	<div class="box col-10">
+		<div class="operation-status-box">
+			@{
+				if (Model.Succeeded)
+				{
+					<h1 class="display-4">Operação bem-sucedida!</h1>
+				}
+				else{
+					<h1 class="display-4 text-danger">Ocorreu um erro!</h1>
+				}
+			}
+			<br />
+			<h4>@Model.Message</h4>
+			<br />
+			<a asp-area="Admin" asp-controller="Admin" asp-action="Index" class="btn btn-primary d-block">Prosseguir</a>
+		</div>
+	</div>	
+</div>
