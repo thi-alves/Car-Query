@@ -17,10 +17,10 @@ namespace CarQuery.Controllers
             return View();
         }
         
-        public IActionResult CarDetailsPage(int id)
+        public async Task<IActionResult> CarDetailsPage(int id)
         {
             Console.WriteLine("Imprimindo o ID: " + id);
-            Car car = _carRepository.GetCarById(id);
+            Car car = await _carRepository.GetCarById(id);
             if(car == null)
             {
                 return NotFound();

@@ -4,9 +4,11 @@ namespace CarQuery.Repositories.Interface
 {
     public interface ICarRepository
     {
-        Car GetCarById(int carId);
+        Task<bool> AddCar(Car car);
 
-        Task UpdateCar(Car car);
+        Task<Car> GetCarById(int carId);
+
+        Task<bool> UpdateCar(Car car);
 
         Task<bool> DeleteCar(int carId);
 

@@ -1,4 +1,5 @@
-﻿using CarQuery.Data;
+﻿using System.Linq.Expressions;
+using CarQuery.Data;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -16,58 +17,61 @@ namespace CarQuery.Repositories
             _context = context;
         }
 
-        public Car GetCarById(int carId)
+        public async Task<bool> AddCar(Car car)
         {
-            return _context.Car
-                .Include(c => c.Images)
-                .FirstOrDefault(c => c.CarId == carId);
+            await _context.Car.AddAsync(car);
+            int rowsAffected = await _context.SaveChangesAsync();
+            return rowsAffected > 0;
         }
 
-        public async Task UpdateCar(Car car)
+        public async Task<Car> GetCarById(int carId)
         {
+            Car car = await _context.Car
+                .Include(c => c.Images)
+                .FirstOrDefaultAsync(c => c.CarId == carId);
+
+            return car;
+        }
+
+        public async Task<bool> UpdateCar(Car car)
+        {
+            if (car == null)
+            {
+                return false;
+            }
             _context.Update(car);
-            await _context.SaveChangesAsync();
+            int rowsAffected = await _context.SaveChangesAsync();
+            return rowsAffected > 0;
         }
 
         public async Task<bool> DeleteCar(int carId)
         {
-            Car car = _context.Car
+            Car car = await _context.Car
                 .Include(c => c.Images)
-                .FirstOrDefault(c => c.CarId == carId);
+                .FirstOrDefaultAsync(c => c.CarId == carId);
 
             if (car != null)
             {
                 _context.Car.Remove(car);
 
-                await _context.SaveChangesAsync();
-                return true;
+                int rowsAffected = await _context.SaveChangesAsync();
+                return rowsAffected > 0;
             }
             return false;
         }
 
         public async Task<IEnumerable<Car>> SearchByModel(string model)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(model))
-                {
-                    return Enumerable.Empty<Car>();
-                }
 
+            if (!string.IsNullOrEmpty(model))
+            {
                 var car = await _context.Car.Include(c => c.Images)
-                    .Where(c => c.Model.StartsWith(model))
-                    .ToListAsync();
+                .Where(c => c.Model.StartsWith(model))
+                .ToListAsync();
 
                 if (car != null) return car;
-
-                throw new Exception("O carro não foi encontrado");
-
             }
-            catch (Exception)
-            {
-                Console.WriteLine("Erro");
-                return Enumerable.Empty<Car>();
-            }
+            return Enumerable.Empty<Car>();
         }
     }
 }

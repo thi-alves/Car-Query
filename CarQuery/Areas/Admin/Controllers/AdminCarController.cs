@@ -10,6 +10,8 @@ using System.Numerics;
 using System.IO;
 using CarQuery.Repositories;
 using CarQuery.Repositories.Interface;
+using System.Data.Common;
+using System.Data;
 
 namespace CarQuery.Areas.Admin.Controllers
 {
@@ -30,36 +32,38 @@ namespace CarQuery.Areas.Admin.Controllers
             _imageRepository = imageRepository;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        [HttpGet]
         public async Task<IActionResult> ListCars(string filter, int pageIndex = 1, string sort = "Model")
         {
-            var result = _context.Car.Include(i => i.Images).AsQueryable();
-
-            if (!string.IsNullOrEmpty(filter))
+            try
             {
-                result = result.Where(m => m.Model.Contains(filter));
+                if (pageIndex < 1)
+                {
+                    pageIndex = 1;
+                }
+
+                var result = _context.Car.Include(i => i.Images).AsQueryable();
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    result = result.Where(m => m.Model.Contains(filter));
+                }
+
+                var model = await PagingList.CreateAsync(result, 10, pageIndex, sort, "Model");
+                model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+
+                return View(model);
             }
-
-            var model = await PagingList.CreateAsync(result, 10, pageIndex, sort, "Model");
-            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
-
-            return View(model);
-        }
-
-        [HttpGet]
-        public IActionResult Success()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public IActionResult ErrorPage()
-        {
-            return View();
+            catch (Exception)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao listar carros. Por favor tente novamente mais tarde." });
+            }
         }
 
         [HttpGet]
@@ -74,42 +78,34 @@ namespace CarQuery.Areas.Admin.Controllers
             "EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
             "Images, VideoLink")] CarViewModel carViewModel)
         {
-
-            if (ModelState.IsValid)
+            try
             {
-
-                Car car = new Car
+                if (ModelState.IsValid)
                 {
-                    Brand = carViewModel.Brand,
-                    Model = carViewModel.Model,
-                    Year = carViewModel.Year,
-                    Power = carViewModel.Power,
-                    Drivetrain = carViewModel.Drivetrain,
-                    Engine = carViewModel.Engine,
-                    EnginePosition = carViewModel.EnginePosition,
-                    TransmissionType = carViewModel.TransmissionType,
-                    TopSpeed = carViewModel.TopSpeed,
-                    Doors = carViewModel.Doors,
-                    Price = carViewModel.Price,
-                    ShortDescription = carViewModel.ShortDescription,
-                    FullDescription = carViewModel.FullDescription,
-                    VideoLink = carViewModel.VideoLink,
+                    Car car = new Car(carViewModel);
 
-                    Images = new List<Image>()
-                };
+                    Console.WriteLine("Marca do carro: " + car.Brand);
 
-                Console.WriteLine("Marca do carro: " + car.Brand);
+                    await UploadFiles(carViewModel.Images, car);
 
-                await UploadFiles(carViewModel.Images, car);
+                    bool result = await _carRepository.AddCar(car);
 
-                await _context.Car.AddAsync(car);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction("Success");
+                    return RedirectToAction("OperationResultView", "Admin", new
+                    {
+                        succeeded = result,
+                        message = result ? "Carro adicionado com sucesso!" : "Erro ao adicionar carro"
+                    });
+                }
+                return View(carViewModel);
             }
-            return View(carViewModel);
-
-
+            catch (DbException)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao salvar o carro no banco de dados. Por favor tente novamente mais tarde." });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao adicionar carro. Por favor tente novamente mais tarde." });
+            }
         }
 
         public async Task UploadFiles(List<IFormFile> files, Car car)
@@ -140,17 +136,26 @@ namespace CarQuery.Areas.Admin.Controllers
                     {
                         files[i].CopyTo(stream);
                     }
-
                 }
             }
-
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int id)
         {
-            var car = _context.Car.Include(c => c.Images).FirstOrDefault(c => c.CarId == id);
-            return View(car);
+            try
+            {
+                var car = _context.Car.Include(c => c.Images).FirstOrDefault(c => c.CarId == id);
+
+                if (car != null) return View(car);
+
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Não foi possível encontrar o carro selecionado. Ele pode ter sido deletado" });
+
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao abrir a página de edição" });
+            }
         }
 
         [HttpPost]
@@ -198,7 +203,6 @@ namespace CarQuery.Areas.Admin.Controllers
 
                                 if (img != null)
                                 {
-
                                     Console.WriteLine("imgPath: " + img.ImgPath);
                                     string normalizedPath = (img.ImgPath).Replace("/", "\\");
                                     string imgPath = ServerPath + normalizedPath;
@@ -221,87 +225,111 @@ namespace CarQuery.Areas.Admin.Controllers
                                         Console.WriteLine("File doesn't exists!!");
 
                                     }
-                                } 
+                                }
                             }
                         }
                         else
                         {
-                            TempData["ErrorMessage"] = "Não é possível deletar todas as imagens. O carro deve possuir pelo menos uma imagem";
-                            return RedirectToAction("ErrorPage");
+                            return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Não é possível deletar todas as imagens. O carro deve possuir pelo menos uma imagem" });
                         }
 
                         _context.Entry(editedCar).Reload();
                     }
 
-                    UploadFiles(newImages, editedCar);
+                    await UploadFiles(newImages, editedCar);
 
-                    _context.Update(editedCar);
-                    await _context.SaveChangesAsync();
+                    bool result = await _carRepository.UpdateCar(editedCar);
 
-                    return RedirectToAction("Success");
+                    return RedirectToAction("OperationResultView", "Admin", new
+                    {
+                        succeeded = result,
+                        message = result ? "O carro foi atualizado com sucesso" : "Não foi possível atualizar as informações do carro. Por favor tente novamente"
+                    });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CarExists(id))
                     {
-                        return NotFound();
+                        return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Não existe um carro com o id especificado" });
                     }
                     else
                     {
-                        throw;
+                        return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar atualizar as informações do carro" });
                     }
+                }
+                catch (DbException)
+                {
+                    return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar atualizar as informações do carro" });
                 }
                 catch (FormatException)
                 {
-                    TempData["ErrorMessage"] = "Erro. Não é permitido caracteres e/ou espaços na entrada para deletar imagens";
-                    return RedirectToAction("ErrorPage");
+                    return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro. Não é permitido caracteres e/ou espaços na entrada para deletar imagens" });
                 }
                 catch (Exception)
                 {
-                    TempData["ErrorMessage"] = "Algum erro ocorreu";
-                    return RedirectToAction("ErrorPage");
+                    return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar atualizar as informações do carro" });
                 }
-
             }
             Console.WriteLine("Model state is invalid!!");
 
             return View(editedCar);
         }
 
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Remove(int id)
         {
-            Console.WriteLine("ID RECEBIDO: " + id);
-            bool result = await _carRepository.DeleteCar(id);
+            try
+            {
+                Console.WriteLine("ID RECEBIDO: " + id);
+                bool result = await _carRepository.DeleteCar(id);
 
-            if (result == true) return RedirectToAction("Success");
-            return RedirectToAction("ErrorPage");
-
+                return RedirectToAction("OperationResultView", "Admin", new
+                {
+                    succeeded = result,
+                    message = result ? "O carro foi removido com sucesso" : "Não foi possível remover o carro. Por favor tente novamente."
+                });
+            }
+            catch (DBConcurrencyException)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar remover o carro. Por favor tente novamente mais tarde." });
+            }
+            catch (DbException)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar remover o carro. Por favor tente novamente mais tarde." });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar remover o carro. Por favor tente novamente mais tarde." });
+            }
         }
+
         [HttpGet]
         public async Task<IActionResult> SearchByModel([FromQuery] string model)
         {
-            Console.WriteLine("Model recebida: " + model);
-            if (!string.IsNullOrEmpty(model))
+            try
             {
-                IEnumerable<Car> cars = await _carRepository.SearchByModel(model);
-                foreach(Car car in cars)
+                Console.WriteLine("Model recebida: " + model);
+                if (!string.IsNullOrEmpty(model))
                 {
-                    Console.WriteLine(car.Model);
+                    IEnumerable<Car> cars = await _carRepository.SearchByModel(model);
+
+                    return Ok(cars);
                 }
-                return Ok(cars);
+                Console.WriteLine("Lista vazia");
+                IEnumerable<Car> emptyList = Enumerable.Empty<Car>();
+                return Ok(emptyList);
             }
-            Console.WriteLine("Lista vazia");
-            IEnumerable<Car> emptyList = Enumerable.Empty<Car>();
-            return Ok(emptyList);
+            catch (Exception)
+            {
+                IEnumerable<Car> emptyList = Enumerable.Empty<Car>();
+                return Ok(emptyList);
+            }
         }
+
         public bool CarExists(int id)
         {
             return _context.Car.Any(c => c.CarId == id);
-
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CarQuery.ViewModels;
 
 namespace CarQuery.Models
 {
@@ -14,17 +15,17 @@ namespace CarQuery.Models
         [Display(Name = "Brand")]
         public string Brand { get; set; }
 
-        [Required(ErrorMessage ="informe o modelo do veículo")]
+        [Required(ErrorMessage = "informe o modelo do veículo")]
         [MinLength(1, ErrorMessage = "O nome do modelo deve ter no mínimo {1} caracteres")]
         [MaxLength(100, ErrorMessage = "O nome do modelo deve ter no máximo {1} caracteres")]
         [Display(Name = "Model")]
         public string Model { get; set; }
-        
+
         [Required(ErrorMessage = "Informe o ano do veículo")]
         [MaxLength(9, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
         [Display(Name = "Year")]
         public string Year { get; set; }
-        
+
         [Required(ErrorMessage = "Informe a potência do veículo")]
         [Display(Name = "Power")]
         public short Power { get; set; }
@@ -42,7 +43,7 @@ namespace CarQuery.Models
         [Required(ErrorMessage = "Informme a posição do motor")]
         [MaxLength(8, ErrorMessage = "A posição do motor deve ter no máximo {1} caracteres")]
         [Display(Name = "Engine position")]
-        public string EnginePosition {  get; set; }
+        public string EnginePosition { get; set; }
 
         [Required(ErrorMessage = "Informe o tipo de transmissão")]
         [MaxLength(30, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
@@ -82,12 +83,12 @@ namespace CarQuery.Models
         {
 
         }
-        public Car(string brand, string model, string year, short power, string drivetrain, string engine, 
-            string enginePosition, string transmissionType, short topspeed, short doors, double price, 
+        public Car(string brand, string model, string year, short power, string drivetrain, string engine,
+            string enginePosition, string transmissionType, short topspeed, short doors, double price,
             string shortDescription, string fullDescription, List<Image> images, string videoLink
             )
         {
-            Brand  = brand;
+            Brand = brand;
             Model = model;
             Year = year;
             Power = power;
@@ -103,7 +104,25 @@ namespace CarQuery.Models
             Images = images;
             VideoLink = videoLink;
         }
-        
 
+        public Car(CarViewModel carViewModel)
+        {
+            Brand = carViewModel.Brand;
+            Model = carViewModel.Model;
+            Year = carViewModel.Year;
+            Power = carViewModel.Power;
+            Drivetrain = carViewModel.Drivetrain;
+            Engine = carViewModel.Engine;
+            EnginePosition = carViewModel.EnginePosition;
+            TransmissionType = carViewModel.TransmissionType;
+            TopSpeed = carViewModel.TopSpeed;
+            Doors = carViewModel.Doors;
+            Price = carViewModel.Price;
+            ShortDescription = carViewModel.ShortDescription;
+            FullDescription = carViewModel.FullDescription;
+            VideoLink = carViewModel.VideoLink;
+
+            Images = new List<Image>();
+        }
     }
 }

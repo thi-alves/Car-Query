@@ -12,8 +12,14 @@ namespace CarQuery.Areas.Admin.Controllers
             return View();
         }
 
-        public IActionResult OperationResultView(OperationResult operationResult)
+        public IActionResult OperationResultView(bool succeeded, string message)
         {
+            OperationResult operationResult = new OperationResult
+            {
+                Succeeded = succeeded,
+                Message = message
+            };
+
             return View(operationResult);
         }
     }

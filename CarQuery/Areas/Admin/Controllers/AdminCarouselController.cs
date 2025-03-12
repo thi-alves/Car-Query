@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Data.Common;
+using System.Text.Json;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +41,7 @@ namespace CarQuery.Areas.Admin.Controllers
                     {
                         foreach (var slide in slides)
                         {
-                            slide.Car = _carRepository.GetCarById(slide.CarId);
+                            slide.Car = await _carRepository.GetCarById(slide.CarId);
                             slide.Image = _imageRepository.GetImageById(slide.ImageId);
                             slide.Carousel = carousel;
 
@@ -58,11 +59,14 @@ namespace CarQuery.Areas.Admin.Controllers
                 TempData["TotalCarousels"] = await _carouselRepository.CountCarousel();
                 return View(carousel);
             }
+            catch (DbException)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar criar Carousel. Por favor tente novamente mais tarde." });
+
+            }
             catch (Exception)
             {
-                carousel.CarouselSlides.Clear();
-                TempData["TotalCarousels"] = await _carouselRepository.CountCarousel();
-                return View(carousel);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar criar Carousel. Por favor tente novamente mais tarde." });
             }
         }
     }
