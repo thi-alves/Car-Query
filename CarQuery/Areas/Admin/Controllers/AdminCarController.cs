@@ -23,13 +23,15 @@ namespace CarQuery.Areas.Admin.Controllers
         private readonly AppDbContext _context;
         private readonly ICarRepository _carRepository;
         private readonly IImageRepository _imageRepository;
+        private readonly ILogger <AdminCarController> _logger;
 
-        public AdminCarController(IWebHostEnvironment system, AppDbContext context, ICarRepository carRepository, IImageRepository imageRepository)
+        public AdminCarController(IWebHostEnvironment system, AppDbContext context, ICarRepository carRepository, IImageRepository imageRepository, ILogger <AdminCarController> logger)
         {
             ServerPath = system.WebRootPath;
             _context = context;
             _carRepository = carRepository;
             _imageRepository = imageRepository;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -98,12 +100,14 @@ namespace CarQuery.Areas.Admin.Controllers
                 }
                 return View(carViewModel);
             }
-            catch (DbException)
+            catch (DbException ex)
             {
+                _logger.LogError(ex, "AdminCarController (Add): {ExceptionType} erro ao salvar o carro no banco de dados", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao salvar o carro no banco de dados. Por favor tente novamente mais tarde." });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "AdminCarController (Add): {ExceptionType} erro inesperado ao adicionar carro", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao adicionar carro. Por favor tente novamente mais tarde." });
             }
         }
@@ -246,27 +250,31 @@ namespace CarQuery.Areas.Admin.Controllers
                         message = result ? "O carro foi atualizado com sucesso" : "Não foi possível atualizar as informações do carro. Por favor tente novamente"
                     });
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!CarExists(id))
                     {
+                        _logger.LogError(ex, "AdminCarController (Edit): {ExceptionType} Não existe um carro com o id especificado", ex.GetType().Name);
                         return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Não existe um carro com o id especificado" });
                     }
                     else
                     {
+                        _logger.LogError(ex, "AdminCarController (Edit): {ExceptionType} falha ao atualizar as informações do carro", ex.GetType().Name);
                         return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar atualizar as informações do carro" });
                     }
                 }
-                catch (DbException)
+                catch (DbException ex)
                 {
+                    _logger.LogError(ex, "AdminCarController (Edit): {ExceptionType} falha ao atualizar as informações do carro", ex.GetType().Name);
                     return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar atualizar as informações do carro" });
                 }
                 catch (FormatException)
                 {
                     return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro. Não é permitido caracteres e/ou espaços na entrada para deletar imagens" });
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    _logger.LogError(ex, "AdminCarController (Edit): {ExceptionType} falha ao atualizar as informações do carro", ex.GetType().Name);
                     return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar atualizar as informações do carro" });
                 }
             }
@@ -290,16 +298,19 @@ namespace CarQuery.Areas.Admin.Controllers
                     message = result ? "O carro foi removido com sucesso" : "Não foi possível remover o carro. Por favor tente novamente."
                 });
             }
-            catch (DBConcurrencyException)
+            catch (DBConcurrencyException ex)
             {
+                _logger.LogError(ex, "AdminCarController (Remove): {ExceptionType} erro ao remover o carro", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar remover o carro. Por favor tente novamente mais tarde." });
             }
-            catch (DbException)
+            catch (DbException ex)
             {
+                _logger.LogError(ex, "AdminCarController (Remove): {ExceptionType} erro ao remover o carro", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar remover o carro. Por favor tente novamente mais tarde." });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "AdminCarController (Remove): {ExceptionType} erro inesperado ao remover o carro", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar remover o carro. Por favor tente novamente mais tarde." });
             }
         }
@@ -320,8 +331,9 @@ namespace CarQuery.Areas.Admin.Controllers
                 IEnumerable<Car> emptyList = Enumerable.Empty<Car>();
                 return Ok(emptyList);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "AdminCarController (SearchByModel): {ExceptionType} erro inesperado ao buscar por carros", ex.GetType().Name);
                 IEnumerable<Car> emptyList = Enumerable.Empty<Car>();
                 return Ok(emptyList);
             }

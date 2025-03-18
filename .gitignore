@@ -55,3 +55,6 @@ artifacts/
 
 # Mac files
 .DS_Store
+
+#system's logs
+logs.txt

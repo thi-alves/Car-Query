@@ -12,13 +12,15 @@ namespace CarQuery.Areas.Admin.Controllers
         private readonly ICarouselRepository _carouselRepository;
         private readonly ICarRepository _carRepository;
         private readonly IImageRepository _imageRepository;
+        private readonly ILogger <AdminCarouselController> _logger;
 
         public AdminCarouselController(ICarouselRepository carouselRepository, ICarRepository carRepository, IImageRepository
-            imageRepository)
+            imageRepository, ILogger <AdminCarouselController> logger)
         {
             _carouselRepository = carouselRepository;
             _carRepository = carRepository;
             _imageRepository = imageRepository;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Create()
@@ -59,14 +61,16 @@ namespace CarQuery.Areas.Admin.Controllers
                 TempData["TotalCarousels"] = await _carouselRepository.CountCarousel();
                 return View(carousel);
             }
-            catch (DbException)
+            catch (DbException ex)
             {
-                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar criar Carousel. Por favor tente novamente mais tarde." });
+                _logger.LogError(ex, "AdminCarouselController (Create): {ExceptionType} erro ao adicionar carousel no banco de dados", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao criar Carousel. Por favor tente novamente mais tarde." });
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar criar Carousel. Por favor tente novamente mais tarde." });
+                _logger.LogError(ex, "AdminCarouselController (Create): {ExceptionType} erro inesperado ao criar o carousel", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao criar Carousel. Por favor tente novamente mais tarde." });
             }
         }
     }
