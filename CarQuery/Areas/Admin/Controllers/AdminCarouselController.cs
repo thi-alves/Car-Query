@@ -1,26 +1,59 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using System.Text.Json;
+using CarQuery.Data;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ReflectionIT.Mvc.Paging;
 
 namespace CarQuery.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class AdminCarouselController : Controller
     {
+        private readonly AppDbContext _context;
         private readonly ICarouselRepository _carouselRepository;
         private readonly ICarRepository _carRepository;
         private readonly IImageRepository _imageRepository;
         private readonly ILogger <AdminCarouselController> _logger;
 
-        public AdminCarouselController(ICarouselRepository carouselRepository, ICarRepository carRepository, IImageRepository
+        public AdminCarouselController(AppDbContext context, ICarouselRepository carouselRepository, ICarRepository carRepository, IImageRepository
             imageRepository, ILogger <AdminCarouselController> logger)
         {
+            _context = context;
             _carouselRepository = carouselRepository;
             _carRepository = carRepository;
             _imageRepository = imageRepository;
             _logger = logger;
+        }
+
+        public async Task<IActionResult> ListCarousels(string filter, int pageIndex = 1, string sort = "Position")
+        {
+            try
+            {
+                if(pageIndex < 1)
+                {
+                    pageIndex = 1;
+                }
+
+                var result = _context.Carousel.Include(c => c.CarouselSlides).ThenInclude(cs => cs.Image).AsQueryable();
+
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    result = result.Where(m => m.Title.Contains(filter));
+                }
+
+                var model = await PagingList.CreateAsync(result, 10, pageIndex, sort, "Title");
+                model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+
+                return View(model);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao listar carousels. Por favor tente novamente mais tarde." });
+            }
         }
 
         public async Task<IActionResult> Create()
@@ -52,7 +85,7 @@ namespace CarQuery.Areas.Admin.Controllers
 
                         bool operationSucceeded = await _carouselRepository.CreateCarousel(carousel);
 
-                        if (operationSucceeded) return RedirectToAction("Index", "Admin");
+                        if (operationSucceeded) return RedirectToAction("OperationResultView", "Admin", new { succeeded = true, message = "O carrossel foi criado com sucesso" });
                     }
                 }
                 Console.WriteLine("Model state is invalid");
@@ -63,15 +96,16 @@ namespace CarQuery.Areas.Admin.Controllers
             }
             catch (DbException ex)
             {
-                _logger.LogError(ex, "AdminCarouselController (Create): {ExceptionType} erro ao adicionar carousel no banco de dados", ex.GetType().Name);
-                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao criar Carousel. Por favor tente novamente mais tarde." });
+                _logger.LogError(ex, "AdminCarouselController (Create): {ExceptionType} erro ao adicionar carrossel no banco de dados", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao criar carrossel. Por favor tente novamente mais tarde." });
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "AdminCarouselController (Create): {ExceptionType} erro inesperado ao criar o carousel", ex.GetType().Name);
-                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao criar Carousel. Por favor tente novamente mais tarde." });
+                _logger.LogError(ex, "AdminCarouselController (Create): {ExceptionType} erro inesperado ao criar o carrossel", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao criar carrossel. Por favor tente novamente mais tarde." });
             }
         }
+
     }
 }

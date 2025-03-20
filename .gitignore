@@ -58,3 +58,6 @@ artifacts/
 
 #system's logs
 logs.txt
+
+#server images
+ImgCar/
