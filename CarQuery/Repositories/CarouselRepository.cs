@@ -63,7 +63,7 @@ namespace CarQuery.Repositories
                         return rowsAffected > 0;
                     }
                 }
-                else if((total == 0 || position == total+1) && position != 0)
+                else if ((total == 0 || position == total + 1) && position != 0)
                 {
                     return true;
                 }
@@ -73,6 +73,48 @@ namespace CarQuery.Repositories
             {
                 return false;
             }
+        }
+
+        public async Task<bool> DeleteCarousel(int carouselId)
+        {
+            Carousel carousel = await _context.Carousel
+                .Include(c => c.CarouselSlides)
+                .ThenInclude(cs => cs.Image)
+                .FirstOrDefaultAsync(c => c.CarouselId == carouselId);
+
+            if (carousel != null)
+            {
+                int removedPosition = carousel.Position;
+
+                _context.Carousel.Remove(carousel);
+
+                int rowsAffected = await _context.SaveChangesAsync();
+
+                if (rowsAffected > 0)
+                {
+                    int totalCarousel = await CountCarousel();
+
+                    if (removedPosition < totalCarousel)
+                    {
+                        var carousels = await _context.Carousel.Where(c => c.Position >= removedPosition).ToListAsync();
+
+                        if (carousels != null)
+                        {
+                            foreach (Carousel c in carousels)
+                            {
+                                c.Position = (short)removedPosition;
+                                removedPosition++;
+                            }
+
+                            rowsAffected = await _context.SaveChangesAsync();
+
+                            return rowsAffected > 0;
+                        }
+                    }
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

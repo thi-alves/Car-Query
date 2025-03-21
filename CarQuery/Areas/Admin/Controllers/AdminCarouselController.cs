@@ -107,5 +107,34 @@ namespace CarQuery.Areas.Admin.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                bool result = await _carouselRepository.DeleteCarousel(id);
+
+                return RedirectToAction("OperationResultView", "Admin", new
+                {
+                    succeeded = result,
+                    message = result ? "O carrossel foi deletado com sucesso" : "Não foi possível deletar o carrossel. Por favor tente novamente."
+                });
+            }
+            catch (DBConcurrencyException ex)
+            {
+                _logger.LogError(ex, "AdminCarouselController (Delete): {ExceptionType} erro ao deletar carrossel", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao deletar carrossel. Por favor tente novamente mais tarde." });
+            }
+            catch (DbException ex)
+            {
+                _logger.LogError(ex, "AdminCarouselController (Delete): {ExceptionType} erro ao deletar carrossel", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao deletar carrossel. Por favor tente novamente mais tarde." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "AdminCarouselController (Delete): {ExceptionType} erro inesperado ao deletar carrossel", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao deletar carrosel. Por favor tente novamente mais tarde." });
+            }
+        }
     }
 }

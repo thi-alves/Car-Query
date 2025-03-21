@@ -10,5 +10,6 @@ namespace CarQuery.Repositories.Interface
         Task<bool> UpdateCarouselPosition(int position);
 
         Task<bool> CreateCarousel(Carousel carousel);
+        Task<bool> DeleteCarousel(int carouselId);
     }
 }
