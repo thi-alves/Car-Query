@@ -37,33 +37,81 @@ namespace CarQuery.Repositories
                 return false;
             }
         }
+
+        public async Task<Carousel> GetCarouselById(int carouselId)
+        {
+            Carousel carousel = await _context.Carousel
+                .Include(c => c.CarouselSlides)
+                .ThenInclude(cs => cs.Image)
+                .FirstOrDefaultAsync(c => c.CarouselId == carouselId);
+
+            return carousel;
+        }
+       
+        //previousPosition indica a posição atual do Carrossel a ser atualizado. Ou seja, é a posição que deve ser atualizada. 
+        public async Task<bool> UpdateCarousel(Carousel carousel, int previousPosition)
+        {
+            Console.WriteLine("UpdateCarousel");
+            if (carousel == null)
+            {
+                return false;
+            }
+
+            if(previousPosition != carousel.Position)
+            {
+                bool operationResult = await UpdateCarouselPosition(carousel.Position, previousPosition);
+                
+                if (operationResult == false)
+                {
+                    return false;
+                }
+            }
+
+            _context.Carousel.Update(carousel);
+            int rowsAffected = await _context.SaveChangesAsync();
+            return rowsAffected > 0;
+        }
+
         public async Task<int> CountCarousel()
         {
             int total = await _context.Carousel.CountAsync();
             return total;
         }
 
-        public async Task<bool> UpdateCarouselPosition(int position)
+        /*
+         * 1 -No caso de criação de um novo Carrossel, usar apenas o parâmetro newPosition, que indica a posição que esse novo Carrossel deve assumir.
+         * 2 -No caso de edição/atualização de um Carrossel existente, usar os dois parâmetros. Onde newPosition indica a posição que o Carrossel a ser 
+         * atualizado deve assumir, e previousPosition indica a posição que o Carrossel a ser atualizado possui no momento.
+        */
+        public async Task<bool> UpdateCarouselPosition(int newPosition, int previousPosition = 0)
         {
             try
             {
                 int total = await CountCarousel();
 
-                if (position <= total && position != 0)
+                if (newPosition <= total && newPosition != 0)
                 {
-                    Carousel carousel = await _context.Carousel.FirstOrDefaultAsync(c => c.Position == position);
+                    Carousel carousel = await _context.Carousel.FirstOrDefaultAsync(c => c.Position == newPosition);
+
+                    int rowsAffected = 0;
 
                     if (carousel != null)
                     {
+                        if (previousPosition != 0)
+                        {
+                            carousel.Position = (short)previousPosition;
+                            rowsAffected = await _context.SaveChangesAsync();
+
+                            return rowsAffected > 0;
+                        }
                         total++;
                         carousel.Position = (short)total;
-
-                        int rowsAffected = await _context.SaveChangesAsync();
+                        rowsAffected = await _context.SaveChangesAsync();
 
                         return rowsAffected > 0;
                     }
                 }
-                else if ((total == 0 || position == total + 1) && position != 0)
+                else if ((total == 0 || newPosition == total + 1) && newPosition != 0)
                 {
                     return true;
                 }

@@ -4,6 +4,7 @@ using System.Text.Json;
 using CarQuery.Data;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
+using CarQuery.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
@@ -17,10 +18,10 @@ namespace CarQuery.Areas.Admin.Controllers
         private readonly ICarouselRepository _carouselRepository;
         private readonly ICarRepository _carRepository;
         private readonly IImageRepository _imageRepository;
-        private readonly ILogger <AdminCarouselController> _logger;
+        private readonly ILogger<AdminCarouselController> _logger;
 
         public AdminCarouselController(AppDbContext context, ICarouselRepository carouselRepository, ICarRepository carRepository, IImageRepository
-            imageRepository, ILogger <AdminCarouselController> logger)
+            imageRepository, ILogger<AdminCarouselController> logger)
         {
             _context = context;
             _carouselRepository = carouselRepository;
@@ -33,7 +34,7 @@ namespace CarQuery.Areas.Admin.Controllers
         {
             try
             {
-                if(pageIndex < 1)
+                if (pageIndex < 1)
                 {
                     pageIndex = 1;
                 }
@@ -104,6 +105,114 @@ namespace CarQuery.Areas.Admin.Controllers
             {
                 _logger.LogError(ex, "AdminCarouselController (Create): {ExceptionType} erro inesperado ao criar o carrossel", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao criar carrossel. Por favor tente novamente mais tarde." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            try
+            {
+                TempData["TotalCarousels"] = await _carouselRepository.CountCarousel();
+                Carousel carousel = await _carouselRepository.GetCarouselById(id);
+                CarouselViewModel carouselVm = new CarouselViewModel(carousel);
+
+                if (carousel != null)
+                {
+                    return View(carouselVm);
+                }
+                Console.WriteLine("O carrossel é nulo!!");
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Não foi possível encontrar o carrossel selecionado. Ele pode ter sido deletado" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao abrir a página de edição" });
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CarouselViewModel carouselVm)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (id == carouselVm.CarouselId)
+                    {
+                        List<CarouselSlide> carouselSlides = JsonSerializer.Deserialize<List<CarouselSlide>>(carouselVm.CarouselSlidesJson);
+
+                        carouselVm.CarouselSlides.Clear();
+
+                        Carousel carousel = await _carouselRepository.GetCarouselById(id);
+
+                        if (carouselSlides != null)
+                        {
+                            foreach (var slide in carouselSlides)
+                            {
+                                slide.Car = await _carRepository.GetCarById(slide.CarId);
+                                slide.Image = _imageRepository.GetImageById(slide.ImageId);
+                                slide.CarouselId = carousel.CarouselId;
+                                slide.Carousel = carousel;
+
+                                carouselVm.CarouselSlides.Add(slide);
+                            }
+
+                            //Identificando quais slides devem ser excluidos
+                            var slidesIdsToRemove = carousel.CarouselSlides
+                                .Where(cs => !carouselVm.CarouselSlides
+                                .Any(cv => cv.CarId == cs.CarId && cs.ImageId == cv.ImageId))
+                                .ToList();
+
+                            // Excluindo os slides
+                            _context.CarouselSlide.RemoveRange(slidesIdsToRemove);
+
+                            foreach (var slide in carouselVm.CarouselSlides)
+                            {
+                                var existingSlide = carousel.CarouselSlides
+                                    .FirstOrDefault(cs => cs.CarId == slide.CarId && cs.ImageId == slide.ImageId);
+
+                                //se true, significa que é um slide novo, logo cria-se um novo slide
+                                if (existingSlide == null)
+                                {
+                                    CarouselSlide newSlide = new CarouselSlide();
+                                    newSlide.CarId = slide.CarId;
+                                    newSlide.Car = await _carRepository.GetCarById(slide.CarId);
+                                    newSlide.Carousel = carousel;
+                                    newSlide.ImageId = slide.ImageId;
+
+                                    carousel.CarouselSlides.Add(newSlide);
+                                }
+                            }
+                        }
+
+                        int previousCarouselPosition = carousel.Position;
+                        carousel.Title = carouselVm.Title;
+                        carousel.Position = carouselVm.Position;
+                        carousel.IsVisible = carouselVm.IsVisible;
+                        
+                        bool operationSucceeded = await _carouselRepository.UpdateCarousel(carousel, previousCarouselPosition);
+
+                        if (operationSucceeded) return RedirectToAction("OperationResultView", "Admin", new { succeeded = true, message = "O carrossel foi atualizado com sucesso" });
+                    }
+                }
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Não foi possível atualizar o carrossel. Erro inesperado" });
+            }
+            catch (DBConcurrencyException ex)
+            {
+                _logger.LogError(ex, "AdminCarouselController (Edit): {ExceptionType} erro ao atualizar carrossel no banco de dados", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao atualizar carrossel. Por favor tente novamente mais tarde." });
+            }
+            catch (DbException ex)
+            {
+                _logger.LogError(ex, "AdminCarouselController (Edit): {ExceptionType} erro ao atualizar carrossel no banco de dados", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao atualizar carrossel. Por favor tente novamente mais tarde." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "AdminCarouselController (Edit): {ExceptionType} erro inesperado ao atualizar carrossel", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao atualizar carrossel. Por favor tente novamente mais tarde." });
             }
         }
 

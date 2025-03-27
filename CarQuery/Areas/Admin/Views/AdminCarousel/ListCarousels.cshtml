@@ -84,7 +84,7 @@
 					<div class="d-inline">
 						<a asp-area="" asp-controller="" asp-action="" asp-route-id="@carousel.CarouselId">Detalhes</a>
 						||
-						<a asp-controller="" asp-action="" asp-route-id="@carousel.CarouselId">Editar</a>
+						<a asp-controller="AdminCarousel" asp-action="Edit" asp-route-id="@carousel.CarouselId">Editar</a>
 						||
 						<a href="#" class="text-danger" onclick="openConfirmBox('@carousel.CarouselId')">Deletar</a>
 					</div>

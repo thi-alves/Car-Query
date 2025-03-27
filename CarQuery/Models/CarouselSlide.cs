@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CarQuery.Models
 {
@@ -8,6 +9,7 @@ namespace CarQuery.Models
         [Key]
         public int CarouselSlideId { get; set; }
         public int CarouselId { get; set; }
+        [JsonIgnore]
         public Carousel Carousel {get; set;}
         public int CarId { get; set; }
         public Car Car { get; set; }

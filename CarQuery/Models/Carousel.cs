@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
+using CarQuery.ViewModels;
 
 namespace CarQuery.Models
 {
