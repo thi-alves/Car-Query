@@ -2,7 +2,6 @@
 using CarQuery.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using CarQuery.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
 using ReflectionIT.Mvc.Paging;
@@ -12,6 +11,7 @@ using CarQuery.Repositories;
 using CarQuery.Repositories.Interface;
 using System.Data.Common;
 using System.Data;
+using CarQuery.ViewModels.CarViewModels;
 
 namespace CarQuery.Areas.Admin.Controllers
 {

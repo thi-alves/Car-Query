@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CarQuery.ViewModels
+namespace CarQuery.ViewModels.CarViewModels
 {
     public class CarViewModel
     {
@@ -19,7 +19,7 @@ namespace CarQuery.ViewModels
 
         [Required(ErrorMessage = "Informe o ano do veículo")]
         [MaxLength(9, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
-        [Display(Name ="Year")]
+        [Display(Name = "Year")]
         public string Year { get; set; }
 
         [Required(ErrorMessage = "Informe a potência do veículo")]
@@ -51,7 +51,7 @@ namespace CarQuery.ViewModels
         public short TopSpeed { get; set; }
 
         [Required(ErrorMessage = "Informe a quantidade de portas")]
-        [Display(Name= "Doors")]
+        [Display(Name = "Doors")]
         public short Doors { get; set; }
 
         [Required(ErrorMessage = "Informe o preço")]

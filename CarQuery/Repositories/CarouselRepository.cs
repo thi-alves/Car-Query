@@ -1,6 +1,8 @@
 ﻿using CarQuery.Data;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
+using CarQuery.ViewModels.CarouselSlidesViewModel;
+using CarQuery.ViewModels.CarouselViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarQuery.Repositories
@@ -47,7 +49,7 @@ namespace CarQuery.Repositories
 
             return carousel;
         }
-       
+
         //previousPosition indica a posição atual do Carrossel a ser atualizado. Ou seja, é a posição que deve ser atualizada. 
         public async Task<bool> UpdateCarousel(Carousel carousel, int previousPosition)
         {
@@ -57,10 +59,10 @@ namespace CarQuery.Repositories
                 return false;
             }
 
-            if(previousPosition != carousel.Position)
+            if (previousPosition != carousel.Position)
             {
                 bool operationResult = await UpdateCarouselPosition(carousel.Position, previousPosition);
-                
+
                 if (operationResult == false)
                 {
                     return false;
@@ -163,6 +165,42 @@ namespace CarQuery.Repositories
                 }
             }
             return false;
+        }
+
+        public async Task<List<CarouselDisplayViewModel>> GetAllVisibleCarouselsToDisplay()
+        {
+            var carousels = await _context.Carousel
+                .Select(c => new
+                {
+                    c.Title,
+                    c.Position,
+
+                    CarouselSlides = c.CarouselSlides.Select(cs => new
+                    {
+                        CarId = cs.CarId,
+                        CarModel = cs.Car.Model,
+                        CarShortDescription = cs.Car.ShortDescription,
+                        ImagePath = cs.Image.ImgPath
+                    })
+                    .ToList()
+                })
+                .OrderBy(c => c.Position)
+                .ToListAsync();
+
+            List<CarouselDisplayViewModel> carouselsVm = new List<CarouselDisplayViewModel>();
+
+            foreach (var carousel in carousels)
+            {
+                CarouselDisplayViewModel newCarousel = new CarouselDisplayViewModel(carousel.Title);
+                foreach(var carouselSlide in carousel.CarouselSlides)
+                {
+                    CarouselSlideViewModel carouselSlideViewModel = new CarouselSlideViewModel(carouselSlide.CarId, carouselSlide.CarModel, carouselSlide.CarShortDescription, carouselSlide.ImagePath);
+                    newCarousel.CarouselSlides.Add(carouselSlideViewModel);
+                }
+                carouselsVm.Add(newCarousel);
+            }
+
+            return carouselsVm;
         }
     }
 }

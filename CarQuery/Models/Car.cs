@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using CarQuery.ViewModels;
+using CarQuery.ViewModels.CarViewModels;
 
 namespace CarQuery.Models
 {

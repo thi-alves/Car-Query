@@ -1,12 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarQuery.Repositories.Interface;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarQuery.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ICarouselRepository _carouselRepository;
+
+        public HomeController(ICarouselRepository carouselRepository)
         {
-            return View();
+            _carouselRepository = carouselRepository;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var carousels = await _carouselRepository.GetAllVisibleCarouselsToDisplay();
+            return View(carousels);
         }
     }
 }

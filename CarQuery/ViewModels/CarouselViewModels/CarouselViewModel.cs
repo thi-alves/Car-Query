@@ -3,7 +3,7 @@ using System.Text.Json;
 using CarQuery.Models;
 using Microsoft.EntityFrameworkCore.Storage.Json;
 
-namespace CarQuery.ViewModels
+namespace CarQuery.ViewModels.CarouselViewModels
 {
     public class CarouselViewModel
     {

@@ -4,7 +4,7 @@ using System.Text.Json;
 using CarQuery.Data;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
-using CarQuery.ViewModels;
+using CarQuery.ViewModels.CarouselViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;

@@ -1,4 +1,5 @@
 ﻿using CarQuery.Models;
+using CarQuery.ViewModels.CarouselViewModels;
 
 namespace CarQuery.Repositories.Interface
 {
@@ -11,5 +12,6 @@ namespace CarQuery.Repositories.Interface
         Task<Carousel> GetCarouselById(int id);
         Task<bool> UpdateCarousel(Carousel carousel, int previousPosition);
         Task<bool> DeleteCarousel(int carouselId);
+        Task<List<CarouselDisplayViewModel>> GetAllVisibleCarouselsToDisplay();
     }
 }
