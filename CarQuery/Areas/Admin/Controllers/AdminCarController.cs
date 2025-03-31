@@ -12,11 +12,13 @@ using CarQuery.Repositories.Interface;
 using System.Data.Common;
 using System.Data;
 using CarQuery.ViewModels.CarViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarQuery.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
+    [Authorize("Admin")]
     public class AdminCarController : Controller
     {
         private string ServerPath { get; set; }

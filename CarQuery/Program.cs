@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Microsoft.Extensions.DependencyInjection;
+using CarQuery.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,9 +34,11 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<ICarouselRepository, CarouselRepository>();
+builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
+    options.User.AllowedUserNameCharacters += " ";
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
@@ -43,6 +46,27 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 5;
     options.Password.RequiredUniqueChars = 0;
 });
+
+//configurando política de autorização
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy =>
+    {
+        policy.RequireRole("Admin");
+    });
+});
+
+void CreateUsersProfile(WebApplication app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
+        service.SeedRoles();
+        service.SeedUsers();
+    }
+}
 
 var app = builder.Build();
 
@@ -57,11 +81,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+CreateUsersProfile(app);
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -72,5 +99,6 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();

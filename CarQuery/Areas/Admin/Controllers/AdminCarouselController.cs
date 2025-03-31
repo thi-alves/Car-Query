@@ -5,6 +5,7 @@ using CarQuery.Data;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
 using CarQuery.ViewModels.CarouselViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
@@ -12,6 +13,7 @@ using ReflectionIT.Mvc.Paging;
 namespace CarQuery.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize("Admin")]
     public class AdminCarouselController : Controller
     {
         private readonly AppDbContext _context;
