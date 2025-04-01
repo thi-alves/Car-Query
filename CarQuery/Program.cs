@@ -39,6 +39,7 @@ builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.User.AllowedUserNameCharacters += " ";
+    options.User.RequireUniqueEmail = true;
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireNonAlphanumeric = false;
