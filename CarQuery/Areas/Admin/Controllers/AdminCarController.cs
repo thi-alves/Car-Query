@@ -61,6 +61,7 @@ namespace CarQuery.Areas.Admin.Controllers
 
                 var model = await PagingList.CreateAsync(result, 10, pageIndex, sort, "Model");
                 model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+                model.Action = "ListCars";
 
                 return View(model);
             }

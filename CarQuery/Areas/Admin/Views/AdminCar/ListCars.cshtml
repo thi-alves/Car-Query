@@ -57,6 +57,13 @@
 			background-color: #6c757d;
 			color: white;
 		}
+
+		.pagination {
+			display: flex;
+			justify-content: center;
+			gap: 40px;
+			padding: 10px;
+		}
 	</style>
 }
 <div class="container">
@@ -68,6 +75,10 @@
 			<span class="glyphicon glyphicon-search" aria-hidden="true"></span> Procurar
 		</button>
 	</form>
+
+		<div class="d-flex justify-content-end mt-4">
+			<vc:pager paging-list="@Model" class="pagination justify-content-center"></vc:pager>
+		</div>
 
 	<h3>Carros</h3>
 	<hr />
