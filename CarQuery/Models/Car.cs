@@ -21,10 +21,13 @@ namespace CarQuery.Models
         [Display(Name = "Model")]
         public string Model { get; set; }
 
-        [Required(ErrorMessage = "Informe o ano do veículo")]
-        [MaxLength(9, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
-        [Display(Name = "Year")]
-        public string Year { get; set; }
+        [Required(ErrorMessage = "Informe o ano de fabricação do veículo")]
+        [Display(Name = "Manufacturing Year")]
+        public int ManufacturingYear { get; set; }
+
+        [Required(ErrorMessage = "Informe o ano do modelo do veículo")]
+        [Display(Name = "Model Year")]
+        public int ModelYear { get; set; }
 
         [Required(ErrorMessage = "Informe a potência do veículo")]
         [Display(Name = "Power")]
@@ -83,14 +86,15 @@ namespace CarQuery.Models
         {
 
         }
-        public Car(string brand, string model, string year, short power, string drivetrain, string engine,
+        public Car(string brand, string model, int manufacturingYear, int modelYear, short power, string drivetrain, string engine,
             string enginePosition, string transmissionType, short topspeed, short doors, double price,
             string shortDescription, string fullDescription, List<Image> images, string videoLink
             )
         {
             Brand = brand;
             Model = model;
-            Year = year;
+            ManufacturingYear = manufacturingYear;
+            ModelYear = modelYear;
             Power = power;
             Drivetrain = drivetrain;
             Engine = engine;
@@ -109,7 +113,8 @@ namespace CarQuery.Models
         {
             Brand = carViewModel.Brand;
             Model = carViewModel.Model;
-            Year = carViewModel.Year;
+            ManufacturingYear = carViewModel.ManufacturingYear;
+            ModelYear = carViewModel.ModelYear;
             Power = carViewModel.Power;
             Drivetrain = carViewModel.Drivetrain;
             Engine = carViewModel.Engine;

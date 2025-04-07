@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarQuery.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250126205128_Start")]
-    partial class Start
+    [Migration("20250406192413_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,10 +61,16 @@ namespace CarQuery.Migrations
                         .HasMaxLength(2100)
                         .HasColumnType("nvarchar(2100)");
 
+                    b.Property<int>("ManufacturingYear")
+                        .HasColumnType("int");
+
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ModelYear")
+                        .HasColumnType("int");
 
                     b.Property<short>("Power")
                         .HasColumnType("smallint");
@@ -74,25 +80,20 @@ namespace CarQuery.Migrations
 
                     b.Property<string>("ShortDescription")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<short>("TopSpeed")
                         .HasColumnType("smallint");
 
                     b.Property<string>("TransmissionType")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("VideoLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Year")
-                        .IsRequired()
-                        .HasMaxLength(9)
-                        .HasColumnType("nvarchar(9)");
 
                     b.HasKey("CarId");
 

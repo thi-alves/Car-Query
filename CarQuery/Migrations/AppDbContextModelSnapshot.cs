@@ -58,10 +58,16 @@ namespace CarQuery.Migrations
                         .HasMaxLength(2100)
                         .HasColumnType("nvarchar(2100)");
 
+                    b.Property<int>("ManufacturingYear")
+                        .HasColumnType("int");
+
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("ModelYear")
+                        .HasColumnType("int");
 
                     b.Property<short>("Power")
                         .HasColumnType("smallint");
@@ -85,11 +91,6 @@ namespace CarQuery.Migrations
                     b.Property<string>("VideoLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Year")
-                        .IsRequired()
-                        .HasMaxLength(9)
-                        .HasColumnType("nvarchar(9)");
 
                     b.HasKey("CarId");
 

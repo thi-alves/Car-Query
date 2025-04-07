@@ -79,7 +79,7 @@ namespace CarQuery.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([Bind("Brand, Model, Year, Power, Drivetrain, Engine, " +
+        public async Task<IActionResult> Add([Bind("Brand, Model, ManufacturingYear, ModelYear, Power, Drivetrain, Engine, " +
             "EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
             "Images, VideoLink")] CarViewModel carViewModel)
         {
@@ -167,7 +167,7 @@ namespace CarQuery.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CarId, Brand, Model, Year, Power, Drivetrain, Engine, " +
+        public async Task<IActionResult> Edit(int id, [Bind("CarId, Brand, Model, ManufacturingYear, ModelYear, Power, Drivetrain, Engine, " +
             "EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
             "Images, VideoLink")] Car editedCar, List<IFormFile> newImages, string imgIdsDelete = "0")
         {

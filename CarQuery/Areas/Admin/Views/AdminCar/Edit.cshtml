@@ -12,24 +12,29 @@
 	<form asp-action="Edit" method="post" class="form-group" enctype="multipart/form-data">
 		<div class="row">
 			<input type="hidden" asp-for="CarId" />
-			<div class="col-4">
+			<div class="col-3">
 				<label asp-for="Brand">Marca do carro:</label>
 				<input class="form-control" asp-for="Brand" value="@Model.Brand" />
 				<span class="text-danger" asp-validation-for="Brand"></span>
 			</div>
 
-			<div class="col-4">
+			<div class="col-3">
 				<label asp-for="Model">Modelo:</label>
 				<input class="form-control" asp-for="Model" value="@Model.Model" />
 				<span class="text-danger" asp-validation-for="Model"></span>
 			</div>
-
-			<div class="col-4">
-				<label asp-for="Year">Ano:</label>
-				<input class="form-control" asp-for="Year" value="@Model.Year" />
-				<span class="text-danger" asp-validation-for="Year"></span>
+			
+			<div class="col-3">
+				<label asp-for="ManufacturingYear">Ano de fabricação:</label>
+				<input class="form-control" asp-for="ManufacturingYear" value="@Model.ManufacturingYear" />
+				<span asp-validation-for="ManufacturingYear" class="text-danger"></span>
 			</div>
 
+			<div class="col-3">
+				<label asp-for="ModelYear">Ano do modelo:</label>
+				<input class="form-control" asp-for="ModelYear" value="@Model.ModelYear"/>
+				<span asp-validation-for="ModelYear" class="text-danger"></span>
+			</div>
 		</div>
 
 

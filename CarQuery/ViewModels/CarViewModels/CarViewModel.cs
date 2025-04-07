@@ -17,10 +17,13 @@ namespace CarQuery.ViewModels.CarViewModels
         [Display(Name = "Model")]
         public string Model { get; set; }
 
-        [Required(ErrorMessage = "Informe o ano do veículo")]
-        [MaxLength(9, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
-        [Display(Name = "Year")]
-        public string Year { get; set; }
+        [Required(ErrorMessage = "Informe o ano de fabricação do veículo")]
+        [Display(Name = "Manufacturing Year")]
+        public int ManufacturingYear { get; set; }
+
+        [Required(ErrorMessage = "Informe o ano do modelo do veículo")]
+        [Display(Name = "Model Year")]
+        public int ModelYear { get; set; }
 
         [Required(ErrorMessage = "Informe a potência do veículo")]
         [Display(Name = "Power")]

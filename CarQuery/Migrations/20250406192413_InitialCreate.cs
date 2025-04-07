@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CarQuery.Migrations
 {
     /// <inheritdoc />
-    public partial class Start : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -58,16 +58,17 @@ namespace CarQuery.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Brand = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Model = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Year = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    ManufacturingYear = table.Column<int>(type: "int", nullable: false),
+                    ModelYear = table.Column<int>(type: "int", nullable: false),
                     Power = table.Column<short>(type: "smallint", nullable: false),
                     Drivetrain = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Engine = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     EnginePosition = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
-                    TransmissionType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    TransmissionType = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     TopSpeed = table.Column<short>(type: "smallint", nullable: false),
                     Doors = table.Column<short>(type: "smallint", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    ShortDescription = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ShortDescription = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     FullDescription = table.Column<string>(type: "nvarchar(2100)", maxLength: 2100, nullable: false),
                     VideoLink = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
