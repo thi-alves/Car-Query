@@ -1,0 +1,68 @@
+﻿@section Styles{
+	<style>
+		.filter-form {
+			border-radius: 10px;
+			color: white;
+			margin-top: 2%;
+		}
+
+		.filter-form label {
+			font-size: 1.1em;
+			font-weight: 500;
+		}
+	</style>
+}
+<div class="d-flex justify-content-center mt-4">
+	<h4 class="text-danger">@TempData["ErrorMessage"]</h4>
+</div>
+
+<form class="filter-form col-10 col-lg-4 mx-auto py-4 bg-dark d-flex justify-content-center" asp-controller="Car" asp-action="ListCars" method="get">
+	<div class="col-10">
+		<h3>Filtrar</h3>
+		<hr>
+		<div class="form-group my-3">
+			<label>Nome ou marca do carro:</label>
+			<input type="text" class="form-control mt-2" id="filter" name="filter">
+		</div>
+		<hr>
+		<div class="form-group my-3">
+			<label>Potência:</label>
+
+			<div class="d-flex mt-2 ms-4 align-items-center">
+				De
+				<input type="number" class="form-control mx-3" id="minPower" name="minPower">
+				até
+				<input type="number" class="form-control ms-3" id="maxPower" name="maxPower">
+			</div>
+		</div>
+		<hr>
+		<div class="form-group my-3">
+			<label>Ano:</label>
+			<div class="d-flex mt-2 ms-4 align-items-center">
+				De
+				<input type="number" class="form-control mx-3" id="minYear" name="minYear">
+				até
+				<input type="number" class="form-control ms-3" id="maxYear" name="maxYear">
+			</div>
+		</div>
+		<hr>
+		<div class="form-group my-3">
+			<label>Faixa de preço</label>
+			<div class="d-flex mt-2 ms-4 align-items-center">
+				De
+				<input type="number" class="form-control mx-3" id="minPrice" name="minPrice">
+				até
+				<input type="number" class="form-control ms-3" id="maxPrice" name="maxPrice">
+			</div>
+		</div>
+		<hr />
+		<div class="d-flex justify-content-end mt-3">
+			<button class="btn btn-primary">Pesquisar</button>
+		</div>
+	</div>
+
+</form>
+
+<script>
+
+</script>
