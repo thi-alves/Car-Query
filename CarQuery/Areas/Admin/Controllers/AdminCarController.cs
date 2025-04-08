@@ -148,11 +148,11 @@ namespace CarQuery.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             try
             {
-                var car = _context.Car.Include(c => c.Images).FirstOrDefault(c => c.CarId == id);
+                var car = await _context.Car.Include(c => c.Images).FirstOrDefaultAsync(c => c.CarId == id);
 
                 if (car != null) return View(car);
 
@@ -288,7 +288,7 @@ namespace CarQuery.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Remove(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
@@ -303,17 +303,17 @@ namespace CarQuery.Areas.Admin.Controllers
             }
             catch (DBConcurrencyException ex)
             {
-                _logger.LogError(ex, "AdminCarController (Remove): {ExceptionType} erro ao remover o carro", ex.GetType().Name);
+                _logger.LogError(ex, "AdminCarController (Delete): {ExceptionType} erro ao remover o carro", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar remover o carro. Por favor tente novamente mais tarde." });
             }
             catch (DbException ex)
             {
-                _logger.LogError(ex, "AdminCarController (Remove): {ExceptionType} erro ao remover o carro", ex.GetType().Name);
+                _logger.LogError(ex, "AdminCarController (Delete): {ExceptionType} erro ao remover o carro", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar remover o carro. Por favor tente novamente mais tarde." });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "AdminCarController (Remove): {ExceptionType} erro inesperado ao remover o carro", ex.GetType().Name);
+                _logger.LogError(ex, "AdminCarController (Delete): {ExceptionType} erro inesperado ao remover o carro", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Erro ao tentar remover o carro. Por favor tente novamente mais tarde." });
             }
         }
