@@ -12,10 +12,17 @@ namespace CarQuery.Controllers
             _carouselRepository = carouselRepository;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var carousels = await _carouselRepository.GetAllVisibleCarouselsToDisplay();
             return View(carousels);
+        }
+
+        [HttpGet]
+        public IActionResult About()
+        {
+            return View();
         }
     }
 }
