@@ -1,0 +1,55 @@
+﻿<div class="container pt-5">
+	<div class="text-center mt-3">
+		<h1 class="display-3 fw-semibold">Feedback</h1>
+	</div>
+	<div class="d-flex col-8 col-lg-6 mx-auto mt-4 justify-content-center">
+		<form class="form-control bg-dark p-4 text-light" id="feedback-form" method="post">
+			<div class="form-group mb-3">
+				<label class="mb-2">Nome</label>
+				<input class="form-control" name="name" id="name-input" required placeholder="Informe seu nome" />
+			</div>
+
+			<div class="form-group mb-3">
+				<label class="mb-2">Email</label>
+				<input class="form-control" name="email" id="email-input" required type="email" placeholder="Informe seu email">
+			</div>
+			<div class="form-group mb-3">
+				<label class="mb-2">Mensagem</label>
+				<textarea class="form-control" name="message" id="message-input" required type="area" placeholder="Escreva uma mensagem"></textarea>
+			</div>
+			<div class="d-flex justify-content-end mb-3">
+				<button type="submit" class="btn btn-success">Enviar</button>
+				<input type="hidden" name="_redirect" value="/">
+			</div>
+		</form>
+	</div>
+</div>
+
+<script>
+	document.getElementById("feedback-form").addEventListener("submit", function (e) {
+		e.preventDefault();
+
+		const form = e.target;
+		const formData = new FormData(form);
+
+		fetch("https://formspree.io/f/xgvadwkn", {
+			method: "POST",
+			body: formData,
+			headers: {
+				'Accept': 'application/json'
+			}
+		}).then(response => {
+			if (response.status == 200 || response.status == 201) {
+				form.reset();
+				alert("Sua mensagem foi enviada com sucesso. Obrigado!");
+			} else {
+				alert("Erro ao enviar.");
+			}
+		}).catch(error => {
+			alert("Erro de conexão.");
+		});
+
+		openSuccessBox();
+	});
+</script>
+

@@ -1,4 +1,5 @@
-﻿using CarQuery.Repositories.Interface;
+﻿using System.Net.Mail;
+using CarQuery.Repositories.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarQuery.Controllers
@@ -21,6 +22,12 @@ namespace CarQuery.Controllers
 
         [HttpGet]
         public IActionResult About()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Feedback()
         {
             return View();
         }
