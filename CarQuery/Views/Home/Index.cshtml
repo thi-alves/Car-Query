@@ -3,6 +3,7 @@
 	@model List<CarouselDisplayViewModel>
 	ViewData["Title"] = "Home Page";
 	int id = 0;
+	int iteration = 0;
 }
 
 <!DOCTYPE html>
@@ -14,69 +15,119 @@
 
 </head>
 <body>
-	<div class="container mt-5">
+	@section Styles {
+		<style>
+			.carousel-background {
+				background-color: #212f3d;
+				margin-bottom: 20px;
+			}
+
+			.carousel {
+				background-color: #201F1F;
+				width: 100%;
+				height: 100%;
+				margin: auto;
+				overflow: hidden;
+			}
+
+				.carousel img {
+					width: 100%;
+					height: 800px;
+					object-fit: cover;
+				}
+
+			.carousel-caption {
+				border-radius: 10px;
+				background-color: rgba(44, 62, 80, 0.7);
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			@@media (max-width: 991px) {
+				.carousel img {
+					height: 600px;
+				}
+			}
+
+			@@media (max-width: 576px) {
+				.carousel img {
+					height: 350px;
+				}
+			}
+
+		</style>
+	}
+	<div class="">
 		@foreach (var carousel in Model)
 		{
 			int totalCarouselSlides = carousel.CarouselSlides.Count();
+			var titlePositionClass = iteration % 2 == 0 ? "order-lg-0" : "order-lg-2";
 
 			<div class="carousel-background">
-				<h4 class="display-6 carousel-title">@carousel.Title</h4>
+				<div class="row">
 
-				<div id="carousel-@id" class="carousel slide">
-					<div class="carousel-indicators">
-						<button type="button" data-bs-target="#carousel-@id" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 0"></button>
-						@for (int i = 1; i < totalCarouselSlides; i++)
-						{
-							<button type="button" data-bs-target="#carousel-@id" data-bs-slide-to="@i" aria-label="Slide @i"></button>
-						}
 
+					<div class="d-flex col-12 col-lg-3 mt-3 mb-2 align-items-center @titlePositionClass">
+						<h1 class="display-5 text-light ms-4">@carousel.Title</h1>
 					</div>
-					<div class="carousel-inner">
-						<div class="carousel-item active">
-							<a asp-controller="Car" asp-action="CarDetailsPage" asp-route-id="@carousel.CarouselSlides[0].CarId">
-								<img src="@carousel.CarouselSlides[0].ImgPath" class="d-block w-100" alt="...">
-								<div class="carousel-caption d-none d-md-block">
-									<h5>@carousel.CarouselSlides[0].CarModel</h5>
-									<p>
-										@carousel.CarouselSlides[0].CarShortDescription
-									</p>
-								</div>
-							</a>
-						</div>
 
-						@{
-							for (int i = 1; i < totalCarouselSlides; i++)
+					<div id="carousel-@id" class="carousel slide col-12 col-lg-9">
+						<div class="carousel-indicators">
+							<button type="button" data-bs-target="#carousel-@id" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 0"></button>
+							@for (int i = 1; i < totalCarouselSlides; i++)
 							{
-								<div class="carousel-item">
-									<a asp-controller="Car" asp-action="CarDetailsPage" asp-route-id="@carousel.CarouselSlides[i].CarId">
-										<img src="@carousel.CarouselSlides[i].ImgPath" class="d-block w-100" alt="...">
-										<div class="carousel-caption d-none d-md-block">
-											<h5>@carousel.CarouselSlides[i].CarModel</h5>
-											<p>
-												@carousel.CarouselSlides[i].CarShortDescription
-											</p>
-										</div>
-									</a>
-								</div>
+								<button type="button" data-bs-target="#carousel-@id" data-bs-slide-to="@i" aria-label="Slide @i"></button>
 							}
+
+						</div>
+						<div class="carousel-inner">
+							<div class="carousel-item active">
+								<a asp-controller="Car" asp-action="CarDetailsPage" asp-route-id="@carousel.CarouselSlides[0].CarId">
+									<img src="@carousel.CarouselSlides[0].ImgPath" class="d-block w-100" alt="...">
+									<div class="carousel-caption d-none d-md-block">
+										<h5>@carousel.CarouselSlides[0].CarModel</h5>
+										<p>
+											@carousel.CarouselSlides[0].CarShortDescription
+										</p>
+									</div>
+								</a>
+							</div>
+
+							@{
+								for (int i = 1; i < totalCarouselSlides; i++)
+								{
+									<div class="carousel-item">
+										<a asp-controller="Car" asp-action="CarDetailsPage" asp-route-id="@carousel.CarouselSlides[i].CarId">
+											<img src="@carousel.CarouselSlides[i].ImgPath" class="d-block w-100" alt="...">
+											<div class="carousel-caption">
+												<h5>@carousel.CarouselSlides[i].CarModel</h5>
+												<p>
+													@carousel.CarouselSlides[i].CarShortDescription
+												</p>
+											</div>
+										</a>
+									</div>
+								}
+							}
+						</div>
+						<button class="carousel-control-prev" type="button" data-bs-target="#carousel-@id" data-bs-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Previous</span>
+						</button>
+						<button class="carousel-control-next" type="button" data-bs-target="#carousel-@id" data-bs-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<span class="visually-hidden">Next</span>
+						</button>
 						}
 					</div>
-					<button class="carousel-control-prev" type="button" data-bs-target="#carousel-@id" data-bs-slide="prev">
-						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-						<span class="visually-hidden">Previous</span>
-					</button>
-					<button class="carousel-control-next" type="button" data-bs-target="#carousel-@id" data-bs-slide="next">
-						<span class="carousel-control-next-icon" aria-hidden="true"></span>
-						<span class="visually-hidden">Next</span>
-					</button>
-					}
 				</div>
 			</div>
+			<hr />
+			iteration++;
 			id++;
 		}
-		<h4>Functions</h4>
-		<a asp-controller="Admin" asp-action="Index">Página do admin</a>
-
 	</div>
 
 </body>
