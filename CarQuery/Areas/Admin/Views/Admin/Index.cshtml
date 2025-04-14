@@ -1,17 +1,75 @@
-﻿
+﻿@section Styles {
+	<style>
+		.option-card {
+			border: 1px solid red;
+		}
 
+			.option-card:hover {
+				background-color: royalblue;
+				color: white;
+			}
 
-<h1>Página do admin</h1>
+	</style>
+}
 
-<h3>Car</h3>
-<br />
-<a asp-area="Admin" asp-controller="AdminCar" asp-action="ListCars">List car</a>
-<br />
-<a asp-area="Admin" asp-controller="AdminCar" asp-action="Add">Add car</a>
-<br />
-<hr />
-<br />
-<h3>Carousel</h3>
-<a asp-area="Admin" asp-controller="AdminCarousel" asp-action="ListCarousels">List Carousels</a>
-<br />
-<a asp-area="Admin" asp-controller="AdminCarousel" asp-action="Create">Create Carousel</a>
+<div class="container">
+	<div class="row col-12">
+		<div class="d-flex align-items-center">
+			<img src="~/img/admin-page-icon.png" style="width: 100px" class="" />
+			<h1 class="display-5 fw-semibold my-4">Página de administração</h1>
+		</div>
+	</div>
+
+	<hr />
+
+	<h2>Carros</h2>
+	<br />
+	<a asp-area="Admin" asp-controller="AdminCar" asp-action="ListCars" class="card-link-wrapper text-decoration-none option-card card d-flex col-7 col-lg-6 ms-5 mb-4">
+		<div class="row">
+			<div class="col-4 col-lg-2">
+				<img class="img-fluid" src="~/img/manage-car-icon.png" />
+			</div>
+			<div class="col-8 col-lg-10 d-flex align-items-center">
+				Gerenciar carros
+			</div>
+		</div>
+	</a>
+
+	<a asp-area="Admin" asp-controller="AdminCar" asp-action="Add" class="card-link-wrapper text-decoration-none option-card card d-flex col-7 col-lg-6 ms-5 mb-4">
+		<div class="row">
+			<div class="col-4 col-lg-2">
+				<img class="img-fluid" src="~/img/add-car-icon.png" />
+			</div>
+			<div class="col-8 col-lg-10 d-flex align-items-center">
+				Adicionar novo carro
+			</div>
+		</div>
+	</a>
+
+	<hr />
+
+	<h3>Carrossel</h3>
+	<br />
+	<a asp-area="Admin" asp-controller="AdminCarousel" asp-action="ListCarousels" class="card-link-wrapper text-decoration-none option-card card d-flex col-7 col-lg-6 ms-5 mb-4">
+		<div class="row">
+			<div class="col-4 col-lg-2">
+				<img class="img-fluid" src="~/img/manage-carousel-icon.png" />
+			</div>
+			<div class="col-8 col-lg-10 d-flex align-items-center">
+				Gerenciar carrosel
+			</div>
+		</div>
+	</a>
+
+	<a asp-area="Admin" asp-controller="AdminCarousel" asp-action="Create" class="card-link-wrapper text-decoration-none option-card card d-flex col-7 col-lg-6 ms-5 mb-4">
+		<div class="row">
+			<div class="col-4 col-lg-2">
+				<img class="img-fluid" src="~/img/add-carousel-icon.png" />
+			</div>
+			<div class="col-8 col-lg-10 d-flex align-items-center">
+				Criar novo carrossel
+			</div>
+		</div>
+	</a>
+</div>
+
