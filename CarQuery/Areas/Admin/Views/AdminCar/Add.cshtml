@@ -1,115 +1,236 @@
 ﻿@model CarQuery.ViewModels.CarViewModels.CarViewModel
 
 @{
-    
+
 }
 
 <div class="container mt-5">
+	<h1 class="display-5 fw-semibold">Adicionar carro</h1>
+	<hr />
 
-    <h1 class="display-5">Adicionar carro</h1>
-
-    <form asp-action="Add" method="post" class="form-group" enctype="multipart/form-data">
-        <div class="row">
-            <div class="col-3">
-                <label asp-for="Brand">Marca do carro:</label>
-				<input asp-for="Brand" class="form-control" />
+	<form asp-action="Add" method="post" class="form-group" enctype="multipart/form-data">
+		<div class="row">
+			<div class="col-4 mt-3">
+				<label asp-for="Brand">Marca do carro:</label>
+				<input asp-for="Brand" class="form-control" placeholder="Ex: Chevrolet" />
 				<span asp-validation-for="Brand" class="text-danger"></span>
-            </div>     
+			</div>
 
-            <div class="col-3">
-                <label asp-for="Model">Modelo:</label>
-				<input asp-for="Model" class="form-control" />
+			<div class="col-4 mt-3">
+				<label asp-for="Model">Modelo:</label>
+				<input asp-for="Model" class="form-control" placeholder="Ex: Corsa" />
 				<span asp-validation-for="Model" class="text-danger"></span>
-            </div>
+			</div>
 
-            <div class="col-3">
-                <label asp-for="ManufacturingYear">Ano de fabricação:</label>
-				<input asp-for="ManufacturingYear" class="form-control" />
-				<span asp-validation-for="ManufacturingYear" class="text-danger"></span>
-            </div>
+			<div class="col-4 mt-3">
+				<label asp-for="BodyStyle">Carroceria:</label>
+				<select asp-for="BodyStyle" class="form-select">
+					<option value="Sedã">Sedã</option>
+					<option value="Hacth">Hatch</option>
+					<option value="SUV">SUV</option>
+					<option value="Coupé">Coupé</option>
+					<option value="Conversível">Conversível</option>
+					<option value="Perua (Wagon)">Perua (Wagon)</option>
+					<option value="Picape">Picape</option>
+				</select>
+				<span asp-validation-for="BodyStyle" class="text-danger"></span>
+			</div>
 
-            <div class="col-3">
-                <label asp-for="ModelYear">Ano do modelo:</label>
-                <input asp-for="ModelYear" class="form-control" />
-                <span asp-validation-for="ModelYear" class="text-danger"></span>
-            </div>
-
-        </div>
-
-        
-        <div class="row mt-4">
-            <div class="col-3">
-                <label asp-for="Power">Potência (CV):</label>
-				<input asp-for="Power" class="form-control" />
-				<span asp-validation-for="Power" class="text-danger"></span>
-            </div>
-        
-            <div class="col-4">
-                <label asp-for="Drivetrain">Tração:</label>
-				<input asp-for="Drivetrain" class="form-control" />
-				<span asp-validation-for="Drivetrain" class="text-danger"></span>
-            </div>
-            <div class="col-5">
-                <label asp-for="Engine">Motor:</label>
-				<input asp-for="Engine" class="form-control" />
-				<span asp-validation-for="Engine" class="text-danger"></span>
-            </div>
-
-        </div>
-        
-        <div class="row mt-4">
-            <div class="col-3">
-                <label asp-for="EnginePosition">Posição do motor:</label>
-				<input asp-for="EnginePosition" class="form-control" />
-				<span asp-validation-for="EnginePosition" class="text-danger"></span>
-            </div>
-            <div class="col-4">
-                <label asp-for="TransmissionType">Transmissão:</label>
-				<input asp-for="TransmissionType" class="form-control" />
-				<span asp-validation-for="TransmissionType" class="text-danger"></span>
-            </div>
-
-            <div class="col-3">
-                <label asp-for="TopSpeed">Velocidade máxima:</label>
-				<input asp-for="TopSpeed" class="form-control" />
-				<span asp-validation-for="TopSpeed" class="text-danger"></span>
-            </div>
-        
-            <div class="col-2">
-                <label asp-for="Doors">Portas:</label>
-				<input asp-for="Doors" class="form-control" />
+			<div class="col-3 mt-3">
+				<label asp-for="Doors">Portas:</label>
+				<input asp-for="Doors" class="form-control" placeholder="Ex: 4" />
 				<span asp-validation-for="Doors" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label asp-for="Price">Preço (R$):</label>
-			<input asp-for="Price" class="form-control" />
+			</div>
+
+			<div class="col-4 col-lg-3 mt-3">
+				<label asp-for="ManufacturingYear">Ano de fabricação:</label>
+				<input asp-for="ManufacturingYear" class="form-control" id="manufacturingYear" min="1886" placeholder="1886 em diante" />
+				<span asp-validation-for="ManufacturingYear" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-3 mt-3">
+				<label asp-for="ModelYear">Ano do modelo:</label>
+				<input asp-for="ModelYear" class="form-control" id="modelYear" min="1886" placeholder="1886 em diante" />
+				<span asp-validation-for="ModelYear" class="text-danger"></span>
+			</div>
+
+			<div class="col-3 mt-3">
+				<label asp-for="Power">Potência (CV):</label>
+				<input asp-for="Power" class="form-control" placeholder="Ex: 200" />
+				<span asp-validation-for="Power" class="text-danger"></span>
+			</div>
+
+			<div class="col-3 col-lg-2 mt-3">
+				<label asp-for="Displacement">Cilindrada (L):</label>
+				<input asp-for="Displacement" class="form-control" placeholder="Ex: 2.0" />
+				<span asp-validation-for="Displacement" class="text-danger"></span>
+			</div>
+
+			<div class="col-5 col-lg-2 mt-3">
+				<label asp-for="TopSpeed">Velocidade máxima (Km/h):</label>
+				<input asp-for="TopSpeed" class="form-control" placeholder="Ex: 220" />
+				<span asp-validation-for="TopSpeed" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-2 mt-3">
+				<label asp-for="FuelType">Combustível:</label>
+				<select asp-for="FuelType" class="form-select">
+					<option value="Gasolina">Gasolina</option>
+					<option value="Etanol">Etanol</option>
+					<option value="Flex">Flex</option>
+					<option value="Diesel">Diesel</option>
+					<option value="Gás natural (CNG)">Gás natural (CNG)</option>
+					<option value="Elétrico">Elétrico</option>
+					<option value="Híbrido">Híbrido</option>
+					<option value="Hidrogênio">Hidrogênio</option>
+				</select>
+				<span asp-validation-for="FuelType" class="text-danger"></span>
+			</div>
+
+			<div class="col-3 col-lg-2 mt-3">
+				<label asp-for="Valves">Válvulas:</label>
+				<input asp-for="Valves" class="form-control" placeholder="Ex: 8" />
+				<span asp-validation-for="Valves" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-2 mt-3">
+				<label asp-for="Cylinders">Cilindros:</label>
+				<input asp-for="Cylinders" class="form-control" placeholder="Ex: 8" />
+				<span asp-validation-for="Cylinders" class="text-danger"></span>
+			</div>
+
+			<div class="col-5 col-lg-2 mt-3">
+				<label asp-for="CylinderConfiguration">Configuração dos cilindros:</label>
+				<input asp-for="CylinderConfiguration" class="form-control" placeholder="Ex: V" />
+				<span asp-validation-for="CylinderConfiguration" class="text-danger"></span>
+			</div>
+
+			<div class="col-5 col-lg-3 mt-3">
+				<label asp-for="Aspiration">Aspiração:</label>
+				<select asp-for="Aspiration" class="form-select">
+					<option value="Aspirado Natural (NA)">Aspirado Natural (NA)</option>
+					<option value="Turbo">Turbo</option>
+					<option value="Turbo Intercooler">Turbo Intercooler</option>
+					<option value="Supercharged">Supercharged</option>
+					<option value="Supercharged Intercooler">Supercharged Intercooler</option>
+					<option value="-">-</option>
+				</select>
+				<span asp-validation-for="Aspiration" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-3 mt-3">
+				<label asp-for="Drivetrain">Tração:</label>
+				<select asp-for="Drivetrain" class="form-select">
+					<option value="Dianteira (FWD)">Dianteira (FWD)</option>
+					<option value="Traseira (RWD)">Traseira (RWD)</option>
+					<option value="4x4 (4WD)">4x4 (4WD)</option>
+					<option value="Integral (AWD)">Integral (AWD)</option>
+					<option value="Integral sob demanda (AWD on-demand)">Integral sob demanda (AWD on-demand)</option>
+				</select>
+				<span asp-validation-for="Drivetrain" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-3 mt-3">
+				<label asp-for="EnginePosition">Posição do motor:</label>
+				<select asp-for="EnginePosition" class="form-select">
+					<option value="Dianteiro">Dianteiro</option>
+					<option value="Central">Central</option>
+					<option value="Traseiro">Traseiro</option>
+				</select>
+				<span asp-validation-for="EnginePosition" class="text-danger"></span>
+			</div>
+			<div class="col-4 col-lg-3 mt-3">
+				<label asp-for="TransmissionType">Transmissão:</label>
+				<input asp-for="TransmissionType" class="form-control" placeholder="Ex: Manual de 6 marchas" />
+				<span asp-validation-for="TransmissionType" class="text-danger"></span>
+			</div>
+		</div>
+
+		<div class="form-group mt-3">
+			<label asp-for="Price">Preço (R$):</label>
+			<input class="form-control" id="formatedPriceInput" placeholder="Ex: R$40.000,00" />
+			<input asp-for="Price" type="hidden" class="form-control" id="realPriceInput" />
 			<span asp-validation-for="Price" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="ShortDescription">Descrição curta:</label>
-			<input asp-for="ShortDescription" class="form-control" />
+		</div>
+
+		<div class="form-group mt-3">
+			<label asp-for="ShortDescription">Descrição curta:</label>
+			<textarea asp-for="ShortDescription" class="form-control" placeholder="Essa descrição será exibida nos slides"></textarea>
 			<span asp-validation-for="ShortDescription" class="text-danger"></span>
-        </div>
-        
-        <div class="form-group">
-            <label asp-for="FullDescription">Descrição completa:</label>
-			<input asp-for="FullDescription" class="form-control" />
+		</div>
+
+		<div class="form-group mt-3">
+			<label asp-for="FullDescription">Descrição completa:</label>
+			<textarea asp-for="FullDescription" class="form-control" placeholder="Essa descrição será exibida na página de detalhes do carro"></textarea>
 			<span asp-validation-for="FullDescription" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Images">Imagens:</label>
+		</div>
+		<div class="form-group mt-3">
+			<label asp-for="Images">Imagens:</label>
 			<input asp-for="Images" type="file" class="form-control" multiple />
 			<span asp-validation-for="Images" class="text-danger"></span>
-        </div>
+		</div>
 
-        <div class="form-group">
-            <label asp-for="VideoLink">Video link:</label>
-            <input class="form-control" asp-for="VideoLink"/>
-            <span class="text-danger" asp-validation-for="VideoLink"></span>
-        </div>
-        <div class="form-group mt-4">
-            <input type="submit" class="btn btn-success"/>
-        </div>
-    </form>
+		<div class="form-group mt-3">
+			<label asp-for="VideoLink">Video link:</label>
+			<input class="form-control" asp-for="VideoLink" placeholder="Link do vídeo sobre o carro. Ex: https://www.youtube.com/embed/....."/>
+			<span class="text-danger" asp-validation-for="VideoLink"></span>
+		</div>
+		<div class="form-group mt-4">
+			<input type="submit" class="btn btn-success" />
+		</div>
+	</form>
 </div>
+
+<script>
+	const manufacturingYear = document.getElementById("manufacturingYear");
+	const modelYear = document.getElementById("modelYear");
+
+	const formatedPriceInput = document.getElementById("formatedPriceInput");
+	const realPriceInput = document.getElementById("realPriceInput");
+
+	document.addEventListener("DOMContentLoaded", function(){
+		//setting the max year to the year inputs
+		manufacturingYear.setAttribute('max', new Date().getFullYear());
+		modelYear.setAttribute('max', new Date().getFullYear());
+
+		formatedPriceInput.value = 0;
+	});
+
+	//force input validation
+	manufacturingYear.addEventListener("blur", function(){
+		this.reportValidity();
+	});
+	modelYear.addEventListener("blur", function(){
+		this.reportValidity();
+	});
+
+	formatedPriceInput.addEventListener('focus', function () {
+		const currentValue = this.value;
+
+		const value = currentValue
+			.replace(/\s/g, '')
+			.replace('R$', '')
+			.replace(/\./g, '')
+			.replace(',', '.');
+
+		this.value = value;
+	});
+
+	formatedPriceInput.addEventListener("blur", function (){
+		let value = this.value.replace(',', '.');
+		value = value.replace(/[^0-9.]/g, '');
+
+		let numericValue = parseFloat(value);
+
+		if(isNaN(numericValue)){
+			numericValue = 0;
+		}
+
+		this.value = numericValue.toLocaleString('pt-br', {
+			style: 'currency',
+			currency: 'BRL'
+		});
+
+		realPriceInput.value = numericValue;
+	});
+</script>

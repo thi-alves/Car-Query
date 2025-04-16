@@ -79,8 +79,8 @@ namespace CarQuery.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([Bind("Brand, Model, ManufacturingYear, ModelYear, Power, Drivetrain, Engine, " +
-            "EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
+        public async Task<IActionResult> Add([Bind("Brand, Model, BodyStyle, ManufacturingYear, ModelYear, Power, Drivetrain, Displacement, " +
+            "Valves, FuelType, Aspiration, Cylinders, CylinderConfiguration, EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
             "Images, VideoLink")] CarViewModel carViewModel)
         {
             try
