@@ -2,112 +2,209 @@
 
 @section Styles {
 	<style>
-		
+		.custom-modal-overlay {
+			display: none;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			justify-content: center;
+			align-items: center;
+		}
+
+		.custom-modal-box {
+			display: block;
+			background-color: black;
+			color: white;
+			padding: 20px;
+			border-radius: 10px;
+			text-align: center;
+			width: 320px;
+			box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+		}
+
+		.custom-modal-buttons {
+			margin-top: 15px;
+			display: flex;
+			justify-content: space-between;
+		}
 	</style>
 }
 
-<div class="container">
-	<h1 class="display-5">Editar carro</h1>
+<div class="container mt-5">
+	<h1 class="display-5 fw-semibold">Editar carro</h1>
+	<hr />
 
 	<form asp-action="Edit" method="post" class="form-group" enctype="multipart/form-data">
 		<div class="row">
 			<input type="hidden" asp-for="CarId" />
-			<div class="col-3">
+			<div class="col-4 mt-3">
 				<label asp-for="Brand">Marca do carro:</label>
-				<input class="form-control" asp-for="Brand" value="@Model.Brand" />
-				<span class="text-danger" asp-validation-for="Brand"></span>
+				<input asp-for="Brand" class="form-control" value="@Model.Brand" placeholder="Ex: Chevrolet" />
+				<span asp-validation-for="Brand" class="text-danger"></span>
 			</div>
 
-			<div class="col-3">
+			<div class="col-4 mt-3">
 				<label asp-for="Model">Modelo:</label>
-				<input class="form-control" asp-for="Model" value="@Model.Model" />
-				<span class="text-danger" asp-validation-for="Model"></span>
+				<input asp-for="Model" class="form-control" value="@Model.Model" placeholder="Ex: Corsa" />
+				<span asp-validation-for="Model" class="text-danger"></span>
 			</div>
-			
-			<div class="col-3">
+
+			<div class="col-4 mt-3">
+				<label asp-for="BodyStyle">Carroceria:</label>
+				<select asp-for="BodyStyle" class="form-select" value="@Model.BodyStyle">
+					<option value="Sedã">Sedã</option>
+					<option value="Hacth">Hatch</option>
+					<option value="SUV">SUV</option>
+					<option value="Coupé">Coupé</option>
+					<option value="Conversível">Conversível</option>
+					<option value="Perua (Wagon)">Perua (Wagon)</option>
+					<option value="Picape">Picape</option>
+				</select>
+				<span asp-validation-for="BodyStyle" class="text-danger"></span>
+			</div>
+
+			<div class="col-3 mt-3">
+				<label asp-for="Doors">Portas:</label>
+				<input asp-for="Doors" class="form-control" value="@Model.Doors" placeholder="Ex: 4" />
+				<span asp-validation-for="Doors" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-3 mt-3">
 				<label asp-for="ManufacturingYear">Ano de fabricação:</label>
-				<input class="form-control" asp-for="ManufacturingYear" value="@Model.ManufacturingYear" />
+				<input asp-for="ManufacturingYear" class="form-control" value="@Model.ManufacturingYear" id="manufacturingYear" min="1886" placeholder="1886 em diante" />
 				<span asp-validation-for="ManufacturingYear" class="text-danger"></span>
 			</div>
 
-			<div class="col-3">
+			<div class="col-4 col-lg-3 mt-3">
 				<label asp-for="ModelYear">Ano do modelo:</label>
-				<input class="form-control" asp-for="ModelYear" value="@Model.ModelYear"/>
+				<input asp-for="ModelYear" class="form-control" value="@Model.ModelYear" id="modelYear" min="1886" placeholder="1886 em diante" />
 				<span asp-validation-for="ModelYear" class="text-danger"></span>
 			</div>
-		</div>
 
-
-		<div class="row mt-4">
-			<div class="col-3">
+			<div class="col-3 mt-3">
 				<label asp-for="Power">Potência (CV):</label>
-				<input class="form-control" asp-for="Power" value="@Model.Power" />
-				<span class="text-danger" asp-validation-for="Power"></span>
+				<input asp-for="Power" class="form-control" value="@Model.Power" placeholder="Ex: 200" />
+				<span asp-validation-for="Power" class="text-danger"></span>
 			</div>
 
-			<div class="col-4">
+			<div class="col-3 col-lg-2 mt-3">
+				<label asp-for="Displacement">Cilindrada (L):</label>
+				<input asp-for="Displacement" class="form-control" value="@Model.Displacement" placeholder="Ex: 2.0" />
+				<span asp-validation-for="Displacement" class="text-danger"></span>
+			</div>
+
+			<div class="col-5 col-lg-2 mt-3">
+				<label asp-for="TopSpeed">Velocidade máxima (Km/h):</label>
+				<input asp-for="TopSpeed" class="form-control" value="@Model.TopSpeed" placeholder="Ex: 220" />
+				<span asp-validation-for="TopSpeed" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-2 mt-3">
+				<label asp-for="FuelType">Combustível:</label>
+				<select asp-for="FuelType" class="form-select" value="@Model.FuelType">
+					<option value="Gasolina">Gasolina</option>
+					<option value="Etanol">Etanol</option>
+					<option value="Flex">Flex</option>
+					<option value="Diesel">Diesel</option>
+					<option value="Gás natural (CNG)">Gás natural (CNG)</option>
+					<option value="Elétrico">Elétrico</option>
+					<option value="Híbrido">Híbrido</option>
+					<option value="Hidrogênio">Hidrogênio</option>
+				</select>
+				<span asp-validation-for="FuelType" class="text-danger"></span>
+			</div>
+
+			<div class="col-3 col-lg-2 mt-3">
+				<label asp-for="Valves">Válvulas:</label>
+				<input asp-for="Valves" class="form-control" value="@Model.Valves" placeholder="Ex: 8" />
+				<span asp-validation-for="Valves" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-2 mt-3">
+				<label asp-for="Cylinders">Cilindros:</label>
+				<input asp-for="Cylinders" class="form-control" value="@Model.Cylinders" placeholder="Ex: 8" />
+				<span asp-validation-for="Cylinders" class="text-danger"></span>
+			</div>
+
+			<div class="col-5 col-lg-2 mt-3">
+				<label asp-for="CylinderConfiguration">Configuração dos cilindros:</label>
+				<input asp-for="CylinderConfiguration" class="form-control" value="@Model.CylinderConfiguration" placeholder="Ex: V" />
+				<span asp-validation-for="CylinderConfiguration" class="text-danger"></span>
+			</div>
+
+			<div class="col-5 col-lg-3 mt-3">
+				<label asp-for="Aspiration">Aspiração:</label>
+				<select asp-for="Aspiration" class="form-select" value="@Model.Aspiration">
+					<option value="Aspirado Natural (NA)">Aspirado Natural (NA)</option>
+					<option value="Turbo">Turbo</option>
+					<option value="Turbo Intercooler">Turbo Intercooler</option>
+					<option value="Supercharged">Supercharged</option>
+					<option value="Supercharged Intercooler">Supercharged Intercooler</option>
+					<option value="-">-</option>
+				</select>
+				<span asp-validation-for="Aspiration" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-3 mt-3">
 				<label asp-for="Drivetrain">Tração:</label>
-				<input class="form-control" asp-for="Drivetrain" value="@Model.Drivetrain" />
-				<span class="text-danger" asp-validation-for="Drivetrain"></span>
-			</div>
-			<div class="col-5">
-				<label asp-for="Engine">Motor:</label>
-				<input class="form-control" asp-for="Engine" value="@Model.Engine" />
-				<span class="text-danger" asp-validation-for="Engine"></span>
+				<select asp-for="Drivetrain" class="form-select" value="@Model.Drivetrain">
+					<option value="Dianteira (FWD)">Dianteira (FWD)</option>
+					<option value="Traseira (RWD)">Traseira (RWD)</option>
+					<option value="4x4 (4WD)">4x4 (4WD)</option>
+					<option value="Integral (AWD)">Integral (AWD)</option>
+					<option value="Integral sob demanda (AWD on-demand)">Integral sob demanda (AWD on-demand)</option>
+				</select>
+				<span asp-validation-for="Drivetrain" class="text-danger"></span>
 			</div>
 
-		</div>
-
-		<div class="row mt-4">
-			<div class="col-3">
+			<div class="col-4 col-lg-3 mt-3">
 				<label asp-for="EnginePosition">Posição do motor:</label>
-				<input class="form-control" asp-for="EnginePosition" value="@Model.EnginePosition" />
-				<span class="text-danger" asp-validation-for="EnginePosition"></span>
+				<select asp-for="EnginePosition" class="form-select" value="@Model.EnginePosition">
+					<option value="Dianteiro">Dianteiro</option>
+					<option value="Central">Central</option>
+					<option value="Traseiro">Traseiro</option>
+				</select>
+				<span asp-validation-for="EnginePosition" class="text-danger"></span>
 			</div>
-			<div class="col-4">
+			<div class="col-4 col-lg-3 mt-3">
 				<label asp-for="TransmissionType">Transmissão:</label>
-				<input class="form-control" asp-for="TransmissionType" value="@Model.TransmissionType" />
-				<span class="text-danger" asp-validation-for="TransmissionType"></span>
-			</div>
-
-			<div class="col-3">
-				<label asp-for="TopSpeed">Velocidade máxima:</label>
-				<input class="form-control" asp-for="TopSpeed" value="@Model.TopSpeed" />
-				<span class="text-danger" asp-validation-for="TopSpeed"></span>
-			</div>
-
-			<div class="col-2">
-				<label asp-for="Doors">Portas:</label>
-				<input class="form-control" asp-for="Doors" value="@Model.Doors" />
-				<span class="text-danger" asp-validation-for="Doors"></span>
+				<input asp-for="TransmissionType" class="form-control" value="@Model.TransmissionType" placeholder="Ex: Manual de 6 marchas" />
+				<span asp-validation-for="TransmissionType" class="text-danger"></span>
 			</div>
 		</div>
-		<div class="form-group">
+
+		<div class="form-group mt-3">
 			<label asp-for="Price">Preço (R$):</label>
-			<input class="form-control" asp-for="Price" value="@Model.Price" />
-			<span class="text-danger" asp-validation-for="Price"></span>
+			<input class="form-control" value="@Model.Price" id="formatedPriceInput" placeholder="Ex: R$40.000,00" />
+			<input asp-for="Price" type="hidden" class="form-control" value="@Model.Price" id="realPriceInput" />
+			<span asp-validation-for="Price" class="text-danger"></span>
 		</div>
-		<div class="form-group">
+
+		<div class="form-group mt-3">
 			<label asp-for="ShortDescription">Descrição curta:</label>
-			<input class="form-control" asp-for="ShortDescription" value="@Model.ShortDescription" />
-			<span class="text-danger" asp-validation-for="ShortDescription"></span>
+			<textarea asp-for="ShortDescription" class="form-control" value="@Model.ShortDescription" placeholder="Essa descrição será exibida nos slides"></textarea>
+			<span asp-validation-for="ShortDescription" class="text-danger"></span>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group mt-3">
 			<label asp-for="FullDescription">Descrição completa:</label>
-			<input class="form-control" asp-for="FullDescription" value="@Model.FullDescription" />
-			<span class="text-danger" asp-validation-for="FullDescription"></span>
-		</div>
-		<input type="hidden" asp-for="Images" />
-		<div class="form-group">
-			<label asp-for="Images">Imagens:</label>
-			<input type="file" class="form-control" name="newImages" multiple />
+			<textarea asp-for="FullDescription" class="form-control" value="@Model.FullDescription" placeholder="Essa descrição será exibida na página de detalhes do carro"></textarea>
+			<span asp-validation-for="FullDescription" class="text-danger"></span>
 		</div>
 
-		<div class="form-group">
+		<div class="form-group mt-3">
+			<label asp-for="Images">Imagens:</label>
+			<input asp-for="Images" type="file" class="form-control" multiple />
+			<span asp-validation-for="Images" class="text-danger"></span>
+		</div>
+
+		<div class="form-group mt-3">
 			<label asp-for="VideoLink">Video link:</label>
-			<input class="form-control" asp-for="VideoLink" value="@Model.VideoLink" />
-			<span class="text-danger" asp-validation-for="VideoLink"></span>
+			<input asp-for="VideoLink" class="form-control" value="@Model.VideoLink" placeholder="Link do vídeo sobre o carro. Ex: https://www.youtube.com/embed/....." />
+			<span asp-validation-for="VideoLink" class="text-danger"></span>
 		</div>
 
 		<h4 class="mt-3">Selecione as imagens que deseja deletar:</h4>
@@ -117,24 +214,102 @@
 			@foreach (var img in Model.Images)
 			{
 				<div class="col-5 col-lg-3 mx-3 my-4">
-					<input type="checkbox" name="selectedImages" value="@img.ImageId" onchange="updateValues()"/>
-					<img src="@img.ImgPath" class="img-fluid"/>		
+					<input type="checkbox" name="selectedImages" value="@img.ImageId" onchange="updateValues()" />
+					<img src="@img.ImgPath" class="img-fluid" />
 				</div>
 			}
 
 		</div>
 		<input class="form-control" type="hidden" name="imgIdsDelete" id="imgIdsToDelete" placeholder="Exemplo: 1,4,5" />
 
-		<div class="form-group mt-4">
+		<div class="mt-4">
+			<a class="btn btn-danger d-inline-block" onclick="openConfirmBox('@Model.CarId')">Excluir</a>
 			<input type="submit" class="btn btn-success" value="Salvar" />
 		</div>
 	</form>
 
-	<script>
-		function updateValues(){
-			let checkboxes = document.querySelectorAll('input[name="selectedImages"]:checked');
-			let values = Array.from(checkboxes).map(cb => cb.value).join(",");
-			document.getElementById("imgIdsToDelete").value = values;
-		}
-	</script>
+	<div id="customConfirmBox" class="custom-modal-overlay">
+		<div class="custom-modal-box">
+			<form asp-controller="AdminCar" asp-action="Delete" class="" method="post">
+				<h2>Confirmar Exclusão</h2>
+				<p>Tem certeza que deseja deletar este item? Essa ação não pode ser desfeita.</p>
+				<input type="hidden" name="id" id="deleteId" />
+				<div class="custom-modal-buttons">
+					<button type="button" onclick="closeConfirmBox()" class="btn btn-secondary">Cancelar</button>
+					<button type="submit" class="btn btn-danger">Sim, Deletar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
 </div>
+
+<script>
+	const manufacturingYear = document.getElementById("manufacturingYear");
+	const modelYear = document.getElementById("modelYear");
+
+	const formatedPriceInput = document.getElementById("formatedPriceInput");
+	const realPriceInput = document.getElementById("realPriceInput");
+
+	let carIdToDelete = null;
+
+	document.addEventListener("DOMContentLoaded", function(){
+		//setting the max year to the year inputs
+		manufacturingYear.setAttribute('max', new Date().getFullYear());
+		modelYear.setAttribute('max', new Date().getFullYear());
+	});
+
+	//force input validation
+	manufacturingYear.addEventListener("blur", function(){
+		this.reportValidity();
+	});
+	modelYear.addEventListener("blur", function(){
+		this.reportValidity();
+	});
+
+	formatedPriceInput.addEventListener('focus', function () {
+		const currentValue = this.value;
+
+		const value = currentValue
+			.replace(/\s/g, '')
+			.replace('R$', '')
+			.replace(/\./g, '')
+			.replace(',', '.');
+
+		this.value = value;
+	});
+
+	formatedPriceInput.addEventListener("blur", function (){
+		let value = this.value.replace(',', '.');
+		value = value.replace(/[^0-9.]/g, '');
+
+		let numericValue = parseFloat(value);
+
+		if(isNaN(numericValue)){
+			numericValue = 0;
+		}
+
+		this.value = numericValue.toLocaleString('pt-br', {
+			style: 'currency',
+			currency: 'BRL'
+		});
+
+		realPriceInput.value = numericValue;
+	});
+
+	function updateValues(){
+		let checkboxes = document.querySelectorAll('input[name="selectedImages"]:checked');
+		let values = Array.from(checkboxes).map(cb => cb.value).join(",");
+		document.getElementById("imgIdsToDelete").value = values;
+	}
+
+	function openConfirmBox(carId) {
+		carIdToDelete = carId;
+		document.getElementById("deleteId").value = carId;
+		document.getElementById("customConfirmBox").style.display = "flex";
+	}
+
+	function closeConfirmBox() {
+		document.getElementById("customConfirmBox").style.display = "none";
+	}
+</script>

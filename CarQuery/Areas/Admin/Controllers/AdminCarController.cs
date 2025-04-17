@@ -167,12 +167,14 @@ namespace CarQuery.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CarId, Brand, Model, ManufacturingYear, ModelYear, Power, Drivetrain, Engine, " +
-            "EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
+        public async Task<IActionResult> Edit(int id, [Bind("CarId, Brand, Model, BodyStyle, ManufacturingYear, ModelYear, Power, Drivetrain, Displacement, " +
+            "Valves, FuelType, Aspiration, Cylinders, CylinderConfiguration, EnginePosition, TransmissionType, TopSpeed, Doors, Price, ShortDescription, FullDescription, " +
             "Images, VideoLink")] Car editedCar, List<IFormFile> newImages, string imgIdsDelete = "0")
         {
             if (id != editedCar.CarId)
             {
+                Console.WriteLine("O Id é diferente");
+                Console.WriteLine("id: " + id + "-- CarId: " + editedCar.CarId);
                 return NotFound();
             }
 
