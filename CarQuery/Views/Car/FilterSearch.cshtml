@@ -1,4 +1,4 @@
-﻿@section Styles{
+﻿@section Styles {
 	<style>
 		.filter-form {
 			border-radius: 10px;
@@ -6,10 +6,10 @@
 			margin-top: 2%;
 		}
 
-		.filter-form label {
-			font-size: 1.1em;
-			font-weight: 500;
-		}
+			.filter-form label {
+				font-size: 1.1em;
+				font-weight: 500;
+			}
 	</style>
 }
 <div class="d-flex justify-content-center mt-4">
@@ -22,17 +22,17 @@
 		<hr>
 		<div class="form-group my-3">
 			<label>Nome ou marca do carro:</label>
-			<input type="text" class="form-control mt-2" id="filter" name="filter">
+			<input type="text" class="form-control mt-2" id="filter" name="filter" placeholder="Ex: Lexus LFA">
 		</div>
 		<hr>
 		<div class="form-group my-3">
-			<label>Potência:</label>
+			<label>Potência (cv):</label>
 
 			<div class="d-flex mt-2 ms-4 align-items-center">
 				De
-				<input type="number" class="form-control mx-3" id="minPower" name="minPower">
+				<input type="number" class="form-control mx-3" id="minPowerInput" name="minPower" placeholder="Ex: 240">
 				até
-				<input type="number" class="form-control ms-3" id="maxPower" name="maxPower">
+				<input type="number" class="form-control ms-3" id="maxPowerInput" name="maxPower" placeholder="Ex: 320">
 			</div>
 		</div>
 		<hr>
@@ -40,9 +40,9 @@
 			<label>Ano:</label>
 			<div class="d-flex mt-2 ms-4 align-items-center">
 				De
-				<input type="number" class="form-control mx-3" id="minYear" name="minYear">
+				<input type="number" class="form-control mx-3" id="minYearInput" name="minYear" placeholder="Ex: 2004">
 				até
-				<input type="number" class="form-control ms-3" id="maxYear" name="maxYear">
+				<input type="number" class="form-control ms-3" id="maxYearInput" name="maxYear" placeholder="Ex: 2010">
 			</div>
 		</div>
 		<hr>
@@ -50,9 +50,11 @@
 			<label>Faixa de preço</label>
 			<div class="d-flex mt-2 ms-4 align-items-center">
 				De
-				<input type="number" class="form-control mx-3" id="minPrice" name="minPrice">
+				<input class="form-control mx-3" id="formatedMinPriceInput" placeholder="Ex: R$75.000,00">
+				<input type="hidden" class="form-control mx-3" id="realMinPriceInput" name="minPrice">
 				até
-				<input type="number" class="form-control ms-3" id="maxPrice" name="maxPrice">
+				<input class="form-control mx-3" id="formatedMaxPriceInput" placeholder="Ex: R$90.000,00">
+				<input type="hidden" class="form-control ms-3" id="realMaxPriceInput" name="maxPrice">
 			</div>
 		</div>
 		<hr />
@@ -64,5 +66,137 @@
 </form>
 
 <script>
+	const formatedMinPriceInput = document.getElementById("formatedMinPriceInput");
+	const formatedMaxPriceInput = document.getElementById("formatedMaxPriceInput");
+	const realMinPriceInput = document.getElementById("realMinPriceInput");
+	const realMaxPriceInput = document.getElementById("realMaxPriceInput");
+
+	const minYearInput = document.getElementById("minYearInput");
+	const maxYearInput = document.getElementById("maxYearInput");
+
+	const minPowerInput = document.getElementById("minPowerInput");
+	const maxPowerInput = document.getElementById("maxPowerInput");
+
+	//formatações para inputs de preço
+	function parseCurrencyToNumber(input){
+		const currentValue = input.value;
+
+		const value = currentValue
+			.replace(/\s/g, '')
+			.replace('R$', '')
+			.replace(/\./g, '')
+			.replace(',', '.');
+
+		return value;
+	}
+
+	function parseCurrency(input, hiddenInput){
+		let value = input.value.replace(',', '.');
+		value = value.replace(/[^0-9.]/g, '');
+
+		let numericValue = parseFloat(value);
+
+		if(isNaN(numericValue)){
+			numericValue = 0;
+		}
+
+		input.value = numericValue.toLocaleString('pt-br', {
+			style: 'currency',
+			currency: 'BRL'
+		});
+
+		hiddenInput.value = numericValue;
+	}
+
+	function removeCurrencyFormatOnFocus(input){
+		input.addEventListener("focus", function(){
+			const value = parseCurrencyToNumber(this);
+			this.value = value;
+		})
+	}
+
+	function handlePriceField(input, hiddenInput){
+		removeCurrencyFormatOnFocus(input);
+
+		input.addEventListener("blur", function(){
+			parseCurrency(input, hiddenInput);
+			validateMinMaxPriceInput();
+			input.reportValidity();
+		})
+	}
+
+	//validações para inputs de preço
+	function validateMinMaxPriceInput(){
+		formatedMinPriceInput.setCustomValidity("");
+		formatedMaxPriceInput.setCustomValidity("");
+
+		const minPrice = parseInt(realMinPriceInput.value);
+		const maxPrice = parseInt(realMaxPriceInput.value);
+
+		if(maxPrice < minPrice && maxPrice != 0){
+			formatedMinPriceInput.setCustomValidity("O preço mínimo deve ser menor que o preço máximo");
+			formatedMaxPriceInput.setCustomValidity("O preço máximo deve ser 0 ou maior que o preço mínimo");
+		}
+	}
+
+	//validações para as inputs de ano
+	function validateYearInput(yearInput){
+		let value = yearInput.value;
+
+		yearInput.setAttribute('min', 1886);
+		yearInput.setAttribute('max', new Date().getFullYear());
+
+		yearInput.addEventListener("blur", function(){
+			validateMinMaxYearRelation();
+			this.reportValidity();
+		});
+	}
+
+	function validateMinMaxYearRelation(){
+		minYearInput.setCustomValidity("");
+		maxYearInput.setCustomValidity("");
+
+		const minYear = parseInt(minYearInput.value);
+		const maxYear = parseInt(maxYearInput.value);
+
+		if(maxYear < minYear && maxYear != 0){
+			minYearInput.setCustomValidity("O ano mínimo deve ser menor que o ano máximo");
+			maxYearInput.setCustomValidity("O ano máximo deve ser 0 ou maior que o ano mínimo");
+		}
+	}
+
+	//validações para as inputs de potência
+	function validatePowerInput(powerInput){
+		powerInput.addEventListener("blur", function(){
+			validateMinMaxPowerInput();
+			this.reportValidity();
+		});
+	}
+
+	function validateMinMaxPowerInput(){
+		minPowerInput.setCustomValidity("");
+		maxPowerInput.setCustomValidity("");
+
+		const minPower = parseInt(minPowerInput.value);
+		const maxPower = parseInt(maxPowerInput.value);
+
+		if(maxPower < minPower && maxPower != 0){
+			minPowerInput.setCustomValidity("A potência mínima deve ser menor que a máxima");
+			maxPowerInput.setCustomValidity("A potência máxima deve ser 0 ou maior que a mínima");
+		}
+	}
+
+	//aplicando formatações e validações
+	document.addEventListener("DOMContentLoaded", function(){
+		handlePriceField(formatedMinPriceInput, realMinPriceInput);
+		handlePriceField(formatedMaxPriceInput, realMaxPriceInput);
+
+		validateYearInput(minYearInput);
+		validateYearInput(maxYearInput);
+
+		validatePowerInput(minPowerInput);
+		validatePowerInput(maxPowerInput);
+
+	})
 
 </script>
