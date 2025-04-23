@@ -50,6 +50,7 @@ namespace CarQuery.Areas.Admin.Controllers
 
                 var model = await PagingList.CreateAsync(result, 10, pageIndex, sort, "Title");
                 model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+                model.Action = "ListCarousels";
 
                 return View(model);
             }
