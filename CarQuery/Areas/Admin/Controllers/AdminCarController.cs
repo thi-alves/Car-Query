@@ -56,7 +56,7 @@ namespace CarQuery.Areas.Admin.Controllers
 
                 if (!string.IsNullOrEmpty(filter))
                 {
-                    result = result.Where(m => m.Model.Contains(filter));
+                    result = result.Where(m => (m.Brand + " " + m.Model).Contains(filter));
                 }
 
                 var model = await PagingList.CreateAsync(result, 10, pageIndex, sort, "Model");
