@@ -12,7 +12,21 @@
 			font: 20px;
 		}
 
-		.modal-overlay {
+		.carousel-card-img {
+			border-radius: 10px;
+			display: flex;
+			background-color: black;
+			width: 100%;
+			justify-content: center;
+			object-fit: cover;
+			overflow: hidden;
+		}
+
+			.carousel-card-img img {
+				height: 140px;
+				width: auto;
+			}
+		.custom-modal-overlay {
 			display: none;
 			position: fixed;
 			top: 0;
@@ -24,8 +38,9 @@
 			align-items: center;
 		}
 
-		.modal-content {
-			background: black;
+		.custom-modal-box {
+			display: block;
+			background-color: black;
 			color: white;
 			padding: 20px;
 			border-radius: 10px;
@@ -34,7 +49,7 @@
 			box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 		}
 
-		.modal-buttons {
+		.custom-modal-buttons {
 			margin-top: 15px;
 			display: flex;
 			justify-content: space-between;
@@ -56,34 +71,78 @@
 			background-color: #6c757d;
 			color: white;
 		}
+
+		.pagination {
+			display: flex;
+			list-style: none;
+			padding-left: 0;
+		}
+
+			.pagination li {
+				margin: 0 4px;
+			}
+
+				.pagination li a {
+					display: block;
+					padding: 8px 12px;
+					border: 1px solid #dee2e6;
+					color: #007bff;
+					text-decoration: none;
+					border-radius: 4px;
+					transition: background-color 0.3s, color 0.3s;
+				}
+
+					.pagination li a:hover {
+						background-color: #e9ecef;
+						color: #0056b3;
+					}
+
+				.pagination li.active a {
+					background-color: #007bff;
+					color: white;
+					border-color: #007bff;
+				}
+
+				.pagination li.disabled a {
+					color: #6c757d;
+					pointer-events: none;
+					background-color: #fff;
+					border-color: #dee2e6;
+				}
 	</style>
 }
 <div class="container">
-
+	<h1 class="mt-4">Gerenciar carrossel</h1>
+	<hr />
 	<form method="get" class="form-inline">
-		<input name="filter" class="form-control" placeholder="filtro"
-			   value="@Model.RouteValue["Filter"]" />
-		<button type="submit" class="btn btn-info">
-			<span class="glyphicon glyphicon-search" aria-hidden="true"></span> Procurar
-		</button>
+		<div class="row col-12">
+			<div class="col-8">
+				<input name="filter" class="form-control" placeholder="Informe o título do carrossel que quer gerenciar" value="@Model.RouteValue["Filter"]" />
+			</div>
+			<div class="col-4">
+				<button type="submit" class="btn btn-info">
+					<span class="glyphicon glyphicon-search" aria-hidden="true"></span> Procurar
+				</button>
+			</div>
+		</div>
 	</form>
 
-	<h3>Carrossel</h3>
 	<hr />
+
+	<div class="d-flex justify-content-end mt-2">
+		<vc:pager paging-list="@Model" class="pagination justify-content-center"></vc:pager>
+	</div>
 
 	@foreach (var carousel in Model)
 	{
-		<div class="row carousel-card mt-3">
+		<div class="row carousel-card mt-3 mx-2">
 			<div class="d-flex align-items-center">
-				<div class="col-4 col-lg-2 my-2">
-					<img class="img-fluid" src="@carousel.CarouselSlides[0].Image.ImgPath">
-
+				<div class="col-4 col-lg-2 my-2 carousel-card-img">
+					<img src="@carousel.CarouselSlides[0].Image.ImgPath">
 				</div>
 				<div class="col-4 ms-lg-5 ms-3">
 					<p>@carousel.Title</p>
-					<div class="d-inline">
-						<a asp-area="" asp-controller="" asp-action="" asp-route-id="@carousel.CarouselId">Detalhes</a>
-						||
+					<div class="d-flex gap-2">
 						<a asp-controller="AdminCarousel" asp-action="Edit" asp-route-id="@carousel.CarouselId">Editar</a>
 						||
 						<a href="#" class="text-danger" onclick="openConfirmBox('@carousel.CarouselId')">Deletar</a>
@@ -93,13 +152,13 @@
 		</div>
 	}
 
-	<div id="customConfirmBox" class="modal-overlay">
-		<div class="modal-content">
-			<form asp-controller="AdminCarousel" asp-action="Delete" method="post">
+	<div id="customConfirmBox" class="custom-modal-overlay">
+		<div class="custom-modal-box">
+			<form asp-controller="AdminCarousel" asp-action="Delete" class="" method="post">
 				<h2>Confirmar Exclusão</h2>
 				<p>Tem certeza que deseja deletar este item? Essa ação não pode ser desfeita.</p>
 				<input type="hidden" name="id" id="deleteId" />
-				<div class="modal-buttons">
+				<div class="custom-modal-buttons">
 					<button type="button" onclick="closeConfirmBox()" class="btn btn-secondary">Cancelar</button>
 					<button type="submit" class="btn btn-danger">Sim, Deletar</button>
 				</div>
