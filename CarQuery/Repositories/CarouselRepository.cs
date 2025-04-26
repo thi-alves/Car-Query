@@ -174,6 +174,7 @@ namespace CarQuery.Repositories
                 {
                     c.Title,
                     c.Position,
+                    c.IsVisible,
 
                     CarouselSlides = c.CarouselSlides.Select(cs => new
                     {
@@ -184,6 +185,7 @@ namespace CarQuery.Repositories
                     })
                     .ToList()
                 })
+                .Where(c => c.IsVisible == true)
                 .OrderBy(c => c.Position)
                 .ToListAsync();
 
