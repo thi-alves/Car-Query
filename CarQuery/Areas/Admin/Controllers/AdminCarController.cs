@@ -321,15 +321,14 @@ namespace CarQuery.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SearchByModel([FromQuery] string model)
+        public async Task<IActionResult> SearchByBrandAndModel([FromQuery] string model)
         {
             try
             {
                 Console.WriteLine("Model recebida: " + model);
                 if (!string.IsNullOrEmpty(model))
                 {
-                    IEnumerable<Car> cars = await _carRepository.SearchByModel(model);
-
+                    IEnumerable<Car> cars = await _context.Car.Include(c => c.Images).Where(c => (c.Brand + " " + c.Model).Contains(model)).ToListAsync();
                     return Ok(cars);
                 }
                 Console.WriteLine("Lista vazia");
