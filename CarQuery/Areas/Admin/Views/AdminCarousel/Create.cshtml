@@ -42,21 +42,20 @@
 			border: 1px solid #a8a6a6;
 			border-top: none;
 			padding: 2px;
-			color: #f1f6f6 ;
+			color: #f1f6f6;
 			margin: 0;
 		}
 
-		.suggestion:hover {
-			background-color: #b0b0b0;
-		}
+			.suggestion:hover {
+				background-color: #b0b0b0;
+			}
 
-		.search-btn{
-			margin-left: 20px;
+		.search-btn {
 			height: 5vh;
-			min-height: 25px;	
+			min-height: 25px;
 		}
 
-		.images-area{
+		.images-area {
 			display: flex;
 			width: 100%;
 			margin: 20px auto;
@@ -65,19 +64,19 @@
 			align-content: center;
 		}
 
-		.images-area img{
-			height: 20vh;
-			width: auto;
-			max-width: 100%;
-			object-fit: contain;
-		}
+			.images-area img {
+				height: 20vh;
+				width: auto;
+				max-width: 100%;
+				object-fit: contain;
+			}
 
-		.slides-area{
+		.slides-area {
 			display: flex;
 			flex-wrap: wrap;
 		}
 
-		.slide{
+		.slide {
 			border: 1px solid;
 			border-radius: 8px;
 			margin: 10px;
@@ -87,14 +86,18 @@
 			padding: 10px;
 		}
 
-		.slide img {
-			border-radius: 8px;
-			height: 100%;
-			margin-right: 10px;
+			.slide img {
+				border-radius: 8px;
+				height: 100%;
+				margin-right: 10px;
+			}
+
+		#slidesDataInput {
+			display: none;
 		}
 
-		#slidesDataInput{
-			display: none;
+		.selected-image {
+			border: 4px solid lightsteelblue;
 		}
 	</style>
 }
@@ -115,11 +118,13 @@
 				<br />
 				<select id="carouselPosition" class="form-select" asp-for="Position">
 					@{
-						if(TempData["TotalCarousels"] != null){
+						if (TempData["TotalCarousels"] != null)
+						{
 							int positions = (int)TempData["TotalCarousels"];
 							positions++;
 
-							for(int i = 1; i <= positions; i++){
+							for (int i = 1; i <= positions; i++)
+							{
 								<option value="@i">@i</option>
 							}
 						}
@@ -146,39 +151,39 @@
 			</div>
 		</div>
 		<br />
-
-		<button id="createCarouselButton" type="submit" class="btn btn-success" disabled>Criar</button>
+		<div class="d-flex justify-content-end gap-3 me-5">
+			<a class="btn btn-primary" asp-area="Admin" asp-controller="Admin" asp-action="Index">Voltar</a>
+			<button id="createCarouselButton" type="submit" class="btn btn-success" disabled>Criar</button>
+		</div>
+		
 	</form>
 
 	<div class="col-11 col-lg-8 model-overlay" id="modelOverlay">
 		<div id="slideForm" class="slide-form">
 			<h4>Adicionar slide</h4>
 
-			<form class="form-group">
+			<form class="form-group" onsubmit="return false;">
 				<p>Informe o modelo do carro</p>
 				<div class="row">
 					<div class="d-flex">
-						<div class="col-4 search-box ">
+						<div class="col-8 col-lg-6 search-box ">
 							<input id="carModel" name="carModel" class="form-control search-input" />
 							<div id="suggestions" class="suggestions">
-
 							</div>
 						</div>
 
-						<button type="button" class="search-btn" onclick="search()">Search</button>
-					</div>
-				</div>		
-				<br />
-	
-				<div id="imagesBox" class="row">
-					<div id="imagesArea" class="images-area ">
-						
+						<button type="button" class="btn btn-outline-primary ms-3 search-btn" onclick="search()">Search</button>
 					</div>
 				</div>
-				
+				<br />
+
+				<div id="imagesBox" class="row">
+					<div id="imagesArea" class="images-area ">
+					</div>
+				</div>
+
 				<button type="button" class="btn btn-primary" onclick="closeSlideForm()">Voltar</button>
 				<button type="button" class="btn btn-success" onclick="addSlide()">Adicionar</button>
-
 			</form>
 		</div>
 	</div>
@@ -187,7 +192,7 @@
 <script>
 	let slidesCounter = 0;
 	let slidesData = [];
-	
+
 	let carsData;
 	let selectedCar;
 	let selectedImage;
@@ -228,14 +233,14 @@
 		var model = carModelInput.value;
 
 		if(model.trim() !== ""){
-			fetch(`/Admin/AdminCar/SearchByModel?model=${encodeURIComponent(model)}`)
+			fetch(`/Admin/AdminCar/SearchByBrandAndModel?model=${encodeURIComponent(model)}`)
 				.then(response => {
 					console.log("Status: " + response.status);
 
 					if(!response.ok){
 						throw new Error("Erro");
 					}
-					
+
 					return response.json();
 				})
 				.then(data => {
@@ -249,17 +254,17 @@
 				})
 				.catch(error => {
 					console.error("Erro na requisição: " + error);
-				});	
+				});
 		}
 	}
 
-	function showSuggestions(){	
+	function showSuggestions(){
 		suggestionsArea.innerHTML = '';
 
 		carsData.forEach(model =>{
 			var newSuggestion = document.createElement("p");
 			newSuggestion.id = model.carId;
-			newSuggestion.textContent = model.model;
+			newSuggestion.textContent = model.brand + " " + model.model;
 
 			newSuggestion.addEventListener("click", function(){
 				selectModel(this.id, this.textContent);
@@ -268,7 +273,7 @@
 			newSuggestion.className = "suggestion";
 
 			suggestionsArea.appendChild(newSuggestion);
-		})	
+		})
 	}
 
 	function selectModel(id, text){
@@ -302,6 +307,7 @@
 			img.src = image.imgPath;
 			img.width = 100;
 			img.addEventListener("click", function(){
+				applySelectedImageClass(img);
 				selectedImage = image;
 			})
 
@@ -313,7 +319,7 @@
 
 		if(selectedCar?.carId && selectedImage?.imageId){
 			var slidesArea = document.getElementById("slidesArea");
-			
+
 			var slide = document.createElement("div");
 			slide.className = "slide";
 
@@ -330,12 +336,12 @@
 			removeBtn.addEventListener("click", function(){
 				removeSlide(slide.id);
 			})
-			
+
 			slide.appendChild(img);
 			slide.appendChild(removeBtn);
 
 			slidesArea.appendChild(slide);
-		
+
 			slidesCounter++;
 
 			var newSlide = {CarId: selectedCar.carId, ImageId: selectedImage.imageId};
@@ -348,7 +354,7 @@
 
 			checkForm();
 			closeSlideForm();
-		}	
+		}
 	}
 
 	function removeSlide(slideId){
@@ -386,6 +392,16 @@
 		}
 		else{
 			console.log("O slideId não foi identificado");
-		}	
+		}
+	}
+
+	function applySelectedImageClass(img){
+		const previousSelectedImage = document.querySelector(".selected-image");
+
+		if(previousSelectedImage){
+			previousSelectedImage.classList.remove("selected-image");
+		}
+
+		img.classList.add("selected-image");
 	}
 </script>
