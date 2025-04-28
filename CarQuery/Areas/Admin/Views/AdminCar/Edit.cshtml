@@ -222,8 +222,9 @@
 		</div>
 		<input class="form-control" type="hidden" name="imgIdsDelete" id="imgIdsToDelete" placeholder="Exemplo: 1,4,5" />
 
-		<div class="mt-4">
+		<div class="d-flex gap-3 mt-4">
 			<a class="btn btn-danger d-inline-block" onclick="openConfirmBox('@Model.CarId')">Excluir</a>
+			<a class="btn btn-primary ms-auto" asp-area="Admin" asp-controller="AdminCar" asp-action="ListCars">Cancelar</a>
 			<input type="submit" class="btn btn-success" value="Salvar" />
 		</div>
 	</form>
