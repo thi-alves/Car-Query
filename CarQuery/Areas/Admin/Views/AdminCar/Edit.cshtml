@@ -194,10 +194,10 @@
 			<textarea asp-for="FullDescription" class="form-control" value="@Model.FullDescription" placeholder="Essa descrição será exibida na página de detalhes do carro"></textarea>
 			<span asp-validation-for="FullDescription" class="text-danger"></span>
 		</div>
-
+		<input type="hidden" asp-for="Images" />
 		<div class="form-group mt-3">
-			<label asp-for="Images">Imagens:</label>
-			<input asp-for="Images" type="file" class="form-control" multiple />
+			<label asp-for="Images">Adicionar novas imagens:</label>
+			<input type="file" class="form-control" name="newImages" multiple />
 			<span asp-validation-for="Images" class="text-danger"></span>
 		</div>
 
