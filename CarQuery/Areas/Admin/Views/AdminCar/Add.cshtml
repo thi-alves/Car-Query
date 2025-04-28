@@ -175,7 +175,8 @@
 			<input class="form-control" asp-for="VideoLink" placeholder="Link do vídeo sobre o carro. Ex: https://www.youtube.com/embed/....."/>
 			<span class="text-danger" asp-validation-for="VideoLink"></span>
 		</div>
-		<div class="form-group mt-4">
+		<div class="d-flex justify-content-end gap-3 mt-4">
+			<a class="btn btn-primary" asp-area="Admin" asp-controller="Admin" asp-action="Index">Voltar</a>
 			<input type="submit" class="btn btn-success" />
 		</div>
 	</form>
