@@ -63,12 +63,15 @@
 		@foreach (var carousel in Model)
 		{
 			int totalCarouselSlides = carousel.CarouselSlides.Count();
+
+			if (totalCarouselSlides == 0)
+			{
+				continue;
+			}
 			var titlePositionClass = iteration % 2 == 0 ? "order-lg-0" : "order-lg-2";
 
 			<div class="carousel-background">
 				<div class="row">
-
-
 					<div class="d-flex col-12 col-lg-3 mt-3 mb-2 align-items-center @titlePositionClass">
 						<h1 class="display-5 text-light ms-4">@carousel.Title</h1>
 					</div>
