@@ -227,15 +227,16 @@ namespace CarQuery.Areas.Admin.Controllers
 
                                         //deletando a imagem do servidor
                                         System.IO.File.Delete(imgPath);
-
-                                        //deletando no banco de dados
-                                        await _imageRepository.DeleteImageById(imgIdDelete[i]);
                                     }
                                     else
                                     {
                                         Console.WriteLine("File doesn't exists!!");
 
                                     }
+                                    //Exclui os CarouselSlides que usam a imagem a ser deletada
+                                    await _carouselRepository.DeleteAllCarouselsSlidesByImage(img);
+                                    //deletando no banco de dados
+                                    await _imageRepository.DeleteImageById(imgIdDelete[i]);
                                 }
                             }
                         }
@@ -300,7 +301,7 @@ namespace CarQuery.Areas.Admin.Controllers
 
                 var car = await _carRepository.GetCarById(id);
 
-                //Exclui os CarouselSldies que usam as imagens do carro a ser deletado
+                //Exclui os CarouselSlides que usam as imagens do carro a ser deletado
                 foreach(var img in car.Images)
                 {
                     await _carouselRepository.DeleteAllCarouselsSlidesByImage(img);
