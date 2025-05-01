@@ -138,7 +138,7 @@
 		<div class="row carousel-card mt-3 mx-2">
 			<div class="d-flex align-items-center">
 				<div class="col-4 col-lg-2 my-2 carousel-card-img">
-					<img src="@carousel.CarouselSlides[0].Image.ImgPath">
+					<img src="@(carousel.CarouselSlides.Count > 0 ? carousel.CarouselSlides[0].Image.ImgPath : "")">
 				</div>
 				<div class="col-4 ms-lg-5 ms-3">
 					<p>@carousel.Title</p>
