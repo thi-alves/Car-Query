@@ -167,6 +167,18 @@ namespace CarQuery.Repositories
             return false;
         }
 
+        public async Task<bool> DeleteAllCarouselsSlidesByImage(Image img)
+        {
+
+            var carouselsSlides = await _context.CarouselSlide.Where(c => c.Image.ImageId == img.ImageId).ToListAsync();
+
+            _context.CarouselSlide.RemoveRange(carouselsSlides);
+
+            int rowsAffected = await _context.SaveChangesAsync();
+
+            return rowsAffected > 0;
+        }
+
         public async Task<List<CarouselDisplayViewModel>> GetAllVisibleCarouselsToDisplay()
         {
             var carousels = await _context.Carousel
