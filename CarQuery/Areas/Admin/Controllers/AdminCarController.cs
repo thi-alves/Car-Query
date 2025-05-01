@@ -25,14 +25,16 @@ namespace CarQuery.Areas.Admin.Controllers
         private readonly AppDbContext _context;
         private readonly ICarRepository _carRepository;
         private readonly IImageRepository _imageRepository;
+        private readonly ICarouselRepository _carouselRepository;
         private readonly ILogger <AdminCarController> _logger;
 
-        public AdminCarController(IWebHostEnvironment system, AppDbContext context, ICarRepository carRepository, IImageRepository imageRepository, ILogger <AdminCarController> logger)
+        public AdminCarController(IWebHostEnvironment system, AppDbContext context, ICarRepository carRepository, IImageRepository imageRepository, ICarouselRepository carouselRepository, ILogger <AdminCarController> logger)
         {
             ServerPath = system.WebRootPath;
             _context = context;
             _carRepository = carRepository;
             _imageRepository = imageRepository;
+            _carouselRepository = carouselRepository;
             _logger = logger;
         }
 
@@ -295,8 +297,17 @@ namespace CarQuery.Areas.Admin.Controllers
             try
             {
                 Console.WriteLine("ID RECEBIDO: " + id);
-                bool result = await _carRepository.DeleteCar(id);
 
+                var car = await _carRepository.GetCarById(id);
+
+                //Exclui os CarouselSldies que usam as imagens do carro a ser deletado
+                foreach(var img in car.Images)
+                {
+                    await _carouselRepository.DeleteAllCarouselsSlidesByImage(img);
+                }
+
+                bool result = await _carRepository.DeleteCar(id);
+                
                 return RedirectToAction("OperationResultView", "Admin", new
                 {
                     succeeded = result,
