@@ -140,7 +140,7 @@
 		<div class="row car-card mt-3 mx-2">
 			<div class="d-flex align-items-center">
 				<div class="col-4 col-lg-2 my-2 car-card-img">
-					<img src="@car.Images[0].ImgPath">
+					<img src="@(car.Images.Count > 0 ? car.Images[0].ImgPath : "")">
 				</div>
 				<div class="col-4 ms-lg-5 ms-3">
 					<p>@car.Brand @car.Model</p>
@@ -160,8 +160,8 @@
 		<div class="custom-modal-box">
 			<form asp-controller="AdminCar" asp-action="Delete" class="" method="post">
 				<h2>Confirmar Exclusão</h2>
-				<p>Tem certeza que deseja deletar este item? Essa ação não pode ser desfeita.</p>
-				<input type="hidden" name="id" id="deleteId" />
+				<p class="mb-0">Tem certeza que deseja deletar este carro?</p>
+				<p class="text-danger fw-semibold mt-0">Os slides que usam as imagens deste veículo também serão deletados. Essa ação não pode ser desfeita.</p>				<input type="hidden" name="id" id="deleteId" />
 				<div class="custom-modal-buttons">
 					<button type="button" onclick="closeConfirmBox()" class="btn btn-secondary">Cancelar</button>
 					<button type="submit" class="btn btn-danger">Sim, Deletar</button>
