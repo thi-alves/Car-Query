@@ -15,34 +15,34 @@ namespace CarQuery.Services
 
         public void SeedRoles()
         {
-            if (!_roleManager.RoleExistsAsync("Admin").Result)
+            if (!_roleManager.RoleExistsAsync("SuperAdmin").Result)
             {
                 IdentityRole role = new IdentityRole();
-                role.Name = "Admin";
-                role.NormalizedName = "ADMIN";
+                role.Name = "SuperAdmin";
+                role.NormalizedName = "SUPERADMIN";
                 IdentityResult roleResult = _roleManager.CreateAsync(role).Result;
             }
         }
 
         public void SeedUsers()
         {
-            if (_userManager.FindByEmailAsync("thiago.stdy@gmail.com").Result == null)
+            if (_userManager.FindByEmailAsync("CQ_superAdmin@gmail.com").Result == null)
             {
                 IdentityUser user = new IdentityUser();
 
-                user.UserName = "Thiago Alves";
-                user.Email = "thiago.stdy@gmail.com";
-                user.NormalizedUserName = "THIAGO ALVES";
-                user.NormalizedEmail = "THIAGO.STDY@GMAIL.COM";
+                user.UserName = "Super Admin";
+                user.Email = "CQ_superAdmin@gmail.com";
+                user.NormalizedUserName = "SUPER ADMIN";
+                user.NormalizedEmail = "CQ_SUPERADMIN@GMAIL.COM";
                 user.EmailConfirmed = true;
                 user.LockoutEnabled = false;
                 user.SecurityStamp = Guid.NewGuid().ToString();
 
-                IdentityResult result = _userManager.CreateAsync(user, "AdminPassword").Result;
+                IdentityResult result = _userManager.CreateAsync(user, "SuperAdminPassword").Result;
 
                 if (result.Succeeded)
                 {
-                    _userManager.AddToRoleAsync(user, "Admin").Wait();
+                    _userManager.AddToRoleAsync(user, "SuperAdmin").Wait();
                 }
                 else
                 {
