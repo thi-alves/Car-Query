@@ -18,7 +18,7 @@ namespace CarQuery.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
-    [Authorize("Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class AdminCarController : Controller
     {
         private string ServerPath { get; set; }

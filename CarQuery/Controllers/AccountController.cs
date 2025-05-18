@@ -19,14 +19,14 @@ namespace CarQuery.Controllers
         }
 
         [HttpGet]
-        [Authorize("Admin")]
+        [Authorize(Roles = "SuperAdmin")]
         public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
-        [Authorize("Admin")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> Register(RegisterViewModel registerVm)
         {
             if (ModelState.IsValid)

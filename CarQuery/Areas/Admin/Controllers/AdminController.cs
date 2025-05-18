@@ -6,7 +6,7 @@ namespace CarQuery.Areas.Admin.Controllers
 {
 
     [Area("Admin")]
-    [Authorize("Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class AdminController : Controller
     {
         public IActionResult Index()

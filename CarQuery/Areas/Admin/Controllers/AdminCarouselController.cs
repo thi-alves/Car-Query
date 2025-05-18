@@ -13,7 +13,7 @@ using ReflectionIT.Mvc.Paging;
 namespace CarQuery.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize("Admin")]
+    [Authorize(Roles = "SuperAdmin,Admin")]
     public class AdminCarouselController : Controller
     {
         private readonly AppDbContext _context;
@@ -194,7 +194,7 @@ namespace CarQuery.Areas.Admin.Controllers
                         carousel.Title = carouselVm.Title;
                         carousel.Position = carouselVm.Position;
                         carousel.IsVisible = carouselVm.IsVisible;
-                        
+
                         bool operationSucceeded = await _carouselRepository.UpdateCarousel(carousel, previousCarouselPosition);
 
                         if (operationSucceeded) return RedirectToAction("OperationResultView", "Admin", new { succeeded = true, message = "O carrossel foi atualizado com sucesso" });
