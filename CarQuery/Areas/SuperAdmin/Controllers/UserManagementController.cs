@@ -1,4 +1,5 @@
-﻿using CarQuery.Data;
+﻿using System.Data.Common;
+using CarQuery.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -68,6 +69,47 @@ namespace CarQuery.Areas.SuperAdmin.Controllers
             {
                 _logger.LogError(ex, "UserManagementController (ListUsers): {ExceptionType} Erro ao listar usuários", ex.GetType().Name);
                 return RedirectToAction("OperationResultView", "Admin", new { area = "Admin", succeeded = false, message = "Erro ao listar usuários. Por favor tente novamente mais tarde." });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string email)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+
+                if (user != null)
+                {
+                    var result = await _userManager.DeleteAsync(user);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("OperationResultView", "Admin", new
+                        {
+                            area = "Admin",
+                            succeeded = true,
+                            message = "O usuário foi deletado com sucesso"
+                        });
+                    }
+                }
+                return RedirectToAction("OperationResultView", "Admin", new
+                {
+                    area = "Admin",
+                    succeeded = false,
+                    message = "Não foi possível deletar o usuário. Por favor tente novamente."
+                });
+            }
+
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UserManagementController (DeleteUser): {ExceptionType} Erro ao deletar usuário", ex.GetType().Name);
+                return RedirectToAction("OperationResultView", "Admin", new
+                {
+                    area = "Admin",
+                    succeeded = false,
+                    message = "Erro inesperado. Não foi possível deletar o usuário. Por favor tente novamente."
+                });
             }
         }
     }
