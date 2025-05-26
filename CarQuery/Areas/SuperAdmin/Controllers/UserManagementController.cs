@@ -1,9 +1,12 @@
 ﻿using System.Data.Common;
 using CarQuery.Data;
+using CarQuery.ViewModels.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Polly;
 using ReflectionIT.Mvc.Paging;
 
 namespace CarQuery.Areas.SuperAdmin.Controllers
@@ -109,6 +112,185 @@ namespace CarQuery.Areas.SuperAdmin.Controllers
                     area = "Admin",
                     succeeded = false,
                     message = "Erro inesperado. Não foi possível deletar o usuário. Por favor tente novamente."
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string email)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+
+                if (user != null)
+                {
+                    EditUserViewModel userVm = new EditUserViewModel(user);
+                    return View(userVm);
+                }
+                return RedirectToAction("OperationResultView", "Admin", new
+                {
+                    area = "Admin",
+                    succeeded = false,
+                    message = "Erro inesperado. Não foi possível encontrar o usuário. Por favor tente novamente"
+                });
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("OperationResultView", "Admin", new
+                {
+                    area = "Admin",
+                    succeeded = false,
+                    message = "Erro inesperado. Não foi possível encontrar o usuário. Por favor tente novamente"
+                });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserViewModel userVm)
+        {
+            try
+            {
+                //serve para remover os erros de validação desses campos, que ocorreriam ao testar ModelState.IsValid no caso de o SuperAdmin não alterar a senha, fazendo com que os atributos abaixo fossem nulos ou vazios
+                if (string.IsNullOrEmpty(userVm.NewPassword))
+                {
+                    ModelState.Remove(nameof(userVm.NewPassword));
+                    ModelState.Remove(nameof(userVm.ConfirmNewPassword));
+                }
+
+                var user = await _userManager.FindByIdAsync(userVm.UserId);
+
+                if (user != null)
+                {
+                    //Criando usuário temporário para verificar se userName email atendem os requisitos configurados
+                    var tempUser = new IdentityUser { UserName = userVm.UserName, Email = userVm.Email };
+                    var userValidation = await _userManager.UserValidators[0].ValidateAsync(_userManager, tempUser);
+
+                    if (!userValidation.Succeeded)
+                    {
+                        /* Caso o email ou nome do usuário não mude, o UserValidator entende que eles estão duplicados pois compara o tempUser 
+                         * com o usuário (que queremos atualizar) registrado no banco de dados. Esse código serve para lidar com essa possibilidade*/
+                        bool emailDuplicated = userValidation.Errors.Any(e => e.Code == "DuplicateEmail");
+                        bool userNameDuplicated = userValidation.Errors.Any(e => e.Code == "DuplicateUserName");
+
+                        List<string> ignoreErrors = new List<string>();
+                        //caso verdadeiro, significa que o único email duplicado é o do próprio usuário que queremos atualizar
+                        if (emailDuplicated && userVm.Email.Equals(user.Email))
+                        {
+                            ignoreErrors.Add("DuplicateEmail");
+                        }
+
+                        if (userNameDuplicated && userVm.UserName.Equals(user.UserName))
+                        {
+                            ignoreErrors.Add("DuplicateUserName");
+                        }
+
+                        foreach (var error in userValidation.Errors)
+                        {
+                            if (!ignoreErrors.Contains(error.Code))
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                        }
+
+                        if (!ModelState.IsValid)
+                        {
+                            return View(userVm);
+                        }
+                    }
+
+                    user.UserName = userVm.UserName;
+                    user.Email = userVm.Email;
+
+                    var updateUserResult = await _userManager.UpdateAsync(user);
+
+                    if (!updateUserResult.Succeeded)
+                    {
+                        return RedirectToAction("OperationResultView", "Admin", new
+                        {
+                            area = "Admin",
+                            succeeded = false,
+                            message = "Erro inesperado. Não foi possível atualizar os dados do usuário. Por favor tente novamente"
+                        });
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(userVm.NewPassword))
+                    {
+                        //verificar se a nova senha está dentro dos parâmetros do Identity
+                        var passwordValidation = await _userManager.PasswordValidators[0].ValidateAsync(_userManager, tempUser, userVm.NewPassword);
+
+                        if (!passwordValidation.Succeeded)
+                        {
+                            foreach (var error in passwordValidation.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            return View(userVm);
+                        }
+
+                        //usado para repetir operações caso elas falhem
+                        var retryPolicy = Policy
+                            .HandleResult<bool>(result => result == false)
+                            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(2));
+
+                        var hasPassword = await _userManager.HasPasswordAsync(user);
+                        //se o usuário não tiver senha, da erro no RemovePassword
+                        if (hasPassword)
+                        {
+                            IdentityResult removePassIdentityResult = IdentityResult.Failed();
+                            bool removeResult = await retryPolicy.ExecuteAsync(async () =>
+                            {
+                                var result = await _userManager.RemovePasswordAsync(user);
+                                removePassIdentityResult = result;
+                                return result.Succeeded;
+                            });
+
+                            if (!removeResult)
+                            {
+                                _logger.LogError("UserManagement (EditUser): erro ao remover a senha do usuário {UserId}. Erro {Error}", user.Id, string.Join(", ", removePassIdentityResult.Errors.Select(e => e.Description)));
+                                return RedirectToAction("OperationResultView", "Admin", new
+                                {
+                                    area = "Admin",
+                                    succeeded = false,
+                                    message = "Erro inesperado. Não foi possível atualizar a senha do usuário. Por favor tente novamente"
+                                });
+                            }
+                        }
+                        IdentityResult addPassIdentityResult = IdentityResult.Failed();
+                        bool addPasswordResult = await retryPolicy.ExecuteAsync(async () =>
+                        {
+                            var result = await _userManager.AddPasswordAsync(user, userVm.NewPassword);
+                            addPassIdentityResult = result;
+                            return result.Succeeded;
+                        });
+
+                        if (!addPasswordResult)
+                        {
+                            _logger.LogError("UserManagement (EditUser): erro ao adicionar senha ao usuário {UserId}. Erro {Error}", user.Id, string.Join(", ", addPassIdentityResult.Errors.Select(e => e.Description)));
+                            return RedirectToAction("OperationResultView", "Admin", new
+                            {
+                                area = "Admin",
+                                succeeded = false,
+                                message = "Erro inesperado. Não foi possível atualizar a senha do usuário. Por favor tente novamente"
+                            });
+                        }
+                    }
+                }
+                return RedirectToAction("OperationResultView", "Admin", new
+                {
+                    area = "Admin",
+                    succeeded = true,
+                    message = "Os dados do usuário foram atualizados com sucesso!"
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("UserManagement (EditUser): {ExceptionType} Erro inesperado ao atualizar dados do usuário {UserId}", ex.GetType().Name, userVm.UserId);
+                return RedirectToAction("OperationResultView", "Admin", new
+                {
+                    area = "Admin",
+                    succeeded = false,
+                    message = "Erro inesperado. Não foi possível atualizar os dados do usuário. Por favor tente novamente"
                 });
             }
         }

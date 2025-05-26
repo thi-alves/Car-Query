@@ -130,7 +130,7 @@
 							<td>@user.UserName</td>
 							<td>@user.Email</td>
 							<td>
-								<a asp-area="" asp-controller="" asp-action="" asp-route-id="@user.Id">Editar</a>
+								<a asp-area="SuperAdmin" asp-controller="UserManagement" asp-action="EditUser" asp-route-email="@user.Email">Editar</a>
 								||
 								<a href="#" class="text-danger" onclick="openConfirmBox('@user.Email')">Excluir</a>
 							</td>
