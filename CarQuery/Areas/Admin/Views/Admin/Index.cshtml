@@ -21,8 +21,38 @@
 	</div>
 
 	<hr />
+	@{
+		if (User.IsInRole("SuperAdmin"))
+		{
+			<h3>Usuários</h3>
+			<br />
+			<a asp-area="SuperAdmin" asp-controller="UserManagement" asp-action="ListUsers" class="card-link-wrapper text-decoration-none option-card card d-flex col-7 col-lg-6 ms-5 mb-4">
+				<div class="row">
+					<div class="col-4 col-lg-2">
+						<img class="img-fluid" src="~/img/manage-admin-icon-1.png" />
+					</div>
+					<div class="col-8 col-lg-10 d-flex align-items-center">
+						Gerenciar administradores
+					</div>
+				</div>
+			</a>
 
-	<h2>Carros</h2>
+			<a asp-area="" asp-controller="Account" asp-action="Register" class="card-link-wrapper text-decoration-none option-card card d-flex col-7 col-lg-6 ms-5 mb-4">
+				<div class="row">
+					<div class="col-4 col-lg-2">
+						<img class="img-fluid" src="~/img/add-admin-icon-1.png" />
+					</div>
+					<div class="col-8 col-lg-10 d-flex align-items-center">
+						Adicionar administrador
+					</div>
+				</div>
+			</a>
+
+			<hr />
+		}
+	}
+
+	<h3>Carros</h3>
 	<br />
 	<a asp-area="Admin" asp-controller="AdminCar" asp-action="ListCars" class="card-link-wrapper text-decoration-none option-card card d-flex col-7 col-lg-6 ms-5 mb-4">
 		<div class="row">
