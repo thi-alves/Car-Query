@@ -101,5 +101,20 @@
 			</div>
 		</div>
 	</a>
+
+	<hr />
+	<h3>Gerenciar conta</h3>
+	<br />
+	<a asp-area="" asp-controller="Account" asp-action="ChangePassword" asp-route-id="@(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)"
+	   class="card-link-wrapper text-decoration-none option-card card d-flex col-7 col-lg-6 ms-5 mb-4">
+		<div class="row">
+			<div class="col-4 col-lg-2">
+				<img class="img-fluid" src="~/img/change-password-icon.png" />
+			</div>
+			<div class="col-8 col-lg-10 d-flex align-items-center">
+				Alterar senha
+			</div>
+		</div>
+	</a>
 </div>
 
