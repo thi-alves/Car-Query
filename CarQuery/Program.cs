@@ -20,8 +20,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Configurando Sinks do SeriLog
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Warning()
-    .WriteTo.File("Logs/logs.txt", outputTemplate: "{Timestamp:dd-MM-yyyy HH:mm:ss.fff zzz} {Level:u3} {Message:lj} {NewLine} {Exception}")
+    .MinimumLevel.Debug()
+    .WriteTo.Console(
+        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning,
+        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .WriteTo.File(
+        "Logs/logs.txt",
+        restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning,
+        outputTemplate: "{Timestamp:dd-MM-yyyy HH:mm:ss.fff zzz} {Level:u3} {Message:lj} {NewLine} {Exception}")
     .CreateLogger();
 
 // Adicionando o Serilog no projeto
@@ -35,6 +41,7 @@ builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<ICarouselRepository, CarouselRepository>();
 builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
+builder.Services.AddScoped<IPasswordUpdateService, PasswordUpdateService>();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -93,7 +100,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "areas",
+    name: "superadmin_area",
+    pattern: "{area:exists}/{controller=SuperAdmin}/{action=Index}/{id?}"
+    );
+
+app.MapControllerRoute(
+    name: "admin_area",
     pattern: "{area:exists}/{controller=Admin}/{action=Index}/{id?}"
     );
 
