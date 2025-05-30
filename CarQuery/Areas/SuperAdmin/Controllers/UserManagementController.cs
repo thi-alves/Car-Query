@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using CarQuery.Data;
+using CarQuery.Services;
 using CarQuery.ViewModels.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,13 +20,15 @@ namespace CarQuery.Areas.SuperAdmin.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly AppDbContext _context;
         private readonly ILogger<UserManagementController> _logger;
+        private readonly IPasswordUpdateService _passwordUpdateService;
 
-        public UserManagementController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, AppDbContext context, ILogger<UserManagementController> logger)
+        public UserManagementController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, AppDbContext context, ILogger<UserManagementController> logger, IPasswordUpdateService passwordUpdateService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _context = context;
             _logger = logger;
+            _passwordUpdateService = passwordUpdateService;
         }
 
         [HttpGet]
@@ -216,38 +219,12 @@ namespace CarQuery.Areas.SuperAdmin.Controllers
 
                     if (!string.IsNullOrWhiteSpace(userVm.NewPassword))
                     {
-                        //verificar se a nova senha está dentro dos parâmetros do Identity
-                        var passwordValidation = await _userManager.PasswordValidators[0].ValidateAsync(_userManager, tempUser, userVm.NewPassword);
+                        var (result, errors) = await _passwordUpdateService.PasswordUpdateAsync(user, userVm.NewPassword);
 
-                        if (!passwordValidation.Succeeded)
+                        if (!result)
                         {
-                            foreach (var error in passwordValidation.Errors)
+                            if (errors.Count == 1 && errors[0].Equals("Internal error"))
                             {
-                                ModelState.AddModelError(string.Empty, error.Description);
-                            }
-                            return View(userVm);
-                        }
-
-                        //usado para repetir operações caso elas falhem
-                        var retryPolicy = Policy
-                            .HandleResult<bool>(result => result == false)
-                            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(2));
-
-                        var hasPassword = await _userManager.HasPasswordAsync(user);
-                        //se o usuário não tiver senha, da erro no RemovePassword
-                        if (hasPassword)
-                        {
-                            IdentityResult removePassIdentityResult = IdentityResult.Failed();
-                            bool removeResult = await retryPolicy.ExecuteAsync(async () =>
-                            {
-                                var result = await _userManager.RemovePasswordAsync(user);
-                                removePassIdentityResult = result;
-                                return result.Succeeded;
-                            });
-
-                            if (!removeResult)
-                            {
-                                _logger.LogError("UserManagement (EditUser): erro ao remover a senha do usuário {UserId}. Erro {Error}", user.Id, string.Join(", ", removePassIdentityResult.Errors.Select(e => e.Description)));
                                 return RedirectToAction("OperationResultView", "Admin", new
                                 {
                                     area = "Admin",
@@ -255,32 +232,28 @@ namespace CarQuery.Areas.SuperAdmin.Controllers
                                     message = "Erro inesperado. Não foi possível atualizar a senha do usuário. Por favor tente novamente"
                                 });
                             }
-                        }
-                        IdentityResult addPassIdentityResult = IdentityResult.Failed();
-                        bool addPasswordResult = await retryPolicy.ExecuteAsync(async () =>
-                        {
-                            var result = await _userManager.AddPasswordAsync(user, userVm.NewPassword);
-                            addPassIdentityResult = result;
-                            return result.Succeeded;
-                        });
-
-                        if (!addPasswordResult)
-                        {
-                            _logger.LogError("UserManagement (EditUser): erro ao adicionar senha ao usuário {UserId}. Erro {Error}", user.Id, string.Join(", ", addPassIdentityResult.Errors.Select(e => e.Description)));
-                            return RedirectToAction("OperationResultView", "Admin", new
+                            else
                             {
-                                area = "Admin",
-                                succeeded = false,
-                                message = "Erro inesperado. Não foi possível atualizar a senha do usuário. Por favor tente novamente"
-                            });
+                                foreach (var error in errors)
+                                {
+                                    ModelState.AddModelError(string.Empty, error);
+                                }
+                                return View(userVm);
+                            }
                         }
                     }
+                    return RedirectToAction("OperationResultView", "Admin", new
+                    {
+                        area = "Admin",
+                        succeeded = true,
+                        message = "Os dados do usuário foram atualizados com sucesso!"
+                    });
                 }
                 return RedirectToAction("OperationResultView", "Admin", new
                 {
                     area = "Admin",
-                    succeeded = true,
-                    message = "Os dados do usuário foram atualizados com sucesso!"
+                    succeeded = false,
+                    message = "Erro inesperado. Não foi possível atualizar a senha do usuário. Por favor tente novamente"
                 });
             }
             catch (Exception ex)
