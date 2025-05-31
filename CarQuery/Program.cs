@@ -64,15 +64,15 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
-void CreateUsersProfile(WebApplication app)
+async Task CreateUsersProfile(WebApplication app)
 {
     var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
     using (var scope = scopedFactory.CreateScope())
     {
         var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
-        service.SeedRoles();
-        service.SeedUsers();
+        await service.SeedRoles();
+        await service.SeedUsers();
     }
 }
 
@@ -89,7 +89,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-CreateUsersProfile(app);
+await CreateUsersProfile(app);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

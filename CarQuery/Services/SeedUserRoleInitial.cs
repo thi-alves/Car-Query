@@ -13,20 +13,28 @@ namespace CarQuery.Services
             _roleManager = roleManager;
         }
 
-        public void SeedRoles()
+        public async Task SeedRoles()
         {
-            if (!_roleManager.RoleExistsAsync("SuperAdmin").Result)
+            if (!await _roleManager.RoleExistsAsync("SuperAdmin"))
             {
                 IdentityRole role = new IdentityRole();
                 role.Name = "SuperAdmin";
                 role.NormalizedName = "SUPERADMIN";
                 IdentityResult roleResult = _roleManager.CreateAsync(role).Result;
             }
+            if (!await _roleManager.RoleExistsAsync("Admin"))
+            {
+                IdentityRole role = new IdentityRole();
+                role.Name = "Admin";
+                role.NormalizedName = "ADMIN";
+                IdentityResult roleResult = _roleManager.CreateAsync(role).Result;
+            }
         }
 
-        public void SeedUsers()
+        public async Task SeedUsers()
         {
-            if (_userManager.FindByEmailAsync("CQ_superAdmin@gmail.com").Result == null)
+            var existingUser = await _userManager.FindByEmailAsync("CQ_superAdmin@gmail.com");
+            if (existingUser == null)
             {
                 IdentityUser user = new IdentityUser();
 
@@ -38,7 +46,7 @@ namespace CarQuery.Services
                 user.LockoutEnabled = false;
                 user.SecurityStamp = Guid.NewGuid().ToString();
 
-                IdentityResult result = _userManager.CreateAsync(user, "SuperAdminPassword").Result;
+                IdentityResult result = await _userManager.CreateAsync(user, "SuperAdminPassword");
 
                 if (result.Succeeded)
                 {
