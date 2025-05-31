@@ -23,6 +23,7 @@ namespace CarQuery.ViewModels.AccountViewModels
         [Required(ErrorMessage = "Confirme a senha")]
         [DataType(DataType.Password)]
         [Display(Name = "Confirmar senha")]
+        [Compare("Password", ErrorMessage = "As senhas não coincidem")]
         public string ConfirmPassword { get; set; }
     }
 }
