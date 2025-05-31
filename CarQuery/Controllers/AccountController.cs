@@ -38,11 +38,6 @@ namespace CarQuery.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (registerVm.Password != registerVm.ConfirmPassword)
-                {
-                    TempData["ErrorMessage"] = "As senhas não coincidem";
-                    return View(registerVm);
-                }
                 IdentityUser user = new IdentityUser
                 {
                     UserName = registerVm.UserName,
