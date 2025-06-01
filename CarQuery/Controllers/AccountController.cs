@@ -53,23 +53,10 @@ namespace CarQuery.Controllers
                     _userManager.AddToRoleAsync(user, "Admin").Wait();
                     return RedirectToAction("OperationResultView", "Admin", new { area = "Admin", succeeded = true, message = "A nova conta de Administrador foi criada com sucesso" });
                 }
-                TempData["ErrorMessage"] = "";
-                int minLenght = _userManager.Options.Password.RequiredLength;
 
-                foreach (var error in result.Errors)
+                foreach(var error in result.Errors)
                 {
-                    switch (error.Code)
-                    {
-                        case "DuplicateUserName":
-                            TempData["ErrorMessage"] += "O nome de usuário já está sendo usado<br/>";
-                            break;
-                        case "DuplicateEmail":
-                            TempData["ErrorMessage"] += "O email informado já está cadastrado<br/>";
-                            break;
-                        case "PasswordTooShort":
-                            TempData["ErrorMessage"] += "A senha deve ter no mínimo " + minLenght + " caracteres<br/>";
-                            break;
-                    }
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
             return View(registerVm);
