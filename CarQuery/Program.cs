@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Microsoft.Extensions.DependencyInjection;
 using CarQuery.Services;
+using CarQuery.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,8 +35,9 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores <AppDbContext>()
+    .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+    //.AddErrorDescriber<IdentityPortugueseMessages>();
 
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
