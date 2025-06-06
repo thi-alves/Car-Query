@@ -36,8 +36,8 @@ builder.Host.UseSerilog();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-    //.AddErrorDescriber<IdentityPortugueseMessages>();
+    .AddDefaultTokenProviders()
+    .AddErrorDescriber<IdentityPortugueseMessages>();
 
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
