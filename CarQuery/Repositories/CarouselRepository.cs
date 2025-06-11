@@ -1,9 +1,11 @@
-﻿using CarQuery.Data;
+﻿using System.Data;
+using CarQuery.Data;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
 using CarQuery.ViewModels.CarouselSlidesViewModel;
 using CarQuery.ViewModels.CarouselViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CarQuery.Repositories
 {
@@ -18,24 +20,26 @@ namespace CarQuery.Repositories
 
         public async Task<bool> CreateCarousel(Carousel carousel)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 if (carousel != null)
                 {
-                    var operationSucceeded = await UpdateCarouselPosition(carousel.Position);
-
+                    var operationSucceeded = await ResolvePositionConflict(carousel.Position);
                     if (operationSucceeded)
                     {
                         await _context.Carousel.AddAsync(carousel);
-                        int rowsAffected = await _context.SaveChangesAsync();
-
-                        return rowsAffected > 0;
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        return true;
                     }
                 }
+                await transaction.RollbackAsync();
                 return false;
             }
             catch (Exception)
             {
+                await transaction.RollbackAsync();
                 return false;
             }
         }
@@ -53,25 +57,35 @@ namespace CarQuery.Repositories
         //previousPosition indica a posição atual do Carrossel a ser atualizado. Ou seja, é a posição que deve ser atualizada. 
         public async Task<bool> UpdateCarousel(Carousel carousel, int previousPosition)
         {
-            Console.WriteLine("UpdateCarousel");
-            if (carousel == null)
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                return false;
-            }
-
-            if (previousPosition != carousel.Position)
-            {
-                bool operationResult = await UpdateCarouselPosition(carousel.Position, previousPosition);
-
-                if (operationResult == false)
+                if (carousel == null)
                 {
+                    await transaction.RollbackAsync();
                     return false;
                 }
-            }
 
-            _context.Carousel.Update(carousel);
-            int rowsAffected = await _context.SaveChangesAsync();
-            return rowsAffected > 0;
+                if (previousPosition != carousel.Position)
+                {
+                    bool operationResult = await ResolvePositionConflict(carousel.Position, previousPosition);
+                    if (operationResult == false)
+                    {
+                        await transaction.RollbackAsync();
+                        return false;
+                    }
+                }
+
+                _context.Carousel.Update(carousel);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
         }
 
         public async Task<int> CountCarousel()
@@ -85,41 +99,40 @@ namespace CarQuery.Repositories
          * 2 -No caso de edição/atualização de um Carrossel existente, usar os dois parâmetros. Onde newPosition indica a posição que o Carrossel a ser 
          * atualizado deve assumir, e previousPosition indica a posição que o Carrossel a ser atualizado possui no momento.
         */
-        public async Task<bool> UpdateCarouselPosition(int newPosition, int previousPosition = 0)
+        public async Task<bool> ResolvePositionConflict(int newPosition, int previousPosition = 0)
         {
             try
             {
-                int total = await CountCarousel();
-
-                if (newPosition <= total && newPosition != 0)
+                int maxPosition = await CountCarousel();
+                if (newPosition <= maxPosition && newPosition != 0)
                 {
-                    Carousel carousel = await _context.Carousel.FirstOrDefaultAsync(c => c.Position == newPosition);
+                    Carousel carouselAtTargetPosition = await _context.Carousel
+                        .FirstOrDefaultAsync(c => c.Position == newPosition);
 
-                    int rowsAffected = 0;
-
-                    if (carousel != null)
+                    if (carouselAtTargetPosition == null)
                     {
-                        if (previousPosition != 0)
-                        {
-                            carousel.Position = (short)previousPosition;
-                            rowsAffected = await _context.SaveChangesAsync();
-
-                            return rowsAffected > 0;
-                        }
-                        total++;
-                        carousel.Position = (short)total;
-                        rowsAffected = await _context.SaveChangesAsync();
-
-                        return rowsAffected > 0;
+                        return true;
                     }
+                    else if (previousPosition != 0)
+                    {
+                        carouselAtTargetPosition.Position = (short)previousPosition;
+                    }
+                    else
+                    {
+                        maxPosition++;
+                        carouselAtTargetPosition.Position = (short)maxPosition;
+                    }
+
+                    return true;
                 }
-                else if ((total == 0 || newPosition == total + 1) && newPosition != 0)
+                //nesse caso, ou ainda não existem carousels no sistema, ou o carousel a ser adicionado ocupará a última position
+                else if (newPosition == maxPosition + 1)
                 {
                     return true;
                 }
                 return false;
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
                 return false;
             }
@@ -127,56 +140,66 @@ namespace CarQuery.Repositories
 
         public async Task<bool> DeleteCarousel(int carouselId)
         {
-            Carousel carousel = await _context.Carousel
-                .Include(c => c.CarouselSlides)
-                .ThenInclude(cs => cs.Image)
-                .FirstOrDefaultAsync(c => c.CarouselId == carouselId);
-
-            if (carousel != null)
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
             {
-                int removedPosition = carousel.Position;
+                Carousel carousel = await _context.Carousel
+                    .Include(c => c.CarouselSlides)
+                    .ThenInclude(cs => cs.Image)
+                    .FirstOrDefaultAsync(c => c.CarouselId == carouselId);
 
+                if (carousel == null)
+                {
+                    return false;
+                }
+
+                int removedPosition = carousel.Position;
+                var carouselsToReposition = await _context.Carousel
+                    .Where(c => c.Position > removedPosition)
+                    .OrderBy(c => c.Position)
+                    .ToListAsync();
                 _context.Carousel.Remove(carousel);
 
-                int rowsAffected = await _context.SaveChangesAsync();
-
-                if (rowsAffected > 0)
+                //reorganiza as posições dos carousels restantes
+                foreach (var c in carouselsToReposition)
                 {
-                    int totalCarousel = await CountCarousel();
+                    c.Position = (short)(c.Position - 1);
+                }
 
-                    if (removedPosition < totalCarousel)
-                    {
-                        var carousels = await _context.Carousel.Where(c => c.Position >= removedPosition).ToListAsync();
-
-                        if (carousels != null)
-                        {
-                            foreach (Carousel c in carousels)
-                            {
-                                c.Position = (short)removedPosition;
-                                removedPosition++;
-                            }
-
-                            rowsAffected = await _context.SaveChangesAsync();
-
-                            return rowsAffected > 0;
-                        }
-                    }
-                    return true;
+                int rowsAffected = await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return rowsAffected > 0;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                return false;
+            }
+            finally
+            {
+                if (transaction.GetDbTransaction().Connection?.State == ConnectionState.Open)
+                {
+                    await transaction.CommitAsync();
                 }
             }
-            return false;
         }
 
         public async Task<bool> DeleteAllCarouselsSlidesByImage(Image img)
         {
+            try
+            {
+                var carouselsSlides = await _context.CarouselSlide
+                    .Where(c => c.Image.ImageId == img.ImageId)
+                    .ToListAsync();
 
-            var carouselsSlides = await _context.CarouselSlide.Where(c => c.Image.ImageId == img.ImageId).ToListAsync();
-
-            _context.CarouselSlide.RemoveRange(carouselsSlides);
-
-            int rowsAffected = await _context.SaveChangesAsync();
-
-            return rowsAffected > 0;
+                _context.CarouselSlide.RemoveRange(carouselsSlides);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<List<CarouselDisplayViewModel>> GetAllVisibleCarouselsToDisplay()
@@ -206,7 +229,7 @@ namespace CarQuery.Repositories
             foreach (var carousel in carousels)
             {
                 CarouselDisplayViewModel newCarousel = new CarouselDisplayViewModel(carousel.Title);
-                foreach(var carouselSlide in carousel.CarouselSlides)
+                foreach (var carouselSlide in carousel.CarouselSlides)
                 {
                     CarouselSlideViewModel carouselSlideViewModel = new CarouselSlideViewModel(carouselSlide.CarId, carouselSlide.CarModel, carouselSlide.CarShortDescription, carouselSlide.ImagePath);
                     newCarousel.CarouselSlides.Add(carouselSlideViewModel);
