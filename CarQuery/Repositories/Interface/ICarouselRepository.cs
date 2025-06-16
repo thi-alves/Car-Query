@@ -12,7 +12,7 @@ namespace CarQuery.Repositories.Interface
         Task<Carousel> GetCarouselById(int id);
         Task<bool> UpdateCarousel(Carousel carousel, int previousPosition);
         Task<bool> DeleteCarousel(int carouselId);
-        Task<bool> DeleteAllCarouselsSlidesByImage(Image img);
+        Task DeleteAllCarouselsSlidesByImage(Image img);
         Task<List<CarouselDisplayViewModel>> GetAllVisibleCarouselsToDisplay();
     }
 }

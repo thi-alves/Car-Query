@@ -40,7 +40,7 @@ namespace CarQuery.Repositories
             catch (Exception)
             {
                 await transaction.RollbackAsync();
-                return false;
+                throw;
             }
         }
 
@@ -84,7 +84,7 @@ namespace CarQuery.Repositories
             catch (Exception)
             {
                 await transaction.RollbackAsync();
-                return false;
+                throw;
             }
         }
 
@@ -173,7 +173,7 @@ namespace CarQuery.Repositories
             catch (Exception)
             {
                 await transaction.RollbackAsync();
-                return false;
+                throw;
             }
             finally
             {
@@ -184,22 +184,14 @@ namespace CarQuery.Repositories
             }
         }
 
-        public async Task<bool> DeleteAllCarouselsSlidesByImage(Image img)
+        public async Task DeleteAllCarouselsSlidesByImage(Image img)
         {
-            try
-            {
-                var carouselsSlides = await _context.CarouselSlide
-                    .Where(c => c.Image.ImageId == img.ImageId)
-                    .ToListAsync();
+            var carouselsSlides = await _context.CarouselSlide
+                .Where(c => c.Image.ImageId == img.ImageId)
+                .ToListAsync();
 
-                _context.CarouselSlide.RemoveRange(carouselsSlides);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            _context.CarouselSlide.RemoveRange(carouselsSlides);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<List<CarouselDisplayViewModel>> GetAllVisibleCarouselsToDisplay()
