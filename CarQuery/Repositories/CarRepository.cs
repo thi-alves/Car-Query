@@ -1,7 +1,9 @@
-﻿using CarQuery.Data;
+﻿using System.Data;
+using CarQuery.Data;
 using CarQuery.Models;
 using CarQuery.Repositories.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace CarQuery.Repositories
 {
@@ -9,11 +11,13 @@ namespace CarQuery.Repositories
     {
         private string ServerPath { get; set; }
         private readonly AppDbContext _context;
+        private readonly ICarouselRepository _carouselRepository;
 
-        public CarRepository(IWebHostEnvironment system, AppDbContext context)
+        public CarRepository(IWebHostEnvironment system, AppDbContext context, ICarouselRepository carouselRepository)
         {
             ServerPath = system.WebRootPath;
             _context = context;
+            _carouselRepository = carouselRepository;
         }
 
         public async Task<bool> AddCar(Car car)
@@ -45,29 +49,54 @@ namespace CarQuery.Repositories
 
         public async Task<bool> DeleteCar(int carId)
         {
-            Car car = await _context.Car
-                .Include(c => c.Images)
-                .FirstOrDefaultAsync(c => c.CarId == carId);
-
-            if (car != null)
+            using var transaction = _context.Database.BeginTransaction();
+            try
             {
-                foreach (var img in car.Images)
+                Car car = await _context.Car
+                    .Include(c => c.Images)
+                    .FirstOrDefaultAsync(c => c.CarId == carId);
+
+                if (car != null)
                 {
-                    string normalizedPath = (img.ImgPath).Replace("/", "\\");
-                    string imgPath = ServerPath + normalizedPath;
-
-                    if (System.IO.File.Exists(imgPath))
+                    foreach (var img in car.Images)
                     {
-                        //deletando a imagem do servidor
-                        System.IO.File.Delete(imgPath);
+                        //exclui os CarouselSlides que usam as imagens do carro a ser deletado
+                        await _carouselRepository.DeleteAllCarouselsSlidesByImage(img);
                     }
-                }
-                _context.Car.Remove(car);
 
-                await _context.SaveChangesAsync();
-                return true;
+                    _context.Car.Remove(car);
+
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    //a operação de deleção de imagens deve ser feito somente se as de banco de dados terem sido bem-sucedidas, pois não tem como recuperar as imagens caso façamos RollbackAsync
+                    foreach (var img in car.Images)
+                    {
+                        string normalizedPath = (img.ImgPath).Replace("/", "\\");
+                        string imgPath = ServerPath + normalizedPath;
+
+                        if (System.IO.File.Exists(imgPath))
+                        {
+                            //deletando a imagem do servidor
+                            System.IO.File.Delete(imgPath);
+                        }
+                    }
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+            finally
+            {
+                if (transaction.GetDbTransaction().Connection?.State == ConnectionState.Open)
+                {
+                    await transaction.CommitAsync();
+                }
+            }
         }
 
         public async Task<IEnumerable<Car>> SearchByModel(string model)

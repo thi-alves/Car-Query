@@ -301,12 +301,6 @@ namespace CarQuery.Areas.Admin.Controllers
 
                 var car = await _carRepository.GetCarById(id);
 
-                //Exclui os CarouselSlides que usam as imagens do carro a ser deletado
-                foreach(var img in car.Images)
-                {
-                    await _carouselRepository.DeleteAllCarouselsSlidesByImage(img);
-                }
-
                 bool result = await _carRepository.DeleteCar(id);
                 
                 return RedirectToAction("OperationResultView", "Admin", new
