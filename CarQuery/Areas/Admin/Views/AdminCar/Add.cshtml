@@ -4,6 +4,69 @@
 
 }
 
+@section Styles {
+	<style>
+		.preview{
+			border: 1px solid;
+			border-radius: 5px;
+			border-color: #2f2f308f;
+			min-height: 150px;
+			padding: 10px;
+		}
+		.image-container {
+			position: relative;
+			display: inline-block;
+			margin: 5px;
+		}
+
+		.image-preview {
+			display: block;
+			max-height: 150px;
+		}
+
+		.image-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			color: rgba(255, 255, 255, 0);
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+			.image-overlay:hover {
+				background-color: rgba(33, 32, 34, 0.777);
+				color: white;
+				cursor: pointer
+			}
+
+		.remove-image-btn {
+			background-color: red;
+			color: white;
+			border-style: none;
+			border-radius: 4px;
+			padding: 5px;
+		}
+
+		.image-overlay .remove-image-btn {
+			background-color: rgba(255, 255, 255, 0);
+			color: rgba(255, 255, 255, 0);
+		}
+
+		.image-overlay:hover .remove-image-btn {
+			background-color: rgba(255, 0, 0, 0.495);
+			color: white;
+		}
+
+			.image-overlay:hover .remove-image-btn:hover {
+				background-color: red
+			}
+	</style>
+}
 <div class="container mt-5">
 	<h1 class="display-5 fw-semibold">Adicionar carro</h1>
 	<hr />
@@ -166,13 +229,17 @@
 		</div>
 		<div class="form-group mt-3">
 			<label asp-for="Images">Imagens:</label>
-			<input asp-for="Images" type="file" class="form-control" multiple />
+			<br />
+			<button type="button" class="add-image btn btn-primary my-2" onclick="addImage()">Adicionar</button>
+
+			<div id="inputs" class="d-none"></div>
+			<div class="preview" id="preview"></div>
 			<span asp-validation-for="Images" class="text-danger"></span>
 		</div>
 
 		<div class="form-group mt-3">
 			<label asp-for="VideoLink">Video link:</label>
-			<input class="form-control" asp-for="VideoLink" placeholder="Link do vídeo sobre o carro. Ex: https://www.youtube.com/embed/....."/>
+			<input class="form-control" asp-for="VideoLink" placeholder="Link do vídeo sobre o carro. Ex: https://www.youtube.com/embed/....." />
 			<span class="text-danger" asp-validation-for="VideoLink"></span>
 		</div>
 		<div class="d-flex justify-content-end gap-3 mt-4">
@@ -188,6 +255,8 @@
 
 	const formatedPriceInput = document.getElementById("formatedPriceInput");
 	const realPriceInput = document.getElementById("realPriceInput");
+
+	let nextId = 0;
 
 	document.addEventListener("DOMContentLoaded", function(){
 		//setting the max year to the year inputs
@@ -234,4 +303,129 @@
 
 		realPriceInput.value = numericValue;
 	});
+
+	function addImage() {
+		const imageInput = createImageInput();
+		imageInput.click();
+	}
+
+	function createImageInput() {
+		const imageInput = document.createElement("input");
+		imageInput.type = "file";
+		imageInput.style.display = "none";
+		imageInput.name = "Images"
+		imageInput.id = "image-" + nextId;
+		nextId++;
+
+		imageInput.setAttribute("accept", "image/*");
+		imageInput.addEventListener("change", () => {
+			if (imageInput.files && imageInput.files.length > 0) {
+				showImagePreview(imageInput);
+			}
+			else {
+				//caso esteja vazio (usuário cancelou), excluimos a input e os elementos relacionados
+				handleCancelledInput(imageInput);
+			}
+		});
+
+		document.getElementById("inputs").appendChild(imageInput);
+		return imageInput;
+	}
+
+	function showImagePreview(imageInput) {
+		const previewId = "image-preview-" + imageInput.id.replace("image-", "");
+		const previewExists = document.getElementById(previewId);
+		if (previewExists) {
+			updateImagePreview(imageInput);
+		}
+		else {
+			createImagePreview(imageInput);
+		}
+	}
+
+	function createImagePreview(imageInput) {
+		const imageContainer = document.createElement("div");
+		imageContainer.classList.add("image-container");
+		imageContainer.id = "container-" + imageInput.id.replace("image-", "");
+
+		const imagePreview = document.createElement("img");
+		imagePreview.classList.add("image-preview");
+		imagePreview.id = "image-preview-" + imageInput.id.replace("image-", "");
+
+		imageContainer.appendChild(imagePreview);
+
+		const imageOverlay = document.createElement("div");
+		imageOverlay.classList.add("image-overlay");
+		imageOverlay.addEventListener("click", (e) => {
+			//previne da modeloverlay ser executada caso o usuário na verdade tenha apertado em remover
+			if (e.target.classList.contains("remove-image-btn")) {
+				return;
+			}
+			imageInput.click();
+		})
+
+		const text = document.createElement("p");
+		text.textContent = "Alterar";
+
+		const removeButton = document.createElement("button");
+		removeButton.classList.add("remove-image-btn");
+		removeButton.textContent = "Remover";
+		removeButton.addEventListener("click", (e) => {
+			//para previnir que também acione o click do overlay
+			e.stopPropagation();
+			removeImage(imageContainer, imageInput);
+		});
+
+		imageOverlay.appendChild(text);
+		imageOverlay.appendChild(removeButton);
+
+		imageContainer.appendChild(imageOverlay);
+
+		setImageSource(imageInput, imagePreview);
+
+		document.getElementById("preview").appendChild(imageContainer);
+	}
+
+	function updateImagePreview(imageInput) {
+		const id = "image-preview-" + imageInput.id.replace("image-", "");
+		const imagePreview = document.getElementById(id);
+		setImageSource(imageInput, imagePreview);
+	}
+
+	function setImageSource(imageInput, imagePreview) {
+		const image = imageInput.files[0];
+		if (image.type.startsWith("image/")) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				imagePreview.src = reader.result;
+			}
+			reader.readAsDataURL(image);
+		}
+	}
+
+	function removeImage(imageContainer, imageInput) {
+		imageContainer.remove();
+		imageInput.remove();
+	}
+
+	function handleCancelledInput(imageInput) {
+		const previewId = "image-preview-" + imageInput.id.replace("image-", "");
+		const existingPreview = document.getElementById(previewId);
+
+		//exclui a preview da imagem (caso tenha sido criada)
+		if (existingPreview) {
+			const containerId = "container-" + imageInput.id.replace("image-", "");
+			const container = document.getElementById(containerId);
+			if (container) {
+				container.remove();
+			}
+		}
+		removeEmptyInput(imageInput);
+	}
+
+	function removeEmptyInput(imageInput) {
+		if (imageInput) {
+			imageInput.remove();
+		}
+	}
 </script>
