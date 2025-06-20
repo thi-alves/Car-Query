@@ -122,16 +122,31 @@ namespace CarQuery.Areas.Admin.Controllers
             string folder = "\\ImgCar\\";
             string uploadImagePath = ServerPath + folder;
 
-            if (files.Count > 0)
+            //definindo tipos de imagens aceitos
+            var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif"};
+            var allowedExtensions = new[] { ".jpeg", ".jpg", ".png", ".gif" };
+
+            //filtrando imagens
+            var validFiles = files?
+                .Where(f => f != null &&
+                    f.Length > 0 &&
+                    f.Length < 5 * 1024 * 1024 &&
+                    allowedTypes.Contains(f.ContentType.ToLower()) ||
+                    allowedExtensions.Contains(Path.GetExtension(f.FileName)?.ToLower()))
+                .ToList();
+
+            if (validFiles != null && validFiles.Count > 0)
             {
                 if (!Directory.Exists(uploadImagePath))
                 {
                     Directory.CreateDirectory(uploadImagePath);
                 }
 
-                for (int i = 0; i < files.Count; i++)
+                for (int i = 0; i < validFiles.Count; i++)
                 {
-                    var newImageName = Guid.NewGuid().ToString() + files[i].FileName;
+                    //removendo caracteres especiais do filename
+                    var cleanFileName = CleanFileName(validFiles[i].FileName);
+                    var newImageName = Guid.NewGuid().ToString() + "_" + cleanFileName;
 
                     //O caminho "uploadImagePath" é necessário apenas para salvar a imagem no diretório coreto.
                     //Já para exibir a imagem, basta o nome da pasta dentro do wwwroot e o nome da imagem.
@@ -143,10 +158,24 @@ namespace CarQuery.Areas.Admin.Controllers
 
                     using (var stream = System.IO.File.Create(uploadImagePath + newImageName))
                     {
-                        files[i].CopyTo(stream);
+                        validFiles[i].CopyTo(stream);
                     }
                 }
             }
+        }
+
+        //remove caracteres especiais do file name, evitando erros de impressão (print) na view
+        public string CleanFileName(string fileName)
+        {
+            var invalidChars = new[] { '#', '?', '&', '%', '+', ' ', '<', '>', '"', '|', '/', ':', '*' };
+            string cleanName = fileName;
+
+            foreach(var c in invalidChars)
+            {
+                cleanName = cleanName.Replace(c, '_');
+            }
+
+            return cleanName;
         }
 
         [HttpGet]
