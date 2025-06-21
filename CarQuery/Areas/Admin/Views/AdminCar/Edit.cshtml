@@ -30,6 +30,67 @@
 			display: flex;
 			justify-content: space-between;
 		}
+
+		.preview {
+			border: 1px solid;
+			border-radius: 5px;
+			border-color: #2f2f308f;
+			min-height: 150px;
+			padding: 10px;
+		}
+
+		.image-container {
+			position: relative;
+			display: inline-block;
+			margin: 5px;
+		}
+
+		.image-preview {
+			display: block;
+			max-height: 150px;
+		}
+
+		.image-overlay {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			color: rgba(255, 255, 255, 0);
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+			.image-overlay:hover {
+				background-color: rgba(33, 32, 34, 0.777);
+				color: white;
+				cursor: pointer
+			}
+
+		.remove-image-btn {
+			background-color: red;
+			color: white;
+			border-style: none;
+			border-radius: 4px;
+			padding: 5px;
+		}
+
+		.image-overlay .remove-image-btn {
+			background-color: rgba(255, 255, 255, 0);
+			color: rgba(255, 255, 255, 0);
+		}
+
+		.image-overlay:hover .remove-image-btn {
+			background-color: rgba(255, 0, 0, 0.495);
+			color: white;
+		}
+
+			.image-overlay:hover .remove-image-btn:hover {
+				background-color: red
+			}
 	</style>
 }
 
@@ -194,10 +255,30 @@
 			<textarea asp-for="FullDescription" class="form-control" value="@Model.FullDescription" placeholder="Essa descrição será exibida na página de detalhes do carro"></textarea>
 			<span asp-validation-for="FullDescription" class="text-danger"></span>
 		</div>
-		<input type="hidden" asp-for="Images" />
+
+		<h5 class="mt-3">Imagens atuais:</h5>
+		<p>Selecione as imagens que quer deletar</p>
+
+		<div class="preview">
+			@foreach (var img in Model.Images)
+			{
+				<div class="image-container">
+					<input type="checkbox" name="selectedImages" value="@img.ImageId" onchange="updateValues()" />
+					<img src="@img.ImgPath" class="image-preview" />
+				</div>
+			}
+		<input class="form-control" type="hidden" name="imgIdsDelete" id="imgIdsToDelete" placeholder="Exemplo: 1,4,5" />
+		</div>
+
 		<div class="form-group mt-3">
-			<label asp-for="Images">Adicionar novas imagens:</label>
-			<input type="file" class="form-control" name="newImages" multiple />
+
+			<h5>Adicionar imagens:</h5>
+			<button type="button" class="add-image btn btn-primary my-2" onclick="addImage()">Adicionar</button>
+
+			<div id="inputs" class="d-none"></div>
+			<div class="preview" id="preview">
+			</div>
+			<input type="hidden" asp-for="Images" />
 			<span asp-validation-for="Images" class="text-danger"></span>
 		</div>
 
@@ -206,21 +287,6 @@
 			<input asp-for="VideoLink" class="form-control" value="@Model.VideoLink" placeholder="Link do vídeo sobre o carro. Ex: https://www.youtube.com/embed/....." />
 			<span asp-validation-for="VideoLink" class="text-danger"></span>
 		</div>
-
-		<h4 class="mt-3">Selecione as imagens que deseja deletar:</h4>
-
-		<div class="row">
-
-			@foreach (var img in Model.Images)
-			{
-				<div class="col-5 col-lg-3 mx-3 my-4">
-					<input type="checkbox" name="selectedImages" value="@img.ImageId" onchange="updateValues()" />
-					<img src="@img.ImgPath" class="img-fluid" />
-				</div>
-			}
-
-		</div>
-		<input class="form-control" type="hidden" name="imgIdsDelete" id="imgIdsToDelete" placeholder="Exemplo: 1,4,5" />
 
 		<div class="d-flex gap-3 mt-4">
 			<a class="btn btn-danger d-inline-block" onclick="openConfirmBox('@Model.CarId')">Excluir</a>
@@ -254,6 +320,8 @@
 	const realPriceInput = document.getElementById("realPriceInput");
 
 	let carIdToDelete = null;
+	//necessário para usar image-upload script
+	const imagesInputName = "newImages";
 
 	document.addEventListener("DOMContentLoaded", function(){
 		//setting the max year to the year inputs
@@ -315,3 +383,4 @@
 		document.getElementById("customConfirmBox").style.display = "none";
 	}
 </script>
+<script src="~/js/image-upload-preview.js"></script>
