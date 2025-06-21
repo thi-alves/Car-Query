@@ -253,9 +253,6 @@
 	const manufacturingYear = document.getElementById("manufacturingYear");
 	const modelYear = document.getElementById("modelYear");
 
-	const formatedPriceInput = document.getElementById("formatedPriceInput");
-	const realPriceInput = document.getElementById("realPriceInput");
-
 	//necessário para usar image-upload script
 	const imagesInputName = "Images";
 
@@ -263,8 +260,6 @@
 		//setting the max year to the year inputs
 		manufacturingYear.setAttribute('max', new Date().getFullYear());
 		modelYear.setAttribute('max', new Date().getFullYear());
-
-		formatedPriceInput.value = 0;
 	});
 
 	//force input validation
@@ -274,35 +269,6 @@
 	modelYear.addEventListener("blur", function(){
 		this.reportValidity();
 	});
-
-	formatedPriceInput.addEventListener('focus', function () {
-		const currentValue = this.value;
-
-		const value = currentValue
-			.replace(/\s/g, '')
-			.replace('R$', '')
-			.replace(/\./g, '')
-			.replace(',', '.');
-
-		this.value = value;
-	});
-
-	formatedPriceInput.addEventListener("blur", function (){
-		let value = this.value.replace(',', '.');
-		value = value.replace(/[^0-9.]/g, '');
-
-		let numericValue = parseFloat(value);
-
-		if(isNaN(numericValue)){
-			numericValue = 0;
-		}
-
-		this.value = numericValue.toLocaleString('pt-br', {
-			style: 'currency',
-			currency: 'BRL'
-		});
-
-		realPriceInput.value = numericValue;
-	});
 </script>
 <script src="~/js/image-upload-preview.js"></script>
+<script src="~/js/format-price.js"></script>
