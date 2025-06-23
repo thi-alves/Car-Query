@@ -1,0 +1,25 @@
+﻿
+.carousel-card {
+    border: 1px solid;
+    border-radius: 10px;
+    background-color: rgb(247, 247, 247);
+}
+
+    .carousel-card p {
+        font: 20px;
+    }
+
+.carousel-card-img {
+    border-radius: 10px;
+    display: flex;
+    background-color: black;
+    width: 100%;
+    justify-content: center;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+    .carousel-card-img img {
+        height: 140px;
+        width: auto;
+    }

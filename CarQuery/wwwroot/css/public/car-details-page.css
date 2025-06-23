@@ -1,0 +1,52 @@
+﻿
+.carousel {
+    background-color: #201F1F;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    overflow: hidden;
+}
+
+    .carousel img {
+        width: 100%;
+        height: 600px;
+        object-fit: cover;
+    }
+
+.car-details {
+    background-color: #212f3d;
+    color: white;
+    line-height: 30px;
+}
+
+.car-description {
+}
+
+    .car-description p {
+        margin: 0 15px;
+    }
+
+.car-video {
+    width: 100%;
+    height: 600px;
+}
+
+@@media (max-width: 991px) {
+    .carousel img {
+        height: 400px;
+    }
+
+    .car-video {
+        height: 500px
+    }
+}
+
+@@media (max-width: 576px) {
+    .carousel img {
+        height: 350px;
+    }
+
+    .car-video {
+        height: 300px
+    }
+}
