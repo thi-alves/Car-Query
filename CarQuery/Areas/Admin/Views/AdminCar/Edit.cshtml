@@ -206,28 +206,20 @@
 		</div>
 	</form>
 
-	<div id="customConfirmBox" class="custom-modal-overlay">
-		<div class="custom-modal-box">
-			<form asp-controller="AdminCar" asp-action="Delete" class="" method="post">
-				<h2>Confirmar Exclusão</h2>
-				<p class="mb-0">Tem certeza que deseja deletar este carro?</p>
-				<p class="text-danger fw-semibold mt-0">Os slides que usam as imagens deste veículo também serão deletados. Essa ação não pode ser desfeita.</p>
-				<input type="hidden" name="id" id="deleteId" />
-				<div class="custom-modal-buttons">
-					<button type="button" onclick="closeConfirmBox()" class="btn btn-secondary">Cancelar</button>
-					<button type="submit" class="btn btn-danger">Sim, Deletar</button>
-				</div>
-			</form>
-		</div>
-	</div>
+	@await Html.PartialAsync("_DeleteBoxConfirmation", new
+		{
+			Controller = "AdminCar",
+			Action = "Delete",
+			Message = "Tem certeza que deseja deletar este carro?",
+			WarningMessage = "Os slides que usam as imagens deste veículo também serão deletados. Essa ação não pode ser desfeita.",
+			Name = "id"
+		})
 
 </div>
 
 <script>
 	const manufacturingYear = document.getElementById("manufacturingYear");
 	const modelYear = document.getElementById("modelYear");
-
-	let carIdToDelete = null;
 
 	//necessário para usar image-upload script
 	const imagesInputName = "newImages";
@@ -251,16 +243,7 @@
 		let values = Array.from(checkboxes).map(cb => cb.value).join(",");
 		document.getElementById("imgIdsToDelete").value = values;
 	}
-
-	function openConfirmBox(carId) {
-		carIdToDelete = carId;
-		document.getElementById("deleteId").value = carId;
-		document.getElementById("customConfirmBox").style.display = "flex";
-	}
-
-	function closeConfirmBox() {
-		document.getElementById("customConfirmBox").style.display = "none";
-	}
 </script>
 <script src="~/js/image-upload-preview.js"></script>
 <script src="~/js/format-price.js"></script>
+<script src="~/js/delete-box-confirmation.js"></script>
