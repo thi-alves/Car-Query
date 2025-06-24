@@ -166,10 +166,7 @@
 		<div class="form-group mt-3">
 			<label asp-for="Images">Imagens:</label>
 			<br />
-			<button type="button" class="add-image btn btn-primary my-2" onclick="addImage()">Adicionar</button>
-
-			<div id="inputs" class="d-none"></div>
-			<div class="preview" id="preview"></div>
+			@await Html.PartialAsync("_ImageUploadWidget")
 			<span asp-validation-for="Images" class="text-danger"></span>
 		</div>
 

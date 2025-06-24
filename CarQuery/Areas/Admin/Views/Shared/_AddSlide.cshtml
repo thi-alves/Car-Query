@@ -1,0 +1,30 @@
+﻿
+<div class="col-11 col-lg-8 model-overlay" id="modelOverlay">
+	<div id="slideForm" class="slide-form">
+		<h4>Adicionar slide</h4>
+
+		<form class="form-group" onsubmit="return false;">
+			<p>Informe o modelo do carro</p>
+			<div class="row">
+				<div class="d-flex">
+					<div class="col-8 col-lg-6 search-box ">
+						<input id="carModel" name="carModel" class="form-control search-input" />
+						<div id="suggestions" class="suggestions">
+						</div>
+					</div>
+
+					<button type="button" class="btn btn-outline-primary ms-3 search-btn" onclick="search()">Search</button>
+				</div>
+			</div>
+			<br />
+
+			<div id="imagesBox" class="row">
+				<div id="imagesArea" class="images-area ">
+				</div>
+			</div>
+
+			<button type="button" class="btn btn-primary" onclick="closeSlideForm()">Voltar</button>
+			<button type="button" class="btn btn-success" onclick="addSlide()">Adicionar</button>
+		</form>
+	</div>
+</div>
