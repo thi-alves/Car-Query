@@ -1,4 +1,6 @@
-﻿
+﻿/*
+    Essa estilização é necessária para a implementação da partial view _ImageUploadWidget.cshtml, localizada em Areas/Admin/Views/Shared
+*/
 .preview {
     border: 1px solid;
     border-radius: 5px;

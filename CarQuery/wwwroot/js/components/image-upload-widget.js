@@ -1,5 +1,6 @@
-﻿
-/*
+﻿/*
+	Esse script é necessário para a implementação da partial view _ImageUploadWidget.cshtml, localizada em Areas/Admin/Views/Shared
+
 	1- Antes de chamar esse script, crie uma variável denominada imagesInputName
 	2- Atribua a ela o nome da variável do parâmetro do controller que deve receber a lista  de imagens
 */

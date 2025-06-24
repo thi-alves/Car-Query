@@ -1,4 +1,8 @@
-﻿let slidesCounter = 0;
+﻿/*
+	Esse script é necessário para a implementação da partial view _AddSlide.cshtml, localizada em Areas/Admin/Views/Shared
+*/
+
+let slidesCounter = 0;
 let slidesData = [];
 
 let carsData;

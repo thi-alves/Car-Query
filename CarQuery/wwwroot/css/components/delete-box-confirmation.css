@@ -1,4 +1,7 @@
-﻿
+﻿/*
+    Essa estilização é necessária para a implementação da partial view _DeleteBoxConfirmation.cshtml, localizada em Areas/Admin/Views/Shared
+*/
+
 .custom-modal-overlay {
     display: none;
     position: fixed;
