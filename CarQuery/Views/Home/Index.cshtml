@@ -14,12 +14,12 @@
 	<title>Car Query</title>
 
 </head>
-<body>
+<body class="home-body">
 	@section Styles {
 		<link rel="stylesheet" href="~/css/public/index.css" />
 	}
 
-	<div class="">
+	<div>
 		@foreach (var carousel in Model)
 		{
 			int totalCarouselSlides = carousel.CarouselSlides.Count();
@@ -56,7 +56,14 @@
 										</p>
 									</div>
 								</a>
+								<div class="bg-summary carousel-car-info d-md-none">
+									<h5>@carousel.CarouselSlides[0].CarModel</h5>
+									<p>
+										@carousel.CarouselSlides[0].CarShortDescription
+									</p>
+								</div>
 							</div>
+							
 
 							@{
 								for (int i = 1; i < totalCarouselSlides; i++)
@@ -64,13 +71,19 @@
 									<div class="carousel-item">
 										<a asp-controller="Car" asp-action="CarDetailsPage" asp-route-id="@carousel.CarouselSlides[i].CarId">
 											<img src="@carousel.CarouselSlides[i].ImgPath" class="d-block w-100" alt="...">
-											<div class="carousel-caption">
+											<div class="carousel-caption d-none d-md-block">
 												<h5>@carousel.CarouselSlides[i].CarModel</h5>
 												<p>
 													@carousel.CarouselSlides[i].CarShortDescription
 												</p>
 											</div>
 										</a>
+										<div class="bg-summary carousel-car-info d-md-none">
+											<h5>@carousel.CarouselSlides[i].CarModel</h5>
+											<p>
+												@carousel.CarouselSlides[i].CarShortDescription
+											</p>
+										</div>
 									</div>
 								}
 							}
@@ -82,12 +95,11 @@
 						<button class="carousel-control-next" type="button" data-bs-target="#carousel-@id" data-bs-slide="next">
 							<span class="carousel-control-next-icon" aria-hidden="true"></span>
 							<span class="visually-hidden">Next</span>
-						</button>
-						}
+						</button>				
 					</div>
 				</div>
 			</div>
-			<hr />
+			<!--<hr />-->
 			iteration++;
 			id++;
 		}
