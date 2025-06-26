@@ -30,9 +30,9 @@
 
 			<div class="d-flex mt-2 ms-4 align-items-center">
 				De
-				<input type="number" class="form-control mx-3" id="minPowerInput" name="minPower" placeholder="Ex: 240">
+				<input type="number" class="form-control mx-3" id="minPowerInput" name="minPower" placeholder="Ex: 240" min="0">
 				até
-				<input type="number" class="form-control ms-3" id="maxPowerInput" name="maxPower" placeholder="Ex: 320">
+				<input type="number" class="form-control ms-3" id="maxPowerInput" name="maxPower" placeholder="Ex: 320" min="0">
 			</div>
 		</div>
 		<hr>
@@ -50,11 +50,11 @@
 			<label>Faixa de preço</label>
 			<div class="d-flex mt-2 ms-4 align-items-center">
 				De
-				<input class="form-control mx-3" id="formatedMinPriceInput" placeholder="Ex: R$75.000,00">
-				<input type="hidden" class="form-control mx-3" id="realMinPriceInput" name="minPrice">
+				<input class="form-control mx-3" id="currencyMinPriceInput" placeholder="Ex: R$75.000,00">
+				<input type="hidden" class="form-control mx-3" id="numberMinPriceInput" name="minPrice">
 				até
-				<input class="form-control mx-3" id="formatedMaxPriceInput" placeholder="Ex: R$90.000,00">
-				<input type="hidden" class="form-control ms-3" id="realMaxPriceInput" name="maxPrice">
+				<input class="form-control mx-3" id="currencyMaxPriceInput" placeholder="Ex: R$90.000,00">
+				<input type="hidden" class="form-control ms-3" id="numberMaxPriceInput" name="maxPrice">
 			</div>
 		</div>
 		<hr />
@@ -62,14 +62,14 @@
 			<button class="btn btn-primary">Pesquisar</button>
 		</div>
 	</div>
-
 </form>
 
+<script src="~/js/format-price.js"></script>
 <script>
-	const formatedMinPriceInput = document.getElementById("formatedMinPriceInput");
-	const formatedMaxPriceInput = document.getElementById("formatedMaxPriceInput");
-	const realMinPriceInput = document.getElementById("realMinPriceInput");
-	const realMaxPriceInput = document.getElementById("realMaxPriceInput");
+	const currencyMinPriceInput = document.getElementById("currencyMinPriceInput");
+	const currencyMaxPriceInput = document.getElementById("currencyMaxPriceInput");
+	const numberMinPriceInput = document.getElementById("numberMinPriceInput");
+	const numberMaxPriceInput = document.getElementById("numberMaxPriceInput");
 
 	const minYearInput = document.getElementById("minYearInput");
 	const maxYearInput = document.getElementById("maxYearInput");
@@ -77,72 +77,32 @@
 	const minPowerInput = document.getElementById("minPowerInput");
 	const maxPowerInput = document.getElementById("maxPowerInput");
 
-	//formatações para inputs de preço
-	function parseCurrencyToNumber(input){
-		const currentValue = input.value;
-
-		const value = currentValue
-			.replace(/\s/g, '')
-			.replace('R$', '')
-			.replace(/\./g, '')
-			.replace(',', '.');
-
-		return value;
-	}
-
-	function parseCurrency(input, hiddenInput){
-		let value = input.value.replace(',', '.');
-		value = value.replace(/[^0-9.]/g, '');
-
-		let numericValue = parseFloat(value);
-
-		if(isNaN(numericValue)){
-			numericValue = 0;
-		}
-
-		input.value = numericValue.toLocaleString('pt-br', {
-			style: 'currency',
-			currency: 'BRL'
-		});
-
-		hiddenInput.value = numericValue;
-	}
-
-	function removeCurrencyFormatOnFocus(input){
-		input.addEventListener("focus", function(){
-			const value = parseCurrencyToNumber(this);
-			this.value = value;
-		})
-	}
-
-	function handlePriceField(input, hiddenInput){
-		removeCurrencyFormatOnFocus(input);
-
-		input.addEventListener("blur", function(){
-			parseCurrency(input, hiddenInput);
-			validateMinMaxPriceInput();
-			input.reportValidity();
-		})
-	}
-
 	//validações para inputs de preço
 	function validateMinMaxPriceInput(){
-		formatedMinPriceInput.setCustomValidity("");
-		formatedMaxPriceInput.setCustomValidity("");
+		currencyMinPriceInput.setCustomValidity("");
+		currencyMaxPriceInput.setCustomValidity("");
 
-		const minPrice = parseInt(realMinPriceInput.value);
-		const maxPrice = parseInt(realMaxPriceInput.value);
+		const minPrice = parseFloat(numberMinPriceInput.value);
+		const maxPrice = parseFloat(numberMaxPriceInput.value);
 
 		if(maxPrice < minPrice && maxPrice != 0){
-			formatedMinPriceInput.setCustomValidity("O preço mínimo deve ser menor que o preço máximo");
-			formatedMaxPriceInput.setCustomValidity("O preço máximo deve ser 0 ou maior que o preço mínimo");
+			currencyMinPriceInput.setCustomValidity("O preço mínimo deve ser menor que o preço máximo");
+			currencyMaxPriceInput.setCustomValidity("O preço máximo deve ser 0 ou maior que o preço mínimo");
 		}
+	}
+
+	function handlePriceField(currencyPriceInput, numberPriceInput){
+		//função do script /js/format-price.js
+		formatPriceInputs(currencyPriceInput,numberPriceInput);
+
+		currencyPriceInput.addEventListener("blur", function(){
+			validateMinMaxPriceInput();
+			currencyPriceInput.reportValidity();
+		})
 	}
 
 	//validações para as inputs de ano
 	function validateYearInput(yearInput){
-		let value = yearInput.value;
-
 		yearInput.setAttribute('min', 1886);
 		yearInput.setAttribute('max', new Date().getFullYear());
 
@@ -188,15 +148,15 @@
 
 	//aplicando formatações e validações
 	document.addEventListener("DOMContentLoaded", function(){
-		handlePriceField(formatedMinPriceInput, realMinPriceInput);
-		handlePriceField(formatedMaxPriceInput, realMaxPriceInput);
+		handlePriceField(currencyMinPriceInput,numberMinPriceInput);
+		handlePriceField(currencyMaxPriceInput,numberMaxPriceInput);
+
+		validateMinMaxPriceInput();
 
 		validateYearInput(minYearInput);
 		validateYearInput(maxYearInput);
 
 		validatePowerInput(minPowerInput);
 		validatePowerInput(maxPowerInput);
-
-	})
-
+	});
 </script>
