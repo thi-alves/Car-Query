@@ -12,19 +12,19 @@
 	<form asp-action="Edit" method="post" class="form-group" enctype="multipart/form-data">
 		<div class="row">
 			<input type="hidden" asp-for="CarId" />
-			<div class="col-4 mt-3">
+			<div class="col-4 col-lg-3 col-xl-3 mt-3">
 				<label asp-for="Brand">Marca do carro:</label>
 				<input asp-for="Brand" class="form-control" value="@Model.Brand" placeholder="Ex: Chevrolet" />
 				<span asp-validation-for="Brand" class="text-danger"></span>
 			</div>
 
-			<div class="col-4 mt-3">
+			<div class="col-4 col-lg-3 col-xl-3 mt-3">
 				<label asp-for="Model">Modelo:</label>
 				<input asp-for="Model" class="form-control" value="@Model.Model" placeholder="Ex: Corsa" />
 				<span asp-validation-for="Model" class="text-danger"></span>
 			</div>
 
-			<div class="col-4 mt-3">
+			<div class="col-3 col-lg-2 col-xl-3 mt-3">
 				<label asp-for="BodyStyle">Carroceria:</label>
 				<select asp-for="BodyStyle" class="form-select" value="@Model.BodyStyle">
 					<option value="Sedã">Sedã</option>
@@ -38,43 +38,61 @@
 				<span asp-validation-for="BodyStyle" class="text-danger"></span>
 			</div>
 
-			<div class="col-3 mt-3">
+			<div class="col-3 col-lg-1 col-xl-1 mt-3">
 				<label asp-for="Doors">Portas:</label>
 				<input asp-for="Doors" class="form-control" value="@Model.Doors" placeholder="Ex: 4" />
 				<span asp-validation-for="Doors" class="text-danger"></span>
 			</div>
 
-			<div class="col-4 col-lg-3 mt-3">
+			<div class="col-4 col-lg-2 col-xl-2 mt-3">
 				<label asp-for="ManufacturingYear">Ano de fabricação:</label>
 				<input asp-for="ManufacturingYear" class="form-control" value="@Model.ManufacturingYear" id="manufacturingYear" min="1886" placeholder="1886 em diante" />
 				<span asp-validation-for="ManufacturingYear" class="text-danger"></span>
 			</div>
 
-			<div class="col-4 col-lg-3 mt-3">
+			<div class="col-4 col-lg-2 col-xl-2 mt-3">
 				<label asp-for="ModelYear">Ano do modelo:</label>
 				<input asp-for="ModelYear" class="form-control" value="@Model.ModelYear" id="modelYear" min="1886" placeholder="1886 em diante" />
 				<span asp-validation-for="ModelYear" class="text-danger"></span>
 			</div>
 
-			<div class="col-3 mt-3">
+			<div class="col-3 col-lg-2 col-xl-2 mt-3">
 				<label asp-for="Power">Potência (CV):</label>
 				<input asp-for="Power" class="form-control" value="@Model.Power" placeholder="Ex: 200" />
 				<span asp-validation-for="Power" class="text-danger"></span>
 			</div>
 
-			<div class="col-3 col-lg-2 mt-3">
+			<div class="col-3 col-lg-2 col-xl-2 mt-3">
 				<label asp-for="Displacement">Cilindrada (L):</label>
 				<input asp-for="Displacement" class="form-control" value="@Model.Displacement" placeholder="Ex: 2.0" />
 				<span asp-validation-for="Displacement" class="text-danger"></span>
 			</div>
 
-			<div class="col-5 col-lg-2 mt-3">
+			<div class="col-5 col-lg-3 col-xl-3 mt-3">
 				<label asp-for="TopSpeed">Velocidade máxima (Km/h):</label>
 				<input asp-for="TopSpeed" class="form-control" value="@Model.TopSpeed" placeholder="Ex: 220" />
 				<span asp-validation-for="TopSpeed" class="text-danger"></span>
 			</div>
 
-			<div class="col-4 col-lg-2 mt-3">
+			<div class="col-5 col-lg-3 col-xl-3 mt-3">
+				<label asp-for="CylinderConfiguration">Configuração dos cilindros:</label>
+				<input asp-for="CylinderConfiguration" class="form-control" value="@Model.CylinderConfiguration" placeholder="Ex: V" />
+				<span asp-validation-for="CylinderConfiguration" class="text-danger"></span>		
+			</div>
+
+			<div class="col-3 col-lg-2 col-xl-1 mt-3">
+				<label asp-for="Valves">Válvulas:</label>
+				<input asp-for="Valves" class="form-control" value="@Model.Valves" placeholder="Ex: 8" />
+				<span asp-validation-for="Valves" class="text-danger"></span>
+			</div>
+
+			<div class="col-3 col-lg-2 col-xl-1 mt-3">
+				<label asp-for="Cylinders">Cilindros:</label>
+				<input asp-for="Cylinders" class="form-control" value="@Model.Cylinders" placeholder="Ex: 8" />
+				<span asp-validation-for="Cylinders" class="text-danger"></span>
+			</div>
+
+			<div class="col-4 col-lg-2 col-xl-2 mt-3">
 				<label asp-for="FuelType">Combustível:</label>
 				<select asp-for="FuelType" class="form-select" value="@Model.FuelType">
 					<option value="Gasolina">Gasolina</option>
@@ -89,25 +107,7 @@
 				<span asp-validation-for="FuelType" class="text-danger"></span>
 			</div>
 
-			<div class="col-3 col-lg-2 mt-3">
-				<label asp-for="Valves">Válvulas:</label>
-				<input asp-for="Valves" class="form-control" value="@Model.Valves" placeholder="Ex: 8" />
-				<span asp-validation-for="Valves" class="text-danger"></span>
-			</div>
-
-			<div class="col-4 col-lg-2 mt-3">
-				<label asp-for="Cylinders">Cilindros:</label>
-				<input asp-for="Cylinders" class="form-control" value="@Model.Cylinders" placeholder="Ex: 8" />
-				<span asp-validation-for="Cylinders" class="text-danger"></span>
-			</div>
-
-			<div class="col-5 col-lg-2 mt-3">
-				<label asp-for="CylinderConfiguration">Configuração dos cilindros:</label>
-				<input asp-for="CylinderConfiguration" class="form-control" value="@Model.CylinderConfiguration" placeholder="Ex: V" />
-				<span asp-validation-for="CylinderConfiguration" class="text-danger"></span>
-			</div>
-
-			<div class="col-5 col-lg-3 mt-3">
+			<div class="col-4 col-lg-3 col-xl-3 mt-3">
 				<label asp-for="Aspiration">Aspiração:</label>
 				<select asp-for="Aspiration" class="form-select" value="@Model.Aspiration">
 					<option value="Aspirado Natural (NA)">Aspirado Natural (NA)</option>
@@ -120,7 +120,7 @@
 				<span asp-validation-for="Aspiration" class="text-danger"></span>
 			</div>
 
-			<div class="col-4 col-lg-3 mt-3">
+			<div class="col-4 col-lg-3 col-xl-3 mt-3">
 				<label asp-for="Drivetrain">Tração:</label>
 				<select asp-for="Drivetrain" class="form-select" value="@Model.Drivetrain">
 					<option value="Dianteira (FWD)">Dianteira (FWD)</option>
@@ -132,7 +132,7 @@
 				<span asp-validation-for="Drivetrain" class="text-danger"></span>
 			</div>
 
-			<div class="col-4 col-lg-3 mt-3">
+			<div class="col-4 col-lg-3 col-xl-2 mt-3">
 				<label asp-for="EnginePosition">Posição do motor:</label>
 				<select asp-for="EnginePosition" class="form-select" value="@Model.EnginePosition">
 					<option value="Dianteiro">Dianteiro</option>
@@ -141,20 +141,18 @@
 				</select>
 				<span asp-validation-for="EnginePosition" class="text-danger"></span>
 			</div>
-			<div class="col-4 col-lg-3 mt-3">
+			<div class="col-4 col-lg-4 col-xl-3 mt-3">
 				<label asp-for="TransmissionType">Transmissão:</label>
 				<input asp-for="TransmissionType" class="form-control" value="@Model.TransmissionType" placeholder="Ex: Manual de 6 marchas" />
 				<span asp-validation-for="TransmissionType" class="text-danger"></span>
 			</div>
+			<div class="col-4 col-lg-3 col-xl-2 mt-3">
+				<label asp-for="Price">Preço (R$):</label>
+				<input class="form-control" value="@Model.Price" id="currencyPriceInput" placeholder="Ex: R$40.000,00" />
+				<input asp-for="Price" type="hidden" class="form-control" value="@Model.Price" id="numberPriceInput" />
+				<span asp-validation-for="Price" class="text-danger"></span>
+			</div>
 		</div>
-
-		<div class="form-group mt-3">
-			<label asp-for="Price">Preço (R$):</label>
-			<input class="form-control" value="@Model.Price" id="currencyPriceInput" placeholder="Ex: R$40.000,00" />
-			<input asp-for="Price" type="hidden" class="form-control" value="@Model.Price" id="numberPriceInput" />
-			<span asp-validation-for="Price" class="text-danger"></span>
-		</div>
-
 		<div class="form-group mt-3">
 			<label asp-for="ShortDescription">Descrição curta:</label>
 			<textarea asp-for="ShortDescription" class="form-control" value="@Model.ShortDescription" placeholder="Essa descrição será exibida nos slides"></textarea>
