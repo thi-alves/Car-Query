@@ -150,8 +150,8 @@
 
 		<div class="form-group mt-3">
 			<label asp-for="Price">Preço (R$):</label>
-			<input class="form-control" value="@Model.Price" id="formatedPriceInput" placeholder="Ex: R$40.000,00" />
-			<input asp-for="Price" type="hidden" class="form-control" value="@Model.Price" id="realPriceInput" />
+			<input class="form-control" value="@Model.Price" id="currencyPriceInput" placeholder="Ex: R$40.000,00" />
+			<input asp-for="Price" type="hidden" class="form-control" value="@Model.Price" id="numberPriceInput" />
 			<span asp-validation-for="Price" class="text-danger"></span>
 		</div>
 
@@ -213,9 +213,12 @@
 
 </div>
 
+<script src="~/js/format-price.js"></script>
 <script>
 	const manufacturingYear = document.getElementById("manufacturingYear");
 	const modelYear = document.getElementById("modelYear");
+	const currencyPriceInput = document.getElementById("currencyPriceInput");
+	const numberPriceInput = document.getElementById("numberPriceInput");
 
 	//necessário para usar image-upload script
 	const imagesInputName = "newImages";
@@ -224,6 +227,9 @@
 		//setting the max year to the year inputs
 		manufacturingYear.setAttribute('max', new Date().getFullYear());
 		modelYear.setAttribute('max', new Date().getFullYear());
+
+		//função do script /js/format-price.js
+		formatPriceInputs(currencyPriceInput, numberPriceInput);
 	});
 
 	//force input validation
@@ -241,5 +247,4 @@
 	}
 </script>
 <script src="~/js/components/image-upload-widget.js"></script>
-<script src="~/js/format-price.js"></script>
 <script src="~/js/components/delete-box-confirmation.js"></script>
