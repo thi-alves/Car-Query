@@ -206,7 +206,7 @@ CarouselSlide }|--|{ Image : has
 
 * <h4>Enviar feedback</h4>
 <div style="margin-left: 40px">
-  <p>O usuário pode enviar feedbacks para a equipe gestora do sistema. Os feedbacks podem ser conferidos pela equipe gestora no @@@@@@@@@@@@</p>
+  <p>O usuário pode enviar feedbacks para a equipe gestora do sistema. Os feedbacks podem ser conferidos pela equipe gestora no email cadastrado no Formspree.io</p>
   <img src="./readme-assets/6-Feedback.gif" width="600">
 </div>
 
@@ -286,6 +286,7 @@ CarouselSlide }|--|{ Image : has
   <p>O super administrador pode registrar novos administradores</p>
   <img src="./readme-assets/16-Add-user-edited.gif" width="600">
 </div>
+
 * <h4>Listar administradores</h4>
 <div style="margin-left: 40px">
   <p>O super administrador pode visualizar todos os administradores cadastrados no sistema</p>
