@@ -273,8 +273,7 @@ namespace CarQuery.Areas.Admin.Controllers
                         {
                             return RedirectToAction("OperationResultView", "Admin", new { succeeded = false, message = "Não é possível deletar todas as imagens. O carro deve possuir pelo menos uma imagem" });
                         }
-
-                        _context.Entry(editedCar).Reload();
+                        editedCar.Images = await _imageRepository.GetImagesByCarId(editedCar.CarId);
                     }
 
                     await UploadFiles(newImages, editedCar);
