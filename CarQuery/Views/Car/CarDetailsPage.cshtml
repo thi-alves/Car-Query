@@ -49,7 +49,7 @@
 		<hr />
 
 		<h4>Especificações</h4>
-		<div class="row">
+		<div class="row mb-3">
 
 			<div class="col-12 col-lg-4">
 				<ul class="mb-0">
@@ -60,16 +60,19 @@
 						<strong>Carroceria: </strong>@Model.BodyStyle
 					</li>
 					<li>
-						<strong>Potência: </strong>@Model.Power cv
+						<strong>Portas: </strong>@Model.Doors
 					</li>
 					<li>
 						<strong>Cilindrada: </strong>@Model.Displacement
-					</li>
+					</li>					
+					<li>
+						<strong>Transmissão: </strong>@Model.TransmissionType
+					</li>				
 				</ul>
 			</div>
 
 			<div class="col-12 col-lg-4">
-				<ul class="mt-0 mb-0">
+				<ul class="mt-0 mb-0">					
 					<li>
 						<strong>Válvulas: </strong>@Model.Valves
 					</li>
@@ -77,24 +80,30 @@
 						<strong>Cilindros: </strong>@Model.Cylinders
 					</li>
 					<li>
-						<strong>Configuração dos Cilindros: </strong>@Model.CylinderConfiguration
+						<strong>Combustível: </strong>@Model.FuelType
 					</li>
 					<li>
-						<strong>Posição do motor: </strong>@Model.EnginePosition
+						<strong>Potência: </strong>@Model.Power cv
 					</li>
+					<li>
+						<strong>Configuração dos Cilindros: </strong>@Model.CylinderConfiguration
+					</li>			
 				</ul>
 			</div>
 
 			<div class="col-12 col-lg-4">
 				<ul class="mt-0">
 					<li>
+						<strong>Posição do motor: </strong>@Model.EnginePosition
+					</li>
+					<li>
+						<strong>Aspiração: </strong>@Model.Aspiration
+					</li>
+					<li>
 						<strong>Tração: </strong>@Model.Drivetrain
 					</li>
 					<li>
 						<strong>Velocidade máxima: </strong>@Model.TopSpeed km/h
-					</li>
-					<li>
-						<strong>Portas: </strong>@Model.Doors
 					</li>
 					<li>
 						<strong>Preço: </strong>R$@Model.Price.ToString("N2")
