@@ -71,7 +71,7 @@ namespace CarQuery.ViewModels.CarViewModels
         public string EnginePosition { get; set; }
 
         [Required(ErrorMessage = "Informe o tipo de transmissão")]
-        [MaxLength(30, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
+        [MaxLength(60, ErrorMessage = "Este campo deve ter no máximo {1} caracteres")]
         [Display(Name = "Transmissão")]
         public string TransmissionType { get; set; }
 
@@ -103,6 +103,7 @@ namespace CarQuery.ViewModels.CarViewModels
         [Required(ErrorMessage = "Selecione uma imagem")]
         public List<IFormFile> Images { get; set; }
 
+        [Required(ErrorMessage = "Informe a URL do vídeo")]
         public string VideoLink { get; set; }
     }
 }
