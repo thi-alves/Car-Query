@@ -11,7 +11,22 @@ using CarQuery.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(
+        (field) => string.IsNullOrEmpty(field) 
+        ? "Este campo deve possuir um número válido"
+        : $"O campo {field} deve ser um número válido");
+
+    options.ModelBindingMessageProvider.SetValueIsInvalidAccessor(
+        (value) => $"O valor '{value}' é inválido.");
+
+    options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
+        _ => "Campo obrigatório");
+
+    options.ModelBindingMessageProvider.SetAttemptedValueIsInvalidAccessor(
+        (value, field) => $"O valor '{value}' não é válido");
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
