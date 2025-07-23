@@ -7,7 +7,7 @@
   <li><a href="#sobre-o-sistema">Sobre o sistema</a></li>
   <li><a href="#tecnologias-utilizadas">Tecnologias utilizadas</a></li>
   <li><a href="#modelo-de-dados">Modelo de dados</a></li>
-  <li><a href="#funcionalidades">Funcionalidades (com gifs)</a></li>
+  <li><a href="#funcionalidades">Funcionalidades (com imagens)</a></li>
 </ul>
 
 <h2 id="sobre-o-sistema">Sobre o sistema</h2>
@@ -173,161 +173,134 @@ CarouselSlide }|--|{ Image : has
 
 <hr/>
 <h2 id="funcionalidades">Funcionalidades</h2>
-<h3>Usuário comum</h3>
+<h2>👤 Usuário comum</h2>
 
-* <h4>Responsividade</h4>
-<div style="margin-left: 40px">
-  <p>O layout do sistema se adapta para dispositivos mobile e desktop</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/01-Responsividade-edited.gif" width="600" alt="Gif: responsividade">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/01-Responsividade-edited.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Responsividade</h3>
+<p>O layout do sistema se adapta para dispositivos mobile e desktop</p>  
+<img src="https://thi-alves.github.io/Car-Query-assets/images/01-Responsividade-1.png" width="350">
+<img src="https://thi-alves.github.io/Car-Query-assets/images/01-Responsividade-2.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/01-Responsividade-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Visualizar carrosséis</h4>
-<div style="margin-left: 40px">
-  <p>O usuário pode visualizar e interagir com os carrosséis apresentados na tela inicial</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/02-Show-carousels.gif" width="600" alt="Gif: mostrando carrosséis">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/02-Show-carousels.gif" target="_blank">aqui</a></p>
-</div>
 
-* <h4>Pesquisar veículos</h4>
-<div style="margin-left: 40px">
-  <p>O usuário pode pesquisar veículos por marca ou modelo</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/03-Search-by-brand-model.gif" width="600" alt="Gif: pesquisando veículos">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/03-Search-by-brand-model.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Visualizar carrosséis</h3>
+<p>O usuário pode visualizar e interagir com os carrosséis apresentados na tela inicial</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/02-Show-carousels.png" width="600" alt="Gif: mostrando carrosséis">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/02-Show-carousels-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Visualizar informações dos veículos</h4>
-<div style="margin-left: 40px">
-  <p>O usuário pode visualizar informações do veículo selecionado</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/04-Car-details.gif" width="600" alt="Gif: mostrar informações do carro">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/04-Car-details.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Pesquisar veículos</h3>
+<p>O usuário pode pesquisar veículos por marca ou modelo</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/03-Search-by-brand-model.png" width="600" alt="Gif: pesquisando veículos">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/03-Search-by-brand-model-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Pesquisa filtrada de veículos</h4>
-<div style="margin-left: 40px">
-  <p>O usuário pode realizar pesquisas com filtros, podendo especificar a marca, bem como o intervalo de ano do modelo, potência e preço.</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/05-Filter-search.gif" width="600" alt="Gif: pesquisa filtrada">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/05-Filter-search.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Visualizar informações dos veículos</h3>
+<p>O usuário pode visualizar informações do veículo selecionado</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/04-Car-details-page-1.png" width="600">
+<img src="https://thi-alves.github.io/Car-Query-assets/images/04-Car-details-page-2.png" width="600">
+<img src="https://thi-alves.github.io/Car-Query-assets/images/04-Car-details-page-3.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/04-Car-details-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Enviar feedback</h4>
-<div style="margin-left: 40px">
-  <p>O usuário pode enviar feedbacks para a equipe gestora do sistema. Os feedbacks podem ser conferidos pela equipe gestora no email cadastrado no Formspree.io</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/06-Feedback.gif" width="600" alt="Gif: enviando feedback">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/06-Feedback.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Pesquisa filtrada de veículos</h3>
+<p>O usuário pode realizar pesquisas com filtros, podendo especificar a marca, bem como o intervalo de ano do modelo, potência e preço.</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/05-Filter-search.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/05-Filter-search-video.mp4">Ver demonstração</a></strong></p>
 
-<h3>Administrador (Admin)</h3>
 
-* <h4>Login</h4>
-<div style="margin-left: 40px">
-  <p>Os administradores podem realizar login para acessar a página de administração do site</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/07-Login.gif" width="600" alt="Gif: realizando login">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/07-Login.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Enviar feedback</h3>
+<p>O usuário pode enviar feedbacks para a equipe gestora do sistema. Os feedbacks podem ser conferidos pela equipe gestora no email cadastrado no Formspree.io</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/06-Feedback.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/06-Feedback-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Adicionar carro</h4>
-<div style="margin-left: 40px">
-  <p>Os administradores podem adicionar novos carros no sistema, preenchendo suas infromações técnicas e adicionando imagens e um vídeo do youtube</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/08-Add-car.gif" width="600" alt="Gif: cadastrando novo carro">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/08-Add-car.gif" target="_blank">aqui</a></p>
-</div>
 
-* <h4>Listar carros</h4>
-<div style="margin-left: 40px">
-  <p>O sistema lista todos os carros cadastrados no sistema, disponibilizando um campo para pesquisa e as operações de gerência de carros</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/09-List-cars.gif" width="600" alt="Gif: listando todos os carros do sistema">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/09-List-cars.gif" target="_blank">aqui</a></p>
-</div>
+<h2>🔧 Administrador (Admin)</h2>
 
-* <h4>Editar carro</h4>
-<div style="margin-left: 40px">
-  <p>Os administradores podem atualizar ou corrigir os dados dos veículos</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/10-Edit-car-edited.gif" width="600" alt="Gif: atualizando dados do carro">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/10-Edit-car-edited.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Login</h3>
+<p>Os administradores podem realizar login para acessar a página de administração do site</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/07-Login.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/07-Login-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Deletar carro</h4>
-<div style="margin-left: 40px">
-  <p>Os administradores podem deletar carros do sistema</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/11-Delete-car.gif" width="600" alt="Gif: deletando carro">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/11-Delete-car.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Adicionar carro</h3>
+<p>Os administradores podem adicionar novos carros no sistema, preenchendo suas infromações técnicas e adicionando imagens e um vídeo do youtube</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/08-Add-car-1.png" width="600">
+<img src="https://thi-alves.github.io/Car-Query-assets/images/08-Add-car-2.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/08-Add-car-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Carrosséis</h4>
-<div style="margin-left: 40px">
-  <p>Para permitir que o site ficasse mais dinâmico, criei um sistema de carrosséis para que os administradores possam alterar as apresentações da tela inicial.</p>
-  <p>Um carrossel é um conjunto de slides contendo um carro cada, que são exibidos na tela inicial do sistema. Cada    carrossel possui um título e uma lista de veículos. 
+
+<h3>🔹 Listar carros</h3>
+<p>O sistema lista todos os carros cadastrados no sistema, disponibilizando um campo para pesquisa e as operações de gerência de carros</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/09-List-cars.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/09-List-cars-video.mp4">Ver demonstração</a></strong></p>
+
+<h3>🔹 Editar carro</h3>
+<p>Os administradores podem atualizar ou corrigir os dados dos veículos</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/10-Edit-car-1.png" width="600">
+<img src="https://thi-alves.github.io/Car-Query-assets/images/10-Edit-car-2.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/10-Edit-car-video.mp4">Ver demonstração</a></strong></p>
+
+
+<h3>🔹 Deletar carro</h3>
+<p>Os administradores podem deletar carros do sistema</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/11-Delete-car.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/11-Delete-car-video.mp4">Ver demonstração</a></strong></p>
+
+
+<h3>🔹 Carrosséis</h3>
+<p>Para permitir que o site ficasse mais dinâmico, criei um sistema de carrosséis para que os administradores possam alterar as apresentações da tela inicial.</p>
+<p>Um carrossel é um conjunto de slides contendo um carro cada, que são exibidos na tela inicial do sistema. Cada    carrossel possui um título e uma lista de veículos. 
   Um carrossel pode estar habilitado ou desabilitado. Caso esteja habilitado, ele é exibido na página inicial, do contrário ele continua no sistema mas não é exibido.
   Cada carrossel possui uma posição que indica a ordem que serão exibidas na tela inicial.</p>
-</div>
 
-* <h4>Adicionar carrossel</h4>
-<div style="margin-left: 40px">
-  <p>
-    O sistema permite a criação carrosséis que são exibidos na tela inicial, permitindo que os administradores adicionem um título, selecionem os carros e suas imagens para serem exibidos no carrossel.
-    Cada carro é exibido em um slide diferente
-  </p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/12-Add-carousel.gif" width="600" alt="Gif: criando novo carrossél">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/12-Add-carousel.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Adicionar carrossel</h3>
+<p>
+  O sistema permite a criação carrosséis que são exibidos na tela inicial, permitindo que os administradores adicionem um título, selecionem os carros e suas imagens para serem exibidos no carrossel.
+  Cada carro é exibido em um slide diferente
+</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/12-Add-carousel-1.png" width="600">
+<img src="https://thi-alves.github.io/Car-Query-assets/images/12-Add-carousel-2.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/12-Add-carousel-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Listar carrosséis</h4>
-<div style="margin-left: 40px">
-  <p>O sistema lista todos os carrosséis cadastrados no sistema, disponibilizando um campo para busca dos carrosséis (por título) e disponibilizando as operações de gerência de carrosséis</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/13-List-carousels.gif" width="600" alt="Gif: listando todos os carrosséis do sistema">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/13-List-carousels.gif" target="_blank">aqui</a></p>
-</div>
 
-* <h4>Editar carrossel</h4>
-<div style="margin-left: 40px">
-  <p>Os administradores podem atualizar ou corrigir dados dos carrosséis, podendo alterar os veículos apresentados no carrossel, seu título, se está habilitado ou desabilitado e alterar a posição do carrossel.</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/14-Edit-carousel.gif" width="600" alt="Gif: atualizando dados do carrossél">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/14-Edit-carousel.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Listar carrosséis</h3>
+<p>O sistema lista todos os carrosséis cadastrados no sistema, disponibilizando um campo para busca dos carrosséis (por título) e disponibilizando as operações de gerência de carrosséis</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/13-List-carousels.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/13-List-carousels-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Deletar carrossel</h4>
-<div style="margin-left: 40px">
-  <p>Os administradores podem deletar carrosséis</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/15-Delete-carousel.gif" width="600" alt="Gif: deletando carrossél">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/15-Delete-carousel.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Editar carrossel</h3>
+<p>Os administradores podem atualizar ou corrigir dados dos carrosséis, podendo alterar os veículos apresentados no carrossel, seu título, se está habilitado ou desabilitado e alterar a posição do carrossel.</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/14-Edit-carousel.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/14-Edit-carousel-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Atualizar senha</h4>
-<div style="margin-left: 40px">
-  <p>Os administradores podem alterar sua senha de acesso. Porém, somente o super administrador pode alterar seus nomes de usuário e email.</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/20-Change-password.gif" width="600" alt="Gif: deletando carrossél">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/20-Change-password.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Deletar carrossel</h3>
+<p>Os administradores podem deletar carrosséis</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/15-Delete-carousel.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/15-Delete-carousel-video.mp4">Ver demonstração</a></strong></p>
 
-<h3>Super administrador (SuperAdmin)</h3>
+<h3>🔹 Atualizar senha</h3>
+<p>Os administradores podem alterar sua senha de acesso. Porém, somente o super administrador pode alterar seus nomes de usuário e email.</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/20-Change-password.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/20-Change-password-video.mp4">Ver demonstração</a></strong></p>
+  
+<h2>👑 Super administrador (SuperAdmin)</h2>
 
 <p>Além de ter acesso a todas as operações do Admin, possui as seguintes permissões</p>
 
-* <h4>Registrar novo administrador</h4>
-<div style="margin-left: 40px">
-  <p>O super administrador pode registrar novos administradores</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/16-Add-user.gif" width="600" alt="Gif: registrando novo administrador">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/16-Add-user.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Registrar novo administrador</h3>
+<p>O super administrador pode registrar novos administradores</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/16-Add-user.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/16-Add-user-video.mp4"">Ver demonstração</a></strong></p>
 
-* <h4>Listar administradores</h4>
-<div style="margin-left: 40px">
-  <p>O super administrador pode visualizar todos os administradores cadastrados no sistema</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/17-List-users.gif" width="600" alt="Gif: listando todos os administradores do sistema">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/17-List-users.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Listar administradores</h3>
+<p>O super administrador pode visualizar todos os administradores cadastrados no sistema</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/17-List-users.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/17-List-users-video.mp4">Ver demonstração</a></strong></p>
 
-* <h4>Editar administrador</h4>
-<div style="margin-left: 40px">
-  <p>O super administrador pode atualizar as informações das contas "Admin"</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/18-Edit-user.gif" width="600" alt="Gif: atualizando dados do administrador">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/18-Edit-user.gif" target="_blank">aqui</a></p>
-</div>
 
-* <h4>Deletar administrador</h4>
-<div style="margin-left: 40px">
-  <p>O super administrador pode deletar contas de administradores</p>
-  <img src="https://thi-alves.github.io/Car-Query-assets/car-query-assets/19-Delete-user.gif" width="600" alt="Gif: deletando administrador">
-  <p>⚠️ Caso o gif não tenha carregado, clique <a href="https://thi-alves.github.io/Car-Query-assets/car-query-assets/19-Delete-user.gif" target="_blank">aqui</a></p>
-</div>
+<h3>🔹 Editar administrador</h3>
+<p>O super administrador pode atualizar as informações das contas "Admin"</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/18-Edit-user.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/18-Edit-user-video.mp4">Ver demonstração</a></strong></p>
+
+<h3>🔹 Deletar administrador</h3>
+<p>O super administrador pode deletar contas de administradores</p>
+<img src="https://thi-alves.github.io/Car-Query-assets/images/19-Delete-user.png" width="600">
+<p>🎥 <strong><a href="https://thi-alves.github.io/Car-Query-assets/videos/19-Delete-user-video.mp4">Ver demonstração</a></strong></p>
+
